@@ -20,7 +20,7 @@ FROM with-node AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["TavernHelios.Server/TavernHelios.Server.csproj", "TavernHelios.Server/"]
-COPY ["tavernhelios.client/tavernhelios.client.esproj", "tavernhelios.client/"]
+COPY ["./tavernhelios.client/tavernhelios.client.esproj", "tavernhelios.client/"]
 RUN dotnet restore "./TavernHelios.Server/TavernHelios.Server.csproj"
 COPY . .
 WORKDIR "/src/TavernHelios.Server"
