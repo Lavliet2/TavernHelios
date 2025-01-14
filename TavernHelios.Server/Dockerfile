@@ -1,37 +1,25 @@
-# См. статью по ссылке https://aka.ms/customizecontainer, чтобы узнать как настроить контейнер отладки и как Visual Studio использует этот Dockerfile для создания образов для ускорения отладки.
-
-# Этот этап используется при запуске из VS в быстром режиме (по умолчанию для конфигурации отладки)
+# Этап 1: Базовый образ для работы ASP.NET
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER $APP_UID
 WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
+EXPOSE 80
 
-
-# Этот этап используется для сборки проекта службы
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS with-node
-RUN apt-get update
-RUN apt-get install curl
-RUN curl -sL https://deb.nodesource.com/setup_20.x | bash
-RUN apt-get -y install nodejs
-
-
-FROM with-node AS build
-ARG BUILD_CONFIGURATION=Release
+# Этап 2: Сборка приложения
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
+# Копируем csproj и восстанавливаем зависимости
 COPY ["TavernHelios.Server/TavernHelios.Server.csproj", "TavernHelios.Server/"]
-#COPY ["tavernhelios.client/tavernhelios.client.esproj", "tavernhelios.client/"]
 RUN dotnet restore "./TavernHelios.Server/TavernHelios.Server.csproj"
+
+# Копируем все файлы и собираем приложение
 COPY . .
 WORKDIR "/src/TavernHelios.Server"
-RUN dotnet build "./TavernHelios.Server.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "TavernHelios.Server.csproj" -c Release -o /app/build
 
-# Этот этап используется для публикации проекта службы, который будет скопирован на последний этап
+# Этап 3: Публикация приложения
 FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./TavernHelios.Server.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "TavernHelios.Server.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
-# Этот этап используется в рабочей среде или при запуске из VS в обычном режиме (по умолчанию, когда конфигурация отладки не используется)
+# Этап 4: Финальный образ для продакшн
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
