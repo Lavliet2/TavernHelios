@@ -3,7 +3,7 @@ name: Build and Deploy HeliosTavern App
 on:
   push:
     branches:
-      - main  # Запуск при пуше в ветку main
+      - main
 
 jobs:
   build-and-push:
@@ -26,7 +26,7 @@ jobs:
       - name: Build and push frontend image
         uses: docker/build-push-action@v4
         with:
-          context: ./tavernhelios.client  # Указываем путь к фронтенд-коду
+          context: ./tavernhelios.client  
           file: ./tavernhelios.client/Dockerfile
           push: true
           tags: ghcr.io/lavliet2/heliostavern-frontend:latest
@@ -34,7 +34,7 @@ jobs:
       - name: Build and push backend image
         uses: docker/build-push-action@v4
         with:
-          context: ./TavernHelios.Server  # Указываем путь к бэкенд-коду
+          context: ./TavernHelios.Server
           file: ./TavernHelios.Server/Dockerfile
           push: true
           tags: ghcr.io/lavliet2/heliostavern-backend:latest

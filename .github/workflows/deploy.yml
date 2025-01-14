@@ -27,11 +27,11 @@ jobs:
           git clone https://github.com/Lavliet2/HeliosTavern.git /home/lavliet/heliostavern-app
           cd /home/lavliet/heliostavern-app
           
-          kubectl apply -f /home/lavliet/heliostavern-app/.k8s/webapp-deployment.yaml
-          kubectl apply -f /home/lavliet/heliostavern-app/.k8s/backend-deployment.yaml
+          kubectl apply -f /home/lavliet/heliostavern-app/.k8s/tavernhelios-client-deployment.yaml
+          kubectl apply -f /home/lavliet/heliostavern-app/.k8s/tavernhelios-server-deployment.yaml          
           
-          kubectl rollout restart deployment heliostavern-webapp
-          kubectl rollout restart deployment heliostavern-backend
+          kubectl rollout restart deployment tavernhelios-client
+          kubectl rollout restart deployment tavernhelios-server
           
           kubectl apply -f /home/lavliet/heliostavern-app/.k8s/ingress.yaml
           EOF
