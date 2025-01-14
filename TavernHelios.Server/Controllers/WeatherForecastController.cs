@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace WebAPI.Controllers
+namespace TavernHelios.Server.Controllers
 {
     [ApiController]
     [Route("[controller]")]

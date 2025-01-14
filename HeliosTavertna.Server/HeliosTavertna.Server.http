@@ -1,6 +1,0 @@
-@HeliosTavertna.Server_HostAddress = http://localhost:5234
-
-GET {{HeliosTavertna.Server_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

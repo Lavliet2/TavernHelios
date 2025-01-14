@@ -4,11 +4,11 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>96526b9a-0c9c-41fc-8572-975ea80083ba</UserSecretsId>
+    <UserSecretsId>eba42937-8368-4577-90ad-26e7629db077</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <SpaRoot>..\heliostavertna.client</SpaRoot>
+    <SpaRoot>..\tavernhelios.client</SpaRoot>
     <SpaProxyLaunchCommand>npm run dev</SpaProxyLaunchCommand>
-    <SpaProxyServerUrl>https://localhost:60923</SpaProxyServerUrl>
+    <SpaProxyServerUrl>https://localhost:63049</SpaProxyServerUrl>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\heliostavertna.client\HeliosTavern.Client.esproj">
+    <ProjectReference Include="..\tavernhelios.client\tavernhelios.client.esproj">
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>

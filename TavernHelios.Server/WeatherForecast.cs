@@ -1,4 +1,4 @@
-namespace HeliosTavertna.Server
+namespace TavernHelios.Server
 {
     public class WeatherForecast
     {

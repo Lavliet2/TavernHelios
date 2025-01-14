@@ -19,20 +19,20 @@ RUN apt-get -y install nodejs
 FROM with-node AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["HeliosTavertna.Server/HeliosTavertna.Server.csproj", "HeliosTavertna.Server/"]
-COPY ["heliostavertna.client/heliostavertna.client.esproj", "heliostavertna.client/"]
-RUN dotnet restore "./HeliosTavertna.Server/HeliosTavertna.Server.csproj"
+COPY ["TavernHelios.Server/TavernHelios.Server.csproj", "TavernHelios.Server/"]
+COPY ["tavernhelios.client/tavernhelios.client.esproj", "tavernhelios.client/"]
+RUN dotnet restore "./TavernHelios.Server/TavernHelios.Server.csproj"
 COPY . .
-WORKDIR "/src/HeliosTavertna.Server"
-RUN dotnet build "./HeliosTavertna.Server.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src/TavernHelios.Server"
+RUN dotnet build "./TavernHelios.Server.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # Этот этап используется для публикации проекта службы, который будет скопирован на последний этап
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./HeliosTavertna.Server.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./TavernHelios.Server.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 # Этот этап используется в рабочей среде или при запуске из VS в обычном режиме (по умолчанию, когда конфигурация отладки не используется)
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "HeliosTavertna.Server.dll"]
+ENTRYPOINT ["dotnet", "TavernHelios.Server.dll"]
