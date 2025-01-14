@@ -6,7 +6,6 @@ import path from 'path';
 import child_process from 'child_process';
 import { env } from 'process';
 
-// Проверяем, находится ли приложение в контейнере (или на сервере)
 const isDev = env.NODE_ENV === 'development';
 
 const baseFolder =
@@ -18,7 +17,6 @@ const certificateName = "tavernhelios.client";
 const certFilePath = path.join(baseFolder, `${certificateName}.pem`);
 const keyFilePath = path.join(baseFolder, `${certificateName}.key`);
 
-// Генерация сертификатов, если это локальная среда
 if (isDev && (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath))) {
     if (0 !== child_process.spawnSync('dotnet', [
         'dev-certs',
@@ -33,7 +31,6 @@ if (isDev && (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath))) {
     }
 }
 
-// Используем локальные настройки для API
 const target = env.VITE_API_URL || (env.ASPNETCORE_HTTPS_PORT ? `https://localhost:${env.ASPNETCORE_HTTPS_PORT}` : 'http://localhost:32769');  // Используем HTTP вместо HTTPS
 
 // https://vitejs.dev/config/

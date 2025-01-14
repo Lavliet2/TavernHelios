@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./heliostavern.client 
+      dockerfile: Dockerfile
+    ports:
+      - "63049:80"
+    environment:
+      - VITE_API_URL=https://backend:7132 
+    depends_on:
+      - backend
+    networks:
+      - heliostavern-network
+
+  backend:
+    build:
+      context: ./heliostavern.server  
+      dockerfile: Dockerfile
+    ports:
+      - "7132:80"  
+    networks:
+      - heliostavern-network
+    environment:
+      - ASPNETCORE_URLS=https://+:80
+    volumes:
+      - ./heliostavern.server:/app
+
+networks:
+  heliostavern-network:
+    driver: bridge
