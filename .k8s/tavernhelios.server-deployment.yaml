@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tavernhelios-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tavernhelios-server
+  template:
+    metadata:
+      labels:
+        app: tavernhelios-server
+    spec:
+      containers:
+        - name: tavernhelios-server
+          image: ghcr.io/lavliet2/heliostavern-backend:latest
+          ports:
+            - containerPort: 5040  # Увеличили порт на 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tavernhelios-server-service
+spec:
+  selector:
+    app: tavernhelios-server
+  ports:
+    - protocol: TCP
+      port: 5040  # Увеличили порт на 10
+      targetPort: 5040
+  type: NodePort
+  nodePort: 32040  # Увеличили на 10

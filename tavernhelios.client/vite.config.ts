@@ -1,11 +1,13 @@
 import { fileURLToPath, URL } from 'node:url';
-
 import { defineConfig } from 'vite';
 import plugin from '@vitejs/plugin-react';
 import fs from 'fs';
 import path from 'path';
 import child_process from 'child_process';
 import { env } from 'process';
+
+// Проверяем, находится ли приложение в контейнере (или на сервере)
+const isDev = env.NODE_ENV === 'development';
 
 const baseFolder =
     env.APPDATA !== undefined && env.APPDATA !== ''
@@ -16,11 +18,8 @@ const certificateName = "tavernhelios.client";
 const certFilePath = path.join(baseFolder, `${certificateName}.pem`);
 const keyFilePath = path.join(baseFolder, `${certificateName}.key`);
 
-if (!fs.existsSync(baseFolder)) {
-    fs.mkdirSync(baseFolder, { recursive: true });
-}
-
-if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
+// Генерация сертификатов, если это локальная среда
+if (isDev && (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath))) {
     if (0 !== child_process.spawnSync('dotnet', [
         'dev-certs',
         'https',
@@ -29,13 +28,13 @@ if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
         '--format',
         'Pem',
         '--no-password',
-    ], { stdio: 'inherit', }).status) {
+    ], { stdio: 'inherit' }).status) {
         throw new Error("Could not create certificate.");
     }
 }
 
-const target = env.ASPNETCORE_HTTPS_PORT ? `https://localhost:${env.ASPNETCORE_HTTPS_PORT}` :
-    env.ASPNETCORE_URLS ? env.ASPNETCORE_URLS.split(';')[0] : 'https://localhost:32769';
+// Используем локальные настройки для API
+const target = env.VITE_API_URL || (env.ASPNETCORE_HTTPS_PORT ? `https://localhost:${env.ASPNETCORE_HTTPS_PORT}` : 'http://localhost:32769');  // Используем HTTP вместо HTTPS
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -53,9 +52,11 @@ export default defineConfig({
             }
         },
         port: 63049,
-        https: {
-            key: fs.readFileSync(keyFilePath),
-            cert: fs.readFileSync(certFilePath),
-        }
+        ...(isDev && {
+            https: {
+                key: fs.readFileSync(keyFilePath),
+                cert: fs.readFileSync(certFilePath),
+            }
+        }),  // Убираем https для контейнера или локальной разработки
     }
 })

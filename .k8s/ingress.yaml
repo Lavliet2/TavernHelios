@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: burlunch-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - host: webapp.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: webapp
+                port:
+                  number: 5001
+    - host: authapi.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: authapi
+                port:
+                  number: 8081
