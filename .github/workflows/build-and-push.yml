@@ -34,7 +34,7 @@ jobs:
       - name: Build and push backend image
         uses: docker/build-push-action@v4
         with:
-          context: ./TavernHelios.Server
-          file: ./TavernHelios.Server/Dockerfile
+          context: .
+          file: ./Dockerfile
           push: true
           tags: ghcr.io/lavliet2/heliostavern-backend:latest
