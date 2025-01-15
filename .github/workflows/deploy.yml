@@ -33,5 +33,5 @@ jobs:
           #kubectl rollout restart deployment tavernhelios-client
           kubectl rollout restart deployment tavernhelios-server
           
-          kubectl apply -f /home/lavliet/heliostavern-app/.k8s/ingress.yaml
+          kubectl apply -f /home/lavliet/heliostavern-app/.k8s/tavernhelios-ingress.yaml
           EOF
