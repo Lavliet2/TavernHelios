@@ -24,14 +24,14 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no -p 2222 lavliet@178.72.83.217 << 'EOF'
           rm -rf /home/lavliet/heliostavern-app
-          git clone https://github.com/Lavliet2/HeliosTavern.git /home/lavliet/heliostavern-app
           cd /home/lavliet/heliostavern-app
+          # git clone https://github.com/Lavliet2/HeliosTavern.git /home/lavliet/heliostavern-app
           
-          kubectl apply -f /home/lavliet/heliostavern-app/.k8s/tavernhelios-client-deployment.yaml
-          kubectl apply -f /home/lavliet/heliostavern-app/.k8s/tavernhelios-server-deployment.yaml          
+          # kubectl apply -f /home/lavliet/heliostavern-app/.k8s/tavernhelios-client-deployment.yaml
+          # kubectl apply -f /home/lavliet/heliostavern-app/.k8s/tavernhelios-server-deployment.yaml          
           
-          kubectl rollout restart deployment tavernhelios-client
-          kubectl rollout restart deployment tavernhelios-server
+          # kubectl rollout restart deployment tavernhelios-client
+          # kubectl rollout restart deployment tavernhelios-server
           
-          kubectl apply -f /home/lavliet/heliostavern-app/.k8s/ingress.yaml
-          EOF
+          # kubectl apply -f /home/lavliet/heliostavern-app/.k8s/ingress.yaml
+          # EOF
