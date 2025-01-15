@@ -16,9 +16,10 @@ spec:
         - name: tavernhelios-server
           image: ghcr.io/lavliet2/heliostavern-backend:latest
           ports:
-            - containerPort: 5040
+            - containerPort: 8080  
+            - containerPort: 8081 
       imagePullSecrets:
-        - name: ghcr-secret  
+        - name: ghcr-secret 
 ---
 apiVersion: v1
 kind: Service
@@ -30,6 +31,6 @@ spec:
     app: tavernhelios-server
   ports:
     - protocol: TCP
-      port: 5040
-      targetPort: 5040
-      nodePort: 32040
+      port: 5040      
+      targetPort: 8080  
+      nodePort: 32040 

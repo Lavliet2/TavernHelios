@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: tavernhelios-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx 
+  rules:
+    - host: heliostavern.local
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: tavernhelios-server-service
+                port:
+                  number: 5040
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: tavernhelios-server-service
+                port:
+                  number: 5040
