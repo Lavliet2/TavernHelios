@@ -16,14 +16,14 @@ function App() {
     }, []);
 
     const contents = forecasts === undefined
-        ? <p><em>Loading... Please refresh once the ASP.NET backend has started. See <a href="https://aka.ms/jspsintegrationreact">https://aka.ms/jspsintegrationreact</a> for more details.</em></p>
+        ? <p><em>Загрузка... Пожалуйста, обновите страницу, как только сервер ASP.NET будет готов. Дополнительные инструкции можно найти по ссылке: <a href="https://aka.ms/jspsintegrationreact" target="_blank" rel="noreferrer">https://aka.ms/jspsintegrationreact</a></em></p>
         : <table className="table table-striped" aria-labelledby="tableLabel">
             <thead>
                 <tr>
-                    <th>Date</th>
-                    <th>Temp. (C)</th>
-                    <th>Temp. (F)</th>
-                    <th>Summary</th>
+                    <th>Дата</th>
+                    <th>Температура (C)</th>
+                    <th>Температура (F)</th>
+                    <th>Описание</th>
                 </tr>
             </thead>
             <tbody>
@@ -40,9 +40,17 @@ function App() {
 
     return (
         <div>
-            <h1 id="tableLabel">Weather forecast</h1>
-            <p>This component demonstrates fetching data from the server.</p>
+            <h1>Привет, команда разработчиков!</h1>
+            <p>Приложение успешно задеплоено на сервер и работает корректно.</p>
+            <div className="info-box">
+                <p>Тестирование деплоя: сервер работает, данные о погоде загружены успешно.</p>
+                <p>При мердже или пуше в ветку main обновления будут автоматически деплоиться сюда.</p>
+            </div>
+            <h2>Weather forecast</h2>
             {contents}
+            <div className="footer">
+                <p>&copy; 2025 TavernHelios. Все права защищены.</p>
+            </div>
         </div>
     );
 
