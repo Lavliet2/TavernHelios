@@ -4,6 +4,7 @@ import { GitHub, LinkedIn, Mail, Facebook } from '@mui/icons-material';
 import AlexImage from '../assets/about/Alex.jpg';
 import ElviraImage from '../assets/about/Elvira.jpg';
 import MarkImage from '../assets/about/Mark.jpg';
+import VadimImage from '../assets/about/Vadim.jpg';
 
 const About: React.FC = () => {
   return (
@@ -153,6 +154,7 @@ const About: React.FC = () => {
             <CardMedia
               component="img"
               height="140"
+              image={VadimImage}
               alt="Developer Vadim"
             />
             <CardContent sx={{ flexGrow: 1 }}>
