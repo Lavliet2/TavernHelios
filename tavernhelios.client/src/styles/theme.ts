@@ -17,9 +17,9 @@ const theme = createTheme({
     },
   },
   typography: {
-    fontFamily: 'Georgia, serif',
+    fontFamily: 'Montserrat, sans-serif',
     h6: {
-      fontFamily: 'Garamond, serif',
+      fontFamily: 'Montserrat, sans-serif',
       fontSize: '1.8rem',
       fontWeight: 'bold',
       color: '#FFD700',
