@@ -3,8 +3,8 @@ import { AppBar, Toolbar, Typography, Button, IconButton, Menu, MenuItem, Box } 
 import { AccountCircle } from '@mui/icons-material';
 import { ThemeProvider } from '@mui/material/styles';
 import { Link } from 'react-router-dom'; 
-import logo from "../assets/logo.svg";
-import theme from '../styles/theme';
+import Logo from "../assets/logo.svg";
+import Theme from '../styles/theme';
 
 const NavigationBar: React.FC = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -18,11 +18,11 @@ const NavigationBar: React.FC = () => {
   };
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={Theme}>
       <AppBar position="sticky">
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', paddingX: 3 }}>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <img src={logo} alt="Taverna Helios Logo" style={{ height: '40px', marginRight: '10px' }} />
+            <img src={Logo} alt="Taverna Helios Logo" style={{ height: '40px', marginRight: '10px' }} />
             <Typography variant="h6">Tavern Helios</Typography>
           </Box>
           <Box sx={{ display: 'flex', ml: 2 }}>
