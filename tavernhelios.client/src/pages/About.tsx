@@ -91,7 +91,7 @@ const About: React.FC = () => {
               </Typography>
             </CardContent>
             <Box sx={{ display: 'flex', justifyContent: 'center', pb: 2 }}>
-              <Button href="https://github.com" target="_blank" sx={{ mr: 1 }}>
+              <Button href="https://github.com/CoffeePrograms" target="_blank" sx={{ mr: 1 }}>
                 <GitHub />
               </Button>
               <Button href="https://linkedin.com" target="_blank">
