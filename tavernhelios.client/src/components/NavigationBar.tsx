@@ -1,13 +1,19 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { AppBar, Toolbar, Typography, Button, IconButton, Menu, MenuItem, Box } from '@mui/material';
 import { AccountCircle } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next'; 
 import { ThemeProvider } from '@mui/material/styles';
-import { Link } from 'react-router-dom'; 
+import { Link } from 'react-router-dom';
 import Logo from "../assets/logo.svg";
 import Theme from '../styles/theme';
+import { LanguageContext } from '../contexts/LanguageContext'; 
+import WorldFlag from 'react-world-flags';
 
 const NavigationBar: React.FC = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [languageMenuAnchor, setLanguageMenuAnchor] = React.useState<null | HTMLElement>(null);
+  const { t, i18n } = useTranslation();
+  const { changeLanguage } = useContext(LanguageContext) || {}; 
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -17,21 +23,65 @@ const NavigationBar: React.FC = () => {
     setAnchorEl(null);
   };
 
+  const handleLanguageMenuClick = (event: React.MouseEvent<HTMLElement>) => {
+    setLanguageMenuAnchor(event.currentTarget);
+  };
+
+  const handleLanguageMenuClose = () => {
+    setLanguageMenuAnchor(null);
+  };
+
+  const handleLanguageChange = (lang: string) => {
+    if (changeLanguage) {
+      changeLanguage(lang); 
+    }
+    localStorage.setItem('language', lang);
+    handleLanguageMenuClose();
+  };
+
   return (
     <ThemeProvider theme={Theme}>
       <AppBar position="sticky">
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', paddingX: 3 }}>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <img src={Logo} alt="Taverna Helios Logo" style={{ height: '40px', marginRight: '10px' }} />
-            <Typography variant="h6">Tavern Helios</Typography>
+            <Typography variant="h6">{t('tavernHelios')}</Typography> {/* Используем t для перевода */}
           </Box>
           <Box sx={{ display: 'flex', ml: 2 }}>
-            <Button color="inherit" component={Link} to="/">Home</Button>
-            <Button color="inherit" component={Link} to="/menu">Menu</Button>
-            <Button color="inherit" component={Link} to="/forecast">Forecast</Button>
-            <Button color="inherit" component={Link} to="/about">About</Button>
+            <Button color="inherit" component={Link} to="/">{t('home')}</Button>
+            <Button color="inherit" component={Link} to="/menu">{t('menu')}</Button>
+            <Button color="inherit" component={Link} to="/forecast">{t('forecast')}</Button>
+            <Button color="inherit" component={Link} to="/about">{t('about')}</Button>
           </Box>
-          <Box sx={{ ml: 'auto' }}>
+          <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center' }}>
+            {/* <Button color="inherit" onClick={handleLanguageMenuClick}> */}
+              {/* Отображаем флаг текущего языка */}
+              {/* <WorldFlag code={i18n.language === 'ru' ? 'RU' : 'US'} style={{ width: '20px', marginRight: '5px' }} /> */}
+              {/* {i18n.language === 'ru' ? 'RU' : 'EN'} */}
+            {/* </Button> */}
+            <Menu
+              anchorEl={languageMenuAnchor}
+              open={Boolean(languageMenuAnchor)}
+              onClose={handleLanguageMenuClose}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+            >
+              <MenuItem onClick={() => handleLanguageChange('ru')}>
+                <WorldFlag code="RU" style={{ width: '20px', marginRight: '10px' }} />
+                RU
+              </MenuItem>
+              <MenuItem onClick={() => handleLanguageChange('en')}>
+                <WorldFlag code="US" style={{ width: '20px', marginRight: '10px' }} />
+                EN
+              </MenuItem>
+            </Menu>
+
             <IconButton
               size="large"
               edge="end"
@@ -57,10 +107,14 @@ const NavigationBar: React.FC = () => {
               horizontal: 'right',
             }}
             open={Boolean(anchorEl)}
-            onClose={handleMenuClose}
+            onClose={handleMenuClose}            
           >
-            <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-            <MenuItem onClick={handleMenuClose}>Logout</MenuItem>
+            <Button color="inherit" onClick={handleLanguageMenuClick}>
+              <WorldFlag code={i18n.language === 'ru' ? 'RU' : 'US'} style={{ width: '20px', marginRight: '5px' }} />
+              {i18n.language === 'ru' ? 'RU' : 'EN'}
+            </Button>
+            <MenuItem onClick={handleMenuClose}>{t('profile')}</MenuItem>
+            <MenuItem onClick={handleMenuClose}>{t('logout')}</MenuItem>
           </Menu>
         </Toolbar>
       </AppBar>

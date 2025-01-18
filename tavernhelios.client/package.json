@@ -15,15 +15,20 @@
     "@mui/icons-material": "^6.4.0",
     "@mui/material": "^6.4.0",
     "@mui/system": "^6.4.0",
+    "i18next": "^24.2.1",
     "react": "latest",
     "react-dom": "latest",
-    "react-router-dom": "^7.1.2"
+    "react-i18next": "^15.4.0",
+    "react-router-dom": "^7.1.2",
+    "react-world-flags": "^1.6.0"
   },
   "devDependencies": {
     "@eslint/js": "latest",
+    "@types/i18next": "^12.1.0",
     "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
+    "@types/react-world-flags": "^1.6.0",
     "@vitejs/plugin-react": "latest",
     "eslint": "latest",
     "eslint-plugin-react-hooks": "latest",
