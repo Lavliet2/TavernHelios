@@ -1,25 +1,27 @@
 import React from 'react';
 import { Box, Container, Typography, Grid2, Card, CardContent, CardMedia, Button } from '@mui/material';
 import { GitHub, LinkedIn, Mail, Facebook } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
 import AlexImage from '../assets/about/Alex.jpg';
 import ElviraImage from '../assets/about/Elvira.jpg';
 import MarkImage from '../assets/about/Mark.jpg';
 import VadimImage from '../assets/about/Vadim.jpg';
 
 const About: React.FC = () => {
+  const { t } = useTranslation();
   return (
     <Container sx={{ mt: 5 }}>
       <Typography variant="h5" color="primary" align="center" sx={{ mb: 4 }}>
-        О нашей компании
+        {t('aboutCompany')}
       </Typography>
       <Typography variant="body1" align="center" sx={{ mb: 4 }}>
-        Добро пожаловать в <strong>Tavern Helios</strong>! Вдохновленные мирами фэнтези и приключений, наша команда создала это приложение, чтобы сделать процесс записи сотрудников на корпоративные обеды простым и удобным, приносящим как практическую пользу, так и удовольствие от использования.
+        {t('welcomeText')}
       </Typography>
       <Typography variant="body1" align="center" sx={{ mb: 4 }}>
-        Легенда гласит, что в одном из волшебных уголков мира, где всегда плещется пиво и витает аромат жареного мяса, родилась идея создать приложение, которое упростит и сделает приятным процесс записи сотрудников на корпоративные обеды, превращая его в увлекательное и удобное путешествие. Вдохновленные этой целью, мы собрали команду мастеров-разработчиков и создали Tavern Helios.
+        {t('companyStory')}
       </Typography>
       <Typography variant="h5" color="primary" align="center" sx={{ mb: 4 }}>
-        Наша команда
+        {t('ourTeam')}
       </Typography>
       <Grid2 container spacing={4} justifyContent="center">
         <Grid2 size={{ xs: 12, sm: 3 }} >
@@ -38,17 +40,17 @@ const About: React.FC = () => {
               component="img"
               height="140"
               image={AlexImage}
-              alt="Developer Alex"
+              alt={t('alex')}
             />
             <CardContent sx={{ flexGrow: 1 }}>
               <Typography variant="h6" component="div">
-                Алексей
+                {t('alex')}
               </Typography>
               <Typography variant="body1" color="text">
-                Senior programmist fullstack
+                {t('alexRole')}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Web, CI/CD
+                {t('alexSkills')}
               </Typography>
             </CardContent>
             <Box sx={{ display: 'flex', justifyContent: 'center', pb: 2 }}>
@@ -85,10 +87,10 @@ const About: React.FC = () => {
             />
             <CardContent sx={{ flexGrow: 1 }}>
               <Typography variant="h6" component="div">
-                Эльвира
+                {t('elvira')}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Создатель бизнес-логики.
+                {t('elviraRole')}
               </Typography>
             </CardContent>
             <Box sx={{ display: 'flex', justifyContent: 'center', pb: 2 }}>
@@ -122,10 +124,10 @@ const About: React.FC = () => {
             />
             <CardContent sx={{ flexGrow: 1 }}>
               <Typography variant="h6" component="div">
-                Марк
+                {t('mark')}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                База данных.
+                {t('markRole')}
               </Typography>
             </CardContent>
             <Box sx={{ display: 'flex', justifyContent: 'center', pb: 2 }}>
@@ -159,10 +161,10 @@ const About: React.FC = () => {
             />
             <CardContent sx={{ flexGrow: 1 }}>
               <Typography variant="h6" component="div">
-                Вадим
+                {t('vadim')}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Api авторизации
+                {t('vadimRole')}
               </Typography>
             </CardContent>
             <Box sx={{ display: 'flex', justifyContent: 'center', pb: 2 }}>
