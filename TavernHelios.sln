@@ -1,11 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35527.113 d17.12
+VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TavernHelios.Server", "TavernHelios.Server\TavernHelios.Server.csproj", "{F3E12C97-21B0-42D5-8A38-B5737FF82848}"
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "tavernhelios.client", "tavernhelios.client\tavernhelios.client.esproj", "{07AD6370-5849-4578-A27A-AD2FC8C6875C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MenuService", "MenuService", "{217FC705-70C0-4ECC-8570-F2641A5F1CF5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MenuServiceServer", "MenuService\MenuServiceServer\MenuServiceServer.csproj", "{898EA84C-1625-4EC4-8236-B1EB12D137E9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APICore", "MenuService\APICore\APICore.csproj", "{FDBFC1A6-0886-483C-8E91-C5695BAE81F1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoRepositories", "MenuService\MongoRepositories\MongoRepositories.csproj", "{E5BF226B-148A-49FA-A37C-86FEB8B03347}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,8 +31,25 @@ Global
 		{07AD6370-5849-4578-A27A-AD2FC8C6875C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{07AD6370-5849-4578-A27A-AD2FC8C6875C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{07AD6370-5849-4578-A27A-AD2FC8C6875C}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{898EA84C-1625-4EC4-8236-B1EB12D137E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{898EA84C-1625-4EC4-8236-B1EB12D137E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{898EA84C-1625-4EC4-8236-B1EB12D137E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{898EA84C-1625-4EC4-8236-B1EB12D137E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FDBFC1A6-0886-483C-8E91-C5695BAE81F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDBFC1A6-0886-483C-8E91-C5695BAE81F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDBFC1A6-0886-483C-8E91-C5695BAE81F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDBFC1A6-0886-483C-8E91-C5695BAE81F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5BF226B-148A-49FA-A37C-86FEB8B03347}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5BF226B-148A-49FA-A37C-86FEB8B03347}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5BF226B-148A-49FA-A37C-86FEB8B03347}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5BF226B-148A-49FA-A37C-86FEB8B03347}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{898EA84C-1625-4EC4-8236-B1EB12D137E9} = {217FC705-70C0-4ECC-8570-F2641A5F1CF5}
+		{FDBFC1A6-0886-483C-8E91-C5695BAE81F1} = {217FC705-70C0-4ECC-8570-F2641A5F1CF5}
+		{E5BF226B-148A-49FA-A37C-86FEB8B03347} = {217FC705-70C0-4ECC-8570-F2641A5F1CF5}
 	EndGlobalSection
 EndGlobal
