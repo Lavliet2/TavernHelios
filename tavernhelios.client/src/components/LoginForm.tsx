@@ -1,60 +1,96 @@
-import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { TextField, Button, Box, Typography, Paper } from '@mui/material';
-import { useNavigate } from 'react-router-dom'; 
-import Logo from '../assets/logo_login_bg.png'; 
-import { ThemeProvider } from '@mui/material/styles';
-import Theme from '../styles/theme';  
+import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { TextField, Button, Box, Typography, Paper } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import Logo from "../assets/logo_login_bg.png";
+import { ThemeProvider } from "@mui/material/styles";
+import Theme from "../styles/theme";
 
 const LoginForm: React.FC = () => {
   const { t } = useTranslation();
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const navigate = useNavigate(); 
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
     // Заглушка для авторизации
-    if (username === 'test' && password === 'test') {
-      localStorage.setItem('isAuthenticated', 'true'); 
-      navigate('/'); 
+    if (username === "test" && password === "test") {
+      login(); // Устанавливаем состояние аутентификации
+      navigate("/"); // Переход на главную страницу
     } else {
-      setError('Неверные данные');
+      setError("Неверные данные");
     }
   };
 
+  //Когда будет API
+//   const handleSubmit = async (e: React.FormEvent) => {
+//     e.preventDefault();
+  
+//     try {
+//       const response = await fetch("/api/login", {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify({ username, password }),
+//       });
+  
+//       if (response.ok) {
+//         login();
+//         navigate("/");
+//       } else {
+//         setError("Неверные данные");
+//       }
+//     } catch (err) {
+//       setError("Ошибка сервера. Попробуйте позже.");
+//     }
+//   };
+
   return (
     <ThemeProvider theme={Theme}>
-      <Box sx={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        height: '100vh', 
-        // background: 'linear-gradient(45deg, #2C1A2A, #3E3E3E)',
-        }}>
-        <Paper sx={{ 
-          padding: 4, 
-          maxWidth: 400, 
-          width: '100%', 
-          borderRadius: 2, 
-          boxShadow: 6, 
-          backgroundColor: 'background.paper', 
-        }}>
-          <img 
-            src={Logo} 
-            alt="Taverna Helios Logo" 
-            style={{ 
-              height: '150px', 
-              display: 'block', 
-              margin: '0 auto 20px', 
-            }} 
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        <Paper
+          sx={{
+            padding: 4,
+            maxWidth: 400,
+            width: "100%",
+            borderRadius: 2,
+            boxShadow: 6,
+            backgroundColor: "background.paper",
+          }}
+        >
+          <img
+            src={Logo}
+            alt="Taverna Helios Logo"
+            style={{
+              height: "150px",
+              display: "block",
+              margin: "0 auto 20px",
+            }}
           />
-          <Typography variant="h5" align="center" sx={{ color: 'secondary.main', marginBottom: 3 }}>
+          <Typography
+            variant="h5"
+            align="center"
+            sx={{ color: "secondary.main", marginBottom: 3 }}
+          >
             Tavern Helios
           </Typography>
 
-          {error && <Typography color="error" align="center" sx={{ marginBottom: 2 }}>{error}</Typography>}
+          {error && (
+            <Typography color="error" align="center" sx={{ marginBottom: 2 }}>
+              {error}
+            </Typography>
+          )}
 
           <form onSubmit={handleSubmit}>
           <TextField
@@ -156,11 +192,11 @@ const LoginForm: React.FC = () => {
                 },
             }}
             />
-            <Button 
-              type="submit" 
-              variant="contained" 
-              color="primary" 
-              fullWidth 
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              fullWidth
               sx={{ marginTop: 2 }}
             >
               {t("signIn")}
