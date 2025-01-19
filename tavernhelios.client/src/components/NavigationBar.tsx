@@ -3,7 +3,7 @@ import { AppBar, Toolbar, Typography, Button, IconButton, Menu, MenuItem, Box } 
 import { AccountCircle } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next'; 
 import { ThemeProvider } from '@mui/material/styles';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Logo from "../assets/logo.svg";
 import Theme from '../styles/theme';
 import { LanguageContext } from '../contexts/LanguageContext'; 
@@ -14,9 +14,16 @@ const NavigationBar: React.FC = () => {
   const [languageMenuAnchor, setLanguageMenuAnchor] = React.useState<null | HTMLElement>(null);
   const { t, i18n } = useTranslation();
   const { changeLanguage } = useContext(LanguageContext) || {}; 
+  const navigate = useNavigate();
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuLogout = () => {
+    setAnchorEl(null);
+    localStorage.setItem('isAuthenticated', 'false'); 
+    navigate('/login')    
   };
 
   const handleMenuClose = () => {
@@ -44,8 +51,8 @@ const NavigationBar: React.FC = () => {
       <AppBar position="sticky">
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', paddingX: 3 }}>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <img src={Logo} alt="Taverna Helios Logo" style={{ height: '40px', marginRight: '10px' }} />
-            <Typography variant="h6">{t('tavernHelios')}</Typography> {/* Используем t для перевода */}
+            <img src={Logo} alt="Tavern Helios Logo" style={{ height: '40px', marginRight: '10px' }} />
+            <Typography variant="h6">Tavern Helios</Typography> 
           </Box>
           <Box sx={{ display: 'flex', ml: 2 }}>
             <Button color="inherit" component={Link} to="/">{t('home')}</Button>
@@ -114,7 +121,7 @@ const NavigationBar: React.FC = () => {
               {i18n.language === 'ru' ? 'RU' : 'EN'}
             </Button>
             <MenuItem onClick={handleMenuClose}>{t('profile')}</MenuItem>
-            <MenuItem onClick={handleMenuClose}>{t('logout')}</MenuItem>
+            <MenuItem onClick={handleMenuLogout}>{t('logout')}</MenuItem>
           </Menu>
         </Toolbar>
       </AppBar>

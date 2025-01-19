@@ -1,11 +1,13 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
 const Footer: React.FC = () => {
+const { t } = useTranslation();
   return (
     <Box sx={{ textAlign: 'center', marginTop: 4 }}>
       <Typography variant="body2" color="textSecondary">
-        &copy; 2025 TavernHelios. Все права защищены.
+        {t('copy')}
       </Typography>
     </Box>
   );
