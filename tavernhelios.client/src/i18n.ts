@@ -6,7 +6,10 @@ const storedLanguage = localStorage.getItem('language') || 'ru';
 i18n.use(initReactI18next).init({
   resources: {
     en: {
-      translation: {
+      translation: {        
+        login: "Login",
+        password: "Password",
+        signIn: "Sign In",
         home: "Home",
         menu: "Menu",
         forecast: "Forecast",
@@ -23,11 +26,15 @@ i18n.use(initReactI18next).init({
         mark: "Mark",
         markRole: "Database",
         vadim: "Vadim",
-        vadimRole: "API Authorization"
+        vadimRole: "API Authorization",
+        copy: "© 2025 TavernHelios. All rights reserved.",
       }
     },
     ru: {
       translation: {
+        login: "Логин",
+        password: "Пароль",
+        signIn: "Войти",
         home: "Главная",
         menu: "Меню",
         forecast: "Прогноз погоды",
@@ -44,7 +51,8 @@ i18n.use(initReactI18next).init({
         mark: "Марк",
         markRole: "База данных",
         vadim: "Вадим",
-        vadimRole: "API авторизации"
+        vadimRole: "API авторизации",
+        copy: "© 2025 TavernHelios. Все права защищены."
       }
     }
   },
