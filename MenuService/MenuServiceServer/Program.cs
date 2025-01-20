@@ -15,7 +15,7 @@ namespace MenuServiceServer
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            //Конфигурация DI
+            //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ DI
             builder.Services.ConfigureServices(builder.Configuration);
 
             var app = builder.Build();

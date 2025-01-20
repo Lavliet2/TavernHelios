@@ -24,3 +24,10 @@ spec:
                 name: tavernhelios-server-service
                 port:
                   number: 5040
+          - path: /menu
+            pathType: Prefix
+            backend:
+              service:
+                name: menuservice
+                port:
+                  number: 5041 
