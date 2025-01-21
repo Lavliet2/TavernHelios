@@ -15,11 +15,13 @@ spec:
       containers:
         - name: menuservice
           image: ghcr.io/lavliet2/menuservice:latest
-          ports:
+          ports: 
             - containerPort: 8082
           env:
             - name: MONGO_URI
               value: "mongodb://mongo:27017"
+      imagePullSecrets:
+        - name: ghcr-secret 
 ---
 apiVersion: v1
 kind: Service
