@@ -16,7 +16,7 @@ spec:
         - name: menuservice
           image: ghcr.io/lavliet2/menuservice:latest
           ports: 
-            - containerPort: 8082
+            - containerPort: 8080
           env:
             - name: MONGO_URI
               value: "mongodb://mongo:27017"
@@ -34,5 +34,5 @@ spec:
   ports:
     - protocol: TCP
       port: 5041
-      targetPort: 8082
+      targetPort: 8080
       nodePort: 32041 
