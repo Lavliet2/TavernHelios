@@ -27,18 +27,25 @@ jobs:
           git clone https://github.com/Lavliet2/TavernHelios.git /home/lavliet/heliostavern-app
           cd /home/lavliet/heliostavern-app
           
-          # Deploy TavernHelios backend
-          kubectl apply -f /home/lavliet/heliostavern-app/.k8s/tavernhelios-server-deployment.yaml                    
-          kubectl rollout restart deployment tavernhelios-server
-
-          # Deploy MenuService
-          kubectl apply -f /home/lavliet/heliostavern-app/.k8s/menuservice-deployment.yaml
-
+          # Deploy Ingress first (optional, but you can start routing earlier)
+          kubectl apply -f /home/lavliet/heliostavern-app/.k8s/tavernhelios-ingress.yaml
+          
           # Deploy MongoDB
           kubectl apply -f /home/lavliet/heliostavern-app/.k8s/mongo-deployment.yaml
+          
+          # Wait for MongoDB to be ready (if needed, adjust timeout)
+          kubectl wait --for=condition=ready pod -l app=mongo --timeout=300s
 
-          # Apply Ingress configuration
+          # Deploy MenuService after MongoDB is ready
+          kubectl apply -f /home/lavliet/heliostavern-app/.k8s/menuservice-deployment.yaml
           
+          # Wait for MenuService to be ready (adjust timeout as needed)
+          kubectl wait --for=condition=ready pod -l app=menuservice --timeout=300s
+
+          # Finally, deploy TavernHelios server after MenuService
+          kubectl apply -f /home/lavliet/heliostavern-app/.k8s/tavernhelios-server-deployment.yaml
           
-          kubectl apply -f /home/lavliet/heliostavern-app/.k8s/tavernhelios-ingress.yaml
+          # Restart deployments if needed
+          kubectl rollout restart deployment tavernhelios-server
+          
           EOF
