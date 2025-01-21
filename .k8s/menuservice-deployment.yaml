@@ -26,10 +26,11 @@ kind: Service
 metadata:
   name: menuservice
 spec:
+  type: NodePort 
   selector:
     app: menuservice
   ports:
     - protocol: TCP
-      port: 5041  
-      targetPort: 8082  
-      nodePort: 32041
+      port: 5041
+      targetPort: 8082
+      nodePort: 32041 

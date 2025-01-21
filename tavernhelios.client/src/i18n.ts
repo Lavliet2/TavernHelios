@@ -10,7 +10,7 @@ i18n.use(initReactI18next).init({
         login: "Login",
         password: "Password",
         signIn: "Sign In",
-        home: "Home",
+        home: "Home TEST",
         menu: "Menu",
         forecast: "Forecast",
         about: "About",
