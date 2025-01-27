@@ -34,11 +34,11 @@ import WeatherForecast from './pages/WeatherForecast';
 import About from './pages/About';
 
 // Защищенный маршрут
-const ProtectedRoute = () => {
-  const { isAuthenticated } = useAuth();
+// const ProtectedRoute = () => {
+//   const { isAuthenticated } = useAuth();
 
-  return isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
-};
+//   return isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
+// };
 
 function App() {
   return (
@@ -48,14 +48,14 @@ function App() {
         <Route path="/login" element={<LoginForm />} />
 
         {/* Защищенные маршруты */}
-        <Route element={<ProtectedRoute />}>
+        {/* <Route element={<ProtectedRoute />}> */}
           <Route path="/" element={<MainLayout />}>
             <Route path="/" element={<Home />} />
             <Route path="/menu" element={<Menu />} />
             <Route path="/forecast" element={<WeatherForecast />} />
             <Route path="/about" element={<About />} />
           </Route>
-        </Route>
+        {/* </Route> */}
       </Routes>
     </Router>
   );

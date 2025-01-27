@@ -1,6 +1,18 @@
 import { Typography, Box, Grid2, Container } from '@mui/material';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function Home() {
+    const [user, setUser] = useState(null);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        axios.get("https://localhost:32769/users/info")
+            .then((response) => setUser(response.data))
+            .catch((response) => navigate("login"));
+    }, []);
+
   return (
     <Box sx={{ padding: 2 }}>
         <Container maxWidth="lg" sx={{ marginTop: 4 }}>

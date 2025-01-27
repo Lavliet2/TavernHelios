@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35527.113 d17.12
+VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TavernHelios.Server", "TavernHelios.Server\TavernHelios.Server.csproj", "{F3E12C97-21B0-42D5-8A38-B5737FF82848}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TavernHelios.Server", "TavernHelios.Server\TavernHelios.Server.csproj", "{F3E12C97-21B0-42D5-8A38-B5737FF82848}"
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "tavernhelios.client", "tavernhelios.client\tavernhelios.client.esproj", "{07AD6370-5849-4578-A27A-AD2FC8C6875C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TavernHelios.Auth", "TavernHelios.Auth\TavernHelios.Auth.csproj", "{E76F1F53-62A3-4A2B-962A-862BA1AA563E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,8 +25,15 @@ Global
 		{07AD6370-5849-4578-A27A-AD2FC8C6875C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{07AD6370-5849-4578-A27A-AD2FC8C6875C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{07AD6370-5849-4578-A27A-AD2FC8C6875C}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{E76F1F53-62A3-4A2B-962A-862BA1AA563E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E76F1F53-62A3-4A2B-962A-862BA1AA563E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E76F1F53-62A3-4A2B-962A-862BA1AA563E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E76F1F53-62A3-4A2B-962A-862BA1AA563E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {84858FE0-5D1B-4CD6-BC03-7FCF87E9FA7A}
 	EndGlobalSection
 EndGlobal

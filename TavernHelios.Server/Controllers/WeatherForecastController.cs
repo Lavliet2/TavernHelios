@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace TavernHelios.Server.Controllers
 {
@@ -21,6 +23,12 @@ namespace TavernHelios.Server.Controllers
         [HttpGet(Name = "GetWeatherForecast")]
         public IEnumerable<WeatherForecast> Get()
         {
+            var authFeatures = HttpContext.Features.Get<IAuthenticateResultFeature>();
+            var zxc = HttpContext.User.Claims.ToList();
+            var authProps = authFeatures.AuthenticateResult.Properties;
+
+            var userDisplayName = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),

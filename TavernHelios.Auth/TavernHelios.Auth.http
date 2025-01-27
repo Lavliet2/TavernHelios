@@ -1,0 +1,6 @@
+@TavernHelios.Auth_HostAddress = http://localhost:5249
+
+GET {{TavernHelios.Auth_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

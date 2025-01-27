@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { TextField, Button, Box, Typography, Paper } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -6,8 +6,32 @@ import { useAuth } from "../contexts/AuthContext";
 import Logo from "../assets/logo_login_bg.png";
 import { ThemeProvider } from "@mui/material/styles";
 import Theme from "../styles/theme";
+import axios from "axios";
 
 const LoginForm: React.FC = () => {
+  useEffect(() => {
+    window.YaAuthSuggest.init(
+      {
+        client_id: "5c9531b9a1cb48628ffb70ea2582afc8",
+        response_type: "token",
+        redirect_uri: "https://localhost:7113/yandexAuth/login/"
+      },
+      "https://localhost",
+      {
+        view: "button",
+        parentId: "yandexAuth",
+        buttonSize: 'm',
+        buttonView: 'main',
+        buttonTheme: 'light',
+        buttonBorderRadius: "8",
+        buttonIcon: 'ya',
+      }
+    )
+      .then(({ handler }) => handler())
+      .then(data => console.log('Сообщение с токеном', data))
+      .catch(error => console.log('Обработка ошибки', error))
+  }, [])
+
   const { t } = useTranslation();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -18,7 +42,7 @@ const LoginForm: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Заглушка для авторизации
+    //Заглушка для авторизации
     if (username === "test" && password === "test") {
       login(); // Устанавливаем состояние аутентификации
       navigate("/"); // Переход на главную страницу
@@ -201,6 +225,8 @@ const LoginForm: React.FC = () => {
             >
               {t("signIn")}
             </Button>
+
+            <div style={{marginTop: "10px"}} id='yandexAuth'></div>
           </form>
         </Paper>
       </Box>
