@@ -23,9 +23,12 @@ namespace MongoRepositories.MockData
 
         public virtual async Task<bool> IsNeedFillMockDataAsync()
         {
-            //TODO: не использовать GetAll для экономии
-            var existingData = await _repository.GetAllAsync();
-            return !existingData.Any();
+            //Всегда вернуть true
+            return await Task.FromResult(true);
+
+            ////Если нет данный, вернуть true
+            //var existingData = await _repository.GetAllAsync();
+            //return !existingData.Any();
         }
     }
 }

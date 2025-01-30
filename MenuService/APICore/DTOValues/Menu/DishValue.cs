@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using APICore.Enums;
 
@@ -9,8 +10,28 @@ namespace APICore.DTOValues.Menu
 {
     public class DishValue : BaseDtoValue
     {
-        public string Description { get; set; }
+        [JsonConstructor]
+        public DishValue() { }
 
-        public DishType DishType { get; set; }
+        /// <summary>
+        /// Наименование
+        /// </summary>
+        public string Name { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Описание
+        /// </summary>
+        public string Description { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Тип блюда
+        /// </summary>
+
+        public DishType DishType { get; set; } = DishType.Soup;
+
+        /// <summary>
+        /// Иллюстрация
+        /// </summary>
+        public string ImageBase64 { get; set; } = string.Empty;
     }
 }

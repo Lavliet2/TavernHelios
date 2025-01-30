@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,9 +9,24 @@ namespace APICore.Enums
 {
     public enum DishType
     {
-        Default=0,
-        FirstDish = 1,
-        SecondDish = 2,
-        Kompot = 3,
+        /// <summary>
+        /// Супы
+        /// </summary>
+        Soup=0,
+        
+        /// <summary>
+        /// Горячее
+        /// </summary>
+        HotDish = 1,
+
+        /// <summary>
+        /// Салаты
+        /// </summary>
+        Salad = 2,
+
+        /// <summary>
+        /// Напитки
+        /// </summary>
+        Drink = 3,
     }
 }

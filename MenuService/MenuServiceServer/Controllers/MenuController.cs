@@ -3,6 +3,7 @@ using APICore.Interfaces;
 using APICore.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using MongoRepositories.Entities;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace MenuServiceServer.Controllers
 {
@@ -10,11 +11,6 @@ namespace MenuServiceServer.Controllers
     [Route("api/[controller]")]
     public class MenuController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-
         private readonly ILogger<MenuController> _logger;
         private readonly IRepository<MenuEntity> _menuRepository;
         private readonly IRepository<DishEntity> _dishRepository;
@@ -33,6 +29,7 @@ namespace MenuServiceServer.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [SwaggerOperation("Получить список меню")]
         public async Task<ActionResult<IEnumerable<MenuValue>>> GetAllMenusAsync()
         {
             var test = await _menuRepository.GetAllAsync();
@@ -49,6 +46,7 @@ namespace MenuServiceServer.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType<MenuValueFull>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [SwaggerOperation("Получить данные меню по Id")]
         public async Task<IActionResult> GetMenuByIdAsync(string id)
         {
             var menu = await _menuRepository.GetByIdAsync(id);
@@ -68,6 +66,7 @@ namespace MenuServiceServer.Controllers
         [HttpPost]
         [ProducesResponseType<MenuValue>(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [SwaggerOperation("Создать меню")]
         public async Task<IActionResult> CreateMenuAsync([FromBody] MenuValue menuValue)
         {
             var menuResult = await _menuRepository.CreateAsync(menuValue.ToEntity());
@@ -82,12 +81,13 @@ namespace MenuServiceServer.Controllers
         }
 
         /// <summary>
-        /// Изменить данные сотрудника
+        /// Редактировать меню
         /// </summary>
         /// <returns></returns>
         [HttpPut]
         [ProducesResponseType<MenuValue>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [SwaggerOperation("Редактировать меню")]
         public async Task<IActionResult> UpdateMenuAsync([FromBody] MenuValue menuValue)
         {
             var menuResult = await _menuRepository.UpdateAsync(menuValue.ToEntity());
@@ -101,12 +101,13 @@ namespace MenuServiceServer.Controllers
         }
 
         /// <summary>
-        /// Удалить сотрудника
+        /// Удалить меню
         /// </summary>
         /// <returns></returns>
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [SwaggerOperation("Удалить меню")]
         public async Task<IActionResult> DeleteMenuAsync([FromBody] string menuId)
         {
             var menuResult = await _menuRepository.DeleteAsync(menuId);

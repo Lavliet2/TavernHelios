@@ -15,7 +15,6 @@ namespace APICore.Extensions
         {
             var result = new MenuValue();
             result.Id = entity.Id;
-            result.Description = entity.Description;
             result.Dishes = entity.Dishes;
             return result;
         }
@@ -24,7 +23,6 @@ namespace APICore.Extensions
         {
             var result = new MenuValueFull();
             result.Id = entity.Id;
-            result.Description = entity.Description;
             result.Dishes = entity.Dishes;
             List<DishValue> fullDishesList = new List<DishValue>();
 
@@ -41,7 +39,6 @@ namespace APICore.Extensions
         {
             var result = new MenuEntity();
             result.Id = menuValue.Id;
-            result.Description = menuValue.Description;
             result.Dishes = menuValue.Dishes;
             return result;
         }
