@@ -23,7 +23,7 @@ namespace MongoRepositories
         protected readonly MongoClient _client;
         protected readonly IMongoDatabase _database;
 
-        protected IMongoCollection<T> _collection;
+        protected IMongoCollection<T>? _collection;
 
         //TODO: обработка ошибок. Пока что просто отдаем пустое значение, если ничего не нашли в БД по id
 
@@ -48,11 +48,6 @@ namespace MongoRepositories
             _database = _client.GetDatabase(_dbName);
 
             CheckConnection();
-
-            if (_database != null)
-                Console.WriteLine($"Получен доступ к базе данных MongoDb '{_dbName}'");
-            else
-                Console.WriteLine($"Не удалось получить доступ к базе данных MongoDb '{_dbName}'");
         }
 
         private void CheckConnection()
@@ -111,6 +106,16 @@ namespace MongoRepositories
             var user = await (await GetCollectionAsync(_dbCollectionName))
                 .FindOneAndReplaceAsync(p => p.Id == entity.Id, entity, new() { ReturnDocument = ReturnDocument.After });
             return user;
+        }
+
+
+        //Удалить ВСЁ
+        public virtual async Task<long> DeleteAll()
+        {
+            var res = await (await GetCollectionAsync(_dbCollectionName))
+                .DeleteManyAsync(x => true);
+                
+            return res.DeletedCount;
         }
 
         private async Task<IMongoCollection<T>> GetCollectionAsync(string collectionName)

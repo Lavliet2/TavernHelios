@@ -14,11 +14,7 @@ namespace APICore.DTOValues.Menu
         {
         }
 
-        public DateTime Date { get; set; }
-
-        public string Description { get; set; }
-
-        public List<string> Dishes { get; set; }
+        public List<string> Dishes { get; set; } = new List<string>();
     }
 
     public class MenuValueFull : MenuValue
@@ -28,6 +24,6 @@ namespace APICore.DTOValues.Menu
         {
         }
 
-       public List<DishValue> DishesFull { get; set; }
+       public List<DishValue> DishesFull { get; set; } = new List<DishValue>();
     }
 }

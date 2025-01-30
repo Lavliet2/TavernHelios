@@ -15,14 +15,20 @@ namespace APICore.Extensions
             var result = new DishValue();
             result.Id = entity.Id;
             result.Description = entity.Description;
+            result.Name = entity.Name;
+            result.ImageBase64 = entity.ImageBase64;
+            result.DishType = entity.DishType;
             return result;
         }
 
-        public static DishEntity ToEntity(this DishValue menuValue)
+        public static DishEntity ToEntity(this DishValue dishValue)
         {
             var result = new DishEntity();
-            result.Id = menuValue.Id;
-            result.Description = menuValue.Description;
+            result.Id = dishValue.Id;
+            result.Name= dishValue.Name;
+            result.DishType = dishValue.DishType;
+            result.Description = dishValue.Description;
+            result.ImageBase64 = dishValue.ImageBase64;
             return result;
         }
 
