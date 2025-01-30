@@ -1,4 +1,4 @@
-version: '3.8'  # Можно вообще удалить
+version: '3.8'
 
 services:
   mongoMenuService:
@@ -13,10 +13,9 @@ services:
 
   menuService:
     container_name: menuService
-    image: tavernhelios/menuservice 
     build:
       context: .
-      dockerfile: ./MenuService/MenuServiceServer/Dockerfile
+      dockerfile: Dockerfile
     ports:
       - '8080:8080'
       - '8081:8081'
@@ -24,6 +23,7 @@ services:
       - mongoMenuService
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
+
 
 volumes:
   mongo_data:
