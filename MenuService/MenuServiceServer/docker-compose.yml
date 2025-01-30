@@ -1,0 +1,27 @@
+services:
+  mongoMenuService:
+    image: mongo
+    container_name: mongoMenuService
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: 'mongoMenuService'
+
+  menuService:
+    container_name: menuService
+    image: tavernhelios/menuservice 
+    build:
+      context: ../../.
+      dockerfile: ./MenuService/MenuServiceServer/Dockerfile
+    ports:
+      - '8080:8080'
+      - '8081:8081'
+    depends_on:
+      - mongoMenuService
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+
+volumes:
+  mongo_data:
