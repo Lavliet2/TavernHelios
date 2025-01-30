@@ -1,5 +1,3 @@
-version: '3.8'  # Можно вообще удалить
-
 services:
   mongoMenuService:
     image: mongo
@@ -15,7 +13,7 @@ services:
     container_name: menuService
     image: tavernhelios/menuservice 
     build:
-      context: .
+      context: ../../.
       dockerfile: ./MenuService/MenuServiceServer/Dockerfile
     ports:
       - '8080:8080'

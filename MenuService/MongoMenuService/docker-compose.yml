@@ -1,0 +1,13 @@
+services:
+  mongoMenuService:
+    image: mongo
+    container_name: mongoMenuService
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: 'mongoMenuService'
+
+volumes:
+  mongo_data:

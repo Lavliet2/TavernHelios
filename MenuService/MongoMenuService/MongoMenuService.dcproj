@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.Docker.Sdk" ToolsVersion="17.0">
+	<PropertyGroup Label="Globals">
+		<!-- Обязательное свойство: какая-то версия, например "2.1" или "3.0" -->
+		<ProjectVersion>2.1</ProjectVersion>
+
+		<!-- GUID проекта, чтобы VS не ругалась (может быть любым) -->
+		<ProjectGuid>{65c4625b-6a2b-4994-9201-6791911bbaaf}</ProjectGuid>
+
+		<!-- Указываем, под какую ОС контейнер (чаще Linux) -->
+		<DockerTargetOS>Linux</DockerTargetOS>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<!-- Путь к файлу docker-compose.yml (можно относительный) -->
+		<DockerComposeProjectPath>..\docker-compose.yml</DockerComposeProjectPath>
+	</PropertyGroup>
+
+	<!-- (Опционально) Можно перечислить файлы, чтобы VS отображала их внутри проекта -->
+	<ItemGroup>
+		<None Include="..\docker-compose.yml" />
+		<!-- Если есть override-файл -->
+		<!-- <None Include="..\docker-compose.override.yml" Condition="Exists('..\docker-compose.override.yml')" /> -->
+	</ItemGroup>
+</Project>
