@@ -27,7 +27,7 @@ jobs:
           git clone https://github.com/Lavliet2/TavernHelios.git /home/lavliet/heliostavern-app
           cd /home/lavliet/heliostavern-app
           
-          # Deploy Ingress first (optional, but you can start routing earlier)
+          # Deploy Ingress first
           kubectl apply -f /home/lavliet/heliostavern-app/.k8s/tavernhelios-ingress.yaml
           
           # Deploy MongoDB
