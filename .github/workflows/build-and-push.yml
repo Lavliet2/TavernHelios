@@ -2,8 +2,8 @@ name: Build and Deploy HeliosTavern App
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - 'v*'
 
 jobs:
   build-and-push:
@@ -12,6 +12,13 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
+      - name: Set version from Git tag
+        run: |
+          VERSION=$(git describe --tags --abbrev=0)  
+          echo "Current version: $VERSION"        
+          echo "VITE_APP_VERSION=$VERSION" >> tavernhelios.client/.env
+          cat tavernhelios.client/.env
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
