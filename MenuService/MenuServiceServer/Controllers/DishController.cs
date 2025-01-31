@@ -27,7 +27,7 @@ namespace DishServiceServer.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [SwaggerOperation("Получить все блюда")]
+        [SwaggerOperation("РџРѕР»СѓС‡РёС‚СЊ РІСЃРµ Р±Р»СЋРґР°")]
         public async Task<ActionResult<IEnumerable<DishValue>>> GetAllDishsAsync()
         {
             var test = await _dishRepository.GetAllAsync();
@@ -38,13 +38,13 @@ namespace DishServiceServer.Controllers
         }
 
         /// <summary>
-        /// Получить данные блюда по Id
+        /// РџРѕР»СѓС‡РёС‚СЊ Р±Р»СЋРґРѕ РїРѕ Id
         /// </summary>
         /// <returns></returns>
         [HttpGet("{id}")]
         [ProducesResponseType<DishValue>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [SwaggerOperation("Получить данные блюда по Id")]
+        [SwaggerOperation("РџРѕР»СѓС‡РёС‚СЊ Р±Р»СЋРґРѕ РїРѕ Id")]
         public async Task<IActionResult> GetDishByIdAsync(string id)
         {
             var dish = await _dishRepository.GetByIdAsync(id);
@@ -56,13 +56,13 @@ namespace DishServiceServer.Controllers
         }
 
         /// <summary>
-        /// Создать блюдо
+        /// РЎРѕР·РґР°С‚СЊ Р±Р»СЋРґРѕ
         /// </summary>
         /// <returns></returns>
         [HttpPost]
         [ProducesResponseType<DishValue>(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [SwaggerOperation("Создать блюдо")]
+        [SwaggerOperation("РЎРѕР·РґР°С‚СЊ Р±Р»СЋРґРѕ")]
         public async Task<IActionResult> CreateDishAsync([FromBody] DishValue dishValue)
         {
             var dishResult = await _dishRepository.CreateAsync(dishValue.ToEntity());
@@ -77,13 +77,13 @@ namespace DishServiceServer.Controllers
         }
 
         /// <summary>
-        /// Редактировать блюдо
+        /// Р РµРґР°РєС‚РёСЂРѕРІР°С‚СЊ Р±Р»СЋРґРѕ
         /// </summary>
         /// <returns></returns>
         [HttpPut]
         [ProducesResponseType<DishValue>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [SwaggerOperation("Редактировать блюдо")]
+        [SwaggerOperation("Р РµРґР°РєС‚РёСЂРѕРІР°С‚СЊ Р±Р»СЋРґРѕ")]
         public async Task<IActionResult> UpdateDishAsync([FromBody] DishValue dishValue)
         {
             var dishResult = await _dishRepository.UpdateAsync(dishValue.ToEntity());
@@ -97,13 +97,13 @@ namespace DishServiceServer.Controllers
         }
 
         /// <summary>
-        /// Удалить блюдо
+        /// РЈРґР°Р»РёС‚СЊ Р±Р»СЋРґРѕ
         /// </summary>
         /// <returns></returns>
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [SwaggerOperation("Удалить блюдо")]
+        [SwaggerOperation("РЈРґР°Р»РёС‚СЊ Р±Р»СЋРґРѕ")]
         public async Task<IActionResult> DeleteDishAsync([FromBody] string dishId)
         {
             var dishResult = await _dishRepository.DeleteAsync(dishId);
