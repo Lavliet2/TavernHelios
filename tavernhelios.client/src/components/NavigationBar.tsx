@@ -15,7 +15,9 @@ const NavigationBar: React.FC = () => {
   const { t, i18n } = useTranslation();
   const { changeLanguage } = useContext(LanguageContext) || {}; 
   const navigate = useNavigate();
+  const appVersion = import.meta.env.VITE_APP_VERSION || 'Unknown Version';
 
+  
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -60,6 +62,9 @@ const NavigationBar: React.FC = () => {
             <Button color="inherit" component={Link} to="/forecast">{t('forecast')}</Button>
             <Button color="inherit" component={Link} to="/about">{t('about')}</Button>
           </Box>
+          <Typography variant="body2" color="inherit" sx={{ marginRight: '10px' }}>
+              Version: {appVersion} 
+          </Typography>
           <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center' }}>
             {/* <Button color="inherit" onClick={handleLanguageMenuClick}> */}
               {/* Отображаем флаг текущего языка */}
@@ -123,6 +128,7 @@ const NavigationBar: React.FC = () => {
             <MenuItem onClick={handleMenuClose}>{t('profile')}</MenuItem>
             <MenuItem onClick={handleMenuLogout}>{t('logout')}</MenuItem>
           </Menu>
+          {/* <h1>Application Version: {appVersion}</h1> */}
         </Toolbar>
       </AppBar>
     </ThemeProvider>
