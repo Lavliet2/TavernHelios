@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using APICore.Settings;
+using TavernHelios.MenuService.ApiCore.Settings;
 using Microsoft.Extensions.Options;
 using MongoRepositories.Entities;
 

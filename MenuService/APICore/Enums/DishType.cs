@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace APICore.Enums
+namespace TavernHelios.MenuService.ApiCore.Enums
 {
     public enum DishType
     {

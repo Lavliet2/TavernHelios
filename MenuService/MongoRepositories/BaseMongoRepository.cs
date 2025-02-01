@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using System;
 using System.Reflection.Metadata.Ecma335;
-using APICore.Entities;
-using APICore.Interfaces;
-using APICore.Settings;
+using TavernHelios.MenuService.ApiCore.Entities;
+using TavernHelios.MenuService.ApiCore.Interfaces;
+using TavernHelios.MenuService.ApiCore.Settings;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;

@@ -1,4 +1,9 @@
+using System.Net;
 using MenuServiceServer.Extensions;
+using MenuServiceServer.MenuService;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.Extensions.Options;
+using TavernHelios.GrpcCommon.Settings;
 
 namespace MenuServiceServer
 {
@@ -7,16 +12,22 @@ namespace MenuServiceServer
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+           
+            builder.Services.AddGrpc();
 
-            // Add services to the container.
-
-            builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
-
-            //������������ DI
             builder.Services.ConfigureServices(builder.Configuration);
+
+            builder.WebHost.ConfigureKestrel(options =>
+            {
+                var settings = options.ApplicationServices.GetRequiredService<IOptions<GrpcMenuServiceSettings>>().Value;
+                var address = IPAddress.Parse(settings.Ip);
+                var port = settings.Port;
+                options.Listen(address, port, (o) =>
+                {
+                    o.Protocols = HttpProtocols.Http2;
+                });
+            });
+
 
             var app = builder.Build();
 
@@ -24,18 +35,14 @@ namespace MenuServiceServer
             if (app.Environment.IsDevelopment())
             {
             }
-                app.UseSwagger();
-                app.UseSwaggerUI();
 
-            app.UseHttpsRedirection();
-
-            app.UseAuthorization();
-
-            app.MapControllers();
+            var settings = app.Services.GetRequiredService<IOptions<GrpcMenuServiceSettings>>().Value;
+            app.MapGrpcService<MenuServiceApi>().RequireHost($"*:{settings.Port}");
 
             Task.WaitAll(app.FillMockDataAsync());
 
             app.Run();
+
         }
     }
 }

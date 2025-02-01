@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using APICore.Enums;
-using APICore.Interfaces;
+using TavernHelios.MenuService.ApiCore.Enums;
+using TavernHelios.MenuService.ApiCore.Interfaces;
 using MongoRepositories.Entities;
 using MongoRepositories.Interfaces;
 

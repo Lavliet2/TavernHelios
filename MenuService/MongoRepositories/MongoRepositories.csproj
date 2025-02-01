@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\APICore\APICore.csproj" />
+    <ProjectReference Include="..\APICore\TavernHelios.MenuService.APICore.csproj" />
   </ItemGroup>
 
   <ItemGroup>

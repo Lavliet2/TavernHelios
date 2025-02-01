@@ -1,5 +1,5 @@
-﻿using APICore.Interfaces;
-using APICore.Settings;
+﻿using TavernHelios.MenuService.ApiCore.Interfaces;
+using TavernHelios.MenuService.ApiCore.Settings;
 using Microsoft.Extensions.Options;
 using MongoRepositories.Entities;
 
