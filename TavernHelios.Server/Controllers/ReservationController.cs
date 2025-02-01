@@ -26,34 +26,21 @@ namespace TavernHelios.Server.Controllers
 
         }
 
-        [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [SwaggerOperation("Получить все бронирования")]
-        public async Task<ActionResult<IEnumerable<ReservationValue>>> GetAllReservationsAsync()
-        {
-            //TODO вставить условие тут
-            var reply = await _grpcClient.GetReservationsAsync(new ReservationQueryRequest());
-
-            var values = reply.Reservations.Select(x => x.ToDto());
-
-            return Ok(values);
-        }
-
         /// <summary>
         /// Получить меню по Id
         /// </summary>
         /// <returns></returns>
-        [HttpGet("{id}")]
+        [HttpGet("{condition}")]
         [ProducesResponseType<ReservationValue>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [SwaggerOperation("Получить бронь по Id")]
-        public async Task<IActionResult> GetReservationByIdAsync(string id)
+        public async Task<IActionResult> GetReservationsByCondition(ReservationQueryRequest condition)
         {
-            var replyReservation = await _grpcClient.GetReservationsAsync(new ReservationQueryRequest() { ReservationId = id });
+            var replyReservation = await _grpcClient.GetReservationsAsync(condition);
 
-            var reservation = replyReservation.Reservations.FirstOrDefault();
+            var reservations= replyReservation.Reservations.Select(x => x.ToDto());
 
-            return Ok(reservation?.ToDto());
+            return Ok(reservations);
         }
 
         /// <summary>
