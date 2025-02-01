@@ -7,6 +7,7 @@ using static GrpcContract.ReservationService.ReservationService;
 using GrpcContract.ReservationService;
 using TavernHelios.ReservationService.ApiCore.Extensions;
 using TavernHelios.ReservationService.APICore.Entities;
+using GrpcContract.MenuService;
 
 namespace ReservationServiceServer.ReservationService
 {
@@ -28,10 +29,25 @@ namespace ReservationServiceServer.ReservationService
             _reservationRepository = reservationRepository;
         }
 
-        public override Task<ReservationsReply> AddReservation(Reservation request, ServerCallContext context)
+        public override async Task<ReservationsReply> AddReservation(Reservation request, ServerCallContext context)
         {
-            //TODO:
-            throw new NotImplementedException();
+            try
+            {
+                var addResult = await _reservationRepository.CreateAsync(request.ToEntity());
+
+                if (addResult == null)
+                {
+                    return CreateErrorReply("Ошибка при добавлении брони");
+                }
+
+                var result = new ReservationsReply() { State = ReplyState.Ok };
+                result.Reservations.Add(addResult.ToGrpc());
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return CreateErrorReply(ex.Message);
+            }
         }
 
         public override Task<IdReply> DeleteReservation(IdRequest request, ServerCallContext context)
@@ -40,10 +56,25 @@ namespace ReservationServiceServer.ReservationService
             throw new NotImplementedException();
         }
 
-        public override Task<ReservationsReply> GetReservations(ReservationQueryRequest request, ServerCallContext context)
+        public override async Task<ReservationsReply> GetReservations(ReservationQueryRequest request, ServerCallContext context)
         {
-            //TODO:
-            throw new NotImplementedException();
+            try
+            {
+                var addResult = await _reservationRepository.GetAllAsync();
+
+                if (addResult == null)
+                {
+                    return CreateErrorReply("Ошибка при получении блюд из БД");
+                }
+
+                var result = new ReservationsReply() { State = ReplyState.Ok };
+                result.Reservations.AddRange(addResult.Select(x => x.ToGrpc()));
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return CreateErrorReply(ex.Message);
+            }
         }
 
         public override Task<ReservationsReply> UpdateReservation(Reservation request, ServerCallContext context)
@@ -55,6 +86,16 @@ namespace ReservationServiceServer.ReservationService
         private IdReply CreateErrorIdReply(string message)
         {
             var reply = new IdReply()
+            {
+                State = ReplyState.Error
+            };
+            reply.Messages.Add(message);
+            return reply;
+        }
+
+        private ReservationsReply CreateErrorReply(string message)
+        {
+            var reply = new ReservationsReply()
             {
                 State = ReplyState.Error
             };
