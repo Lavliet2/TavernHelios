@@ -43,5 +43,11 @@ namespace APICore.Interfaces
         /// <returns></returns>
         Task<string> DeleteAsync(string entityId);
 
+        /// <summary>
+        /// Удалить ВСЁ
+        /// </summary>
+        /// <returns></returns>
+        Task<long> DeleteAll();
+
     }
 }

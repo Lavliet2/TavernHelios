@@ -11,7 +11,7 @@ namespace APICore.Settings
         public string Ip { get; set; } = "";
         public int Port { get; set; }
 
-        public string DbName { get; set; }
+        public string DbName { get; set; } = "";
 
         public string GetConnectionString()
         {

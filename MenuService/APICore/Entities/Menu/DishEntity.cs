@@ -14,9 +14,30 @@ namespace MongoRepositories.Entities
     /// </summary>
     public class DishEntity : IEntity
     {
-        public string Id { get; set; }
-        public string Description { get; set; }
+        /// <summary>
+        /// Ключ
+        /// </summary>
+        public string Id { get; set; } = String.Empty;
 
-        public DishType DishType { get; set; }
+        /// <summary>
+        /// Описание
+        /// </summary>
+        public string Description { get; set; } = String.Empty;
+
+        /// <summary>
+        /// Наименование
+        /// </summary>
+        public string Name { get; set; } = String.Empty;
+
+        /// <summary>
+        /// Тип блюда
+        /// </summary>
+
+        public DishType DishType { get; set; } = DishType.Soup;
+
+        /// <summary>
+        /// Иллюстрация
+        /// </summary>
+        public string ImageBase64 { get; set; } = String.Empty;
     }
 }

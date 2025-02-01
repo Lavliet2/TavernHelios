@@ -24,6 +24,8 @@ namespace MongoRepositories.MockData
         public override async Task<IEnumerable<MenuEntity>> FillDbWithMockDataAsync()
         {
             Console.WriteLine("Заполнение БД Меню тестовыми данными BEGIN");
+
+            var deletedCount = await _repository.DeleteAll();
             var result = new List<MenuEntity>();
 
             var dishMockData = new DishMockData(_dishRepository);
@@ -34,38 +36,14 @@ namespace MongoRepositories.MockData
 
             var allDishes = await _dishRepository.GetAllAsync();
 
-            var menu1 = new MenuEntity()
-            {
-                Date = DateTime.Now.Date,
-                Description = "Тест меню 1"
-            };
-            menu1.Dishes = new List<string>();
-            menu1.Dishes.Add(allDishes.FirstOrDefault(x => x.DishType == DishType.FirstDish)?.Id ?? string.Empty);
-            menu1.Dishes.Add(allDishes.FirstOrDefault(x => x.DishType == DishType.SecondDish)?.Id ?? string.Empty);
-            menu1.Dishes.Add(allDishes.FirstOrDefault(x => x.DishType == DishType.Kompot)?.Id ?? string.Empty);
+            //Пока что для теста создадим 2 одинаковых меню с выбором из 2 блюд каждого типа
+            var menu1 = new MenuEntity() { Name = "Меню №1"};
+            menu1.Dishes = new List<string>(allDishes.Select(x => x.Id));
             result.Add( await _repository.CreateAsync(menu1));
 
-            var menu2 = new MenuEntity()
-            {
-                Date = DateTime.Now.Date,
-                Description = "Тест меню 2"
-            };
-            menu2.Dishes = new List<string>();
-            menu2.Dishes.Add(allDishes.LastOrDefault(x => x.DishType == DishType.FirstDish)?.Id ?? string.Empty);
-            menu2.Dishes.Add(allDishes.LastOrDefault(x => x.DishType == DishType.SecondDish)?.Id ?? string  .Empty);
-            menu2.Dishes.Add(allDishes.LastOrDefault(x => x.DishType == DishType.Kompot)?.Id ?? string.Empty);
+            var menu2 = new MenuEntity() { Name = "Меню №2" };
+            menu2.Dishes = new List<string>(allDishes.Select(x => x.Id));
             result.Add(await _repository.CreateAsync(menu2));
-
-            var menu3 = new MenuEntity()
-            {
-                Date = DateTime.Now.Date,
-                Description = "Тест меню 3"
-            };
-            menu3.Dishes = new List<string>();
-            menu3.Dishes.Add(allDishes.FirstOrDefault(x => x.DishType == DishType.FirstDish)?.Id ?? string.Empty);
-            menu3.Dishes.Add(allDishes.LastOrDefault(x => x.DishType == DishType.SecondDish)?.Id ?? string.Empty);
-            menu3.Dishes.Add(allDishes.FirstOrDefault(x => x.DishType == DishType.Kompot)?.Id ?? string.Empty);
-            result.Add( await _repository.CreateAsync(menu3));
 
             Console.WriteLine("Заполнение БД Меню тестовыми данными END");
 

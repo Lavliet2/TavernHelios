@@ -1,5 +1,6 @@
 ﻿using APICore.Interfaces;
 using APICore.Settings;
+using Microsoft.OpenApi.Models;
 using MongoRepositories.Entities;
 using MongoRepositories.Interfaces;
 using MongoRepositories.MockData;
@@ -27,6 +28,12 @@ namespace MenuServiceServer.Extensions
             services.AddDbConfiguration();
             services.AddRepositories();
             services.AddCaches();
+
+            services.AddSwaggerGen(c =>
+            {
+                c.EnableAnnotations();
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Menu Service Api", Version = "v1" });
+            });
         }
 
 
