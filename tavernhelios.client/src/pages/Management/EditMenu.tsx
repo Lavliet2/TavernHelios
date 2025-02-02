@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Typography, CircularProgress, Grid, Card, CardContent } from '@mui/material';
+import { Container, Typography, CircularProgress, Card, CardContent } from '@mui/material';
+import Grid from '@mui/material/Grid2'
 
 
-// TODO MAV полностью переделать
 interface MenuValue {
   id: string;
   name: string;
@@ -15,7 +15,6 @@ const EditDishes: React.FC = () => {
   const [error, setError] = useState<string | null>(null); 
 
   useEffect(() => {
-    // Функция для получения данных из API
     const fetchMenuData = async () => {
       try {
         const response = await fetch('https://localhost:8081/api/Menu'); 
@@ -25,7 +24,7 @@ const EditDishes: React.FC = () => {
         const data = await response.json();
         setMenuData(data); 
       } catch (error) {
-        setError(error.message);
+        setError("error");
       } finally {
         setLoading(false);
       }
@@ -36,7 +35,7 @@ const EditDishes: React.FC = () => {
 
   if (loading) {
     return (
-      <Container sx={{ mt: 4 }} align="center">
+      <Container sx={{ mt: 4, align: 'center'}} >
         <CircularProgress /> {/* Показываем индикатор загрузки */}
         <Typography variant="body1">Загрузка данных...</Typography>
       </Container>
@@ -45,7 +44,7 @@ const EditDishes: React.FC = () => {
 
   if (error) {
     return (
-      <Container sx={{ mt: 4 }} align="center">
+      <Container sx={{ mt: 4, align: 'center' }} >
         <Typography variant="body1" color="error">{error}</Typography> 
       </Container>
     );
@@ -63,7 +62,7 @@ const EditDishes: React.FC = () => {
       {/* Отображение меню */}
       <Grid container spacing={4} justifyContent="center">
         {menuData.map((menu) => (
-          <Grid item xs={12} sm={6} md={3} key={menu.id}>
+          <Grid key={menu.id} sx={{ xs:12, sm:6, md:3 }}>
             <Card>
               <CardContent>
                 <Typography variant="h6">{menu.name}</Typography>

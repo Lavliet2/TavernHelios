@@ -1,43 +1,42 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Typography, CircularProgress, Grid, Card, CardContent } from '@mui/material';
+import { Container, Typography, CircularProgress, Card, CardContent } from '@mui/material';
+import Grid from '@mui/material/Grid2'
 
-// Тип данных для MenuValue
 interface MenuValue {
   id: string;
   name: string;
   description: string;
-  // Добавьте другие поля, которые возвращает ваш API
+
 }
 
 const EditDishes: React.FC = () => {
   const [menuData, setMenuData] = useState<MenuValue[]>([]);
-  const [loading, setLoading] = useState<boolean>(true); // Стейт для загрузки
-  const [error, setError] = useState<string | null>(null); // Стейт для ошибок
+  const [loading, setLoading] = useState<boolean>(true); 
+  const [error, setError] = useState<string | null>(null); 
 
   useEffect(() => {
-    // Функция для получения данных из API
     const fetchMenuData = async () => {
       try {
-        const response = await fetch('https://localhost:8081/api/dish');  // URL вашего API
+        const response = await fetch('https://localhost:8081/api/dish'); 
         if (!response.ok) {
           throw new Error('Ошибка при загрузке данных');
         }
         const data = await response.json();
-        setMenuData(data); // Устанавливаем полученные данные
+        setMenuData(data); 
       } catch (error) {
-        setError(error.message); // Обработка ошибки
+        setError("error.message");
       } finally {
-        setLoading(false); // Завершаем загрузку
+        setLoading(false); 
       }
     };
 
-    fetchMenuData(); // Вызов функции
+    fetchMenuData(); 
   }, []);
 
   if (loading) {
     return (
-      <Container sx={{ mt: 4 }} align="center">
-        <CircularProgress /> {/* Показываем индикатор загрузки */}
+      <Container sx={{ mt: 4, align:'center' }} >
+        <CircularProgress />
         <Typography variant="body1">Загрузка данных...</Typography>
       </Container>
     );
@@ -45,7 +44,7 @@ const EditDishes: React.FC = () => {
 
   if (error) {
     return (
-      <Container sx={{ mt: 4 }} align="center">
+      <Container sx={{ mt: 4, align:'center' }} >
         <Typography variant="body1" color="error">{error}</Typography> 
       </Container>
     );
@@ -63,7 +62,7 @@ const EditDishes: React.FC = () => {
       {/* Отображение меню */}
       <Grid container spacing={4} justifyContent="center">
         {menuData.map((menu) => (
-          <Grid item xs={12} sm={6} md={3} key={menu.id}>
+          <Grid key={menu.id} sx={{ xs:12, sm:6, md:3 }} >
             <Card>
               <CardContent>
                 <Typography variant="h6">{menu.name}</Typography>
