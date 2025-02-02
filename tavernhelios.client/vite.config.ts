@@ -32,7 +32,7 @@ if (isDev && (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath))) {
 }
 
 // 🔹 Тут прописываем реальный адрес бэкенда
-const target = env.VITE_API_URL || `https://localhost:32783`;
+const target = env.VITE_API_URL || `https://localhost:32785`;
 
 export default defineConfig({
     plugins: [plugin()],
@@ -42,13 +42,12 @@ export default defineConfig({
         }
     },
     server: {
-        proxy: {
-            // 🔹 Перенаправляем ВСЕ запросы, начинающиеся с `/api`
+        proxy: {           
             '/api': {
-                target, // API-сервер
-                changeOrigin: true, // Меняет `Host` заголовок
-                secure: false, // Игнорируем SSL (можно убрать для продакшена)
-                rewrite: (path) => path.replace(/^\/api/, '/api') // Убираем `/api`, если нужно
+                target,
+                changeOrigin: true,
+                secure: false,
+                rewrite: (path) => path.replace(/^\/api/, '/api')
             }
         },
         port: 63049,

@@ -26,7 +26,10 @@ namespace TavernHelios.Server
             builder.Services.AddSwaggerGen();
 
             // Настраиваем HttpClient с отключенной проверкой SSL (НЕ для продакшена!)
-            var menuServiceUrl = builder.Configuration.GetSection("ApiSettings:MenuServiceUrl").Value;
+            //var menuServiceUrl = builder.Configuration.GetSection("ApiSettings:MenuServiceUrl").Value;
+            var menuServiceUrl = Environment.GetEnvironmentVariable("MENU_SERVICE_URL")
+                     ?? builder.Configuration.GetSection("ApiSettings:MenuServiceUrl").Value;
+
             if (string.IsNullOrEmpty(menuServiceUrl))
             {
                 throw new Exception("MenuServiceUrl не задан в конфигурации!");
