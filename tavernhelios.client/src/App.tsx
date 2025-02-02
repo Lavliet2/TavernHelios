@@ -34,6 +34,7 @@ import WeatherForecast from './pages/WeatherForecast';
 import About from './pages/About';
 import Management from './pages/Management/Management';
 import EditDishes from './pages/Management/EditDishes';
+import EditMenu from './pages/Management/EditMenu';
 
 // Защищенный маршрут
 const ProtectedRoute = () => {
@@ -58,6 +59,7 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/management" element={<Management />} />
             <Route path="/management/dishes" element={<EditDishes />} />
+            <Route path="/management/menu" element={<EditMenu />} />
           </Route>
         </Route>
       </Routes>

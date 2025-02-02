@@ -2,6 +2,7 @@ import React from 'react';
 import { Grid2, Card, CardContent, CardMedia, Typography, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import ImageLunch from '../../assets/Management/lunch.webp'
+import ImageDish from '../../assets/Management/dish.webp'
 
 const Management: React.FC = () => {
   const navigate = useNavigate();
@@ -25,12 +26,30 @@ const Management: React.FC = () => {
             <CardMedia
               component="img"
               height="140"
-              image= {ImageLunch}
-              alt="Manage Dishes"
+              image= {ImageDish}
+              alt="Manage dishes"
             />
             <CardContent>
               <Typography variant="h6" component="div">
                 Управление блюдами
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Редактируйте, добавляйте или удаляйте блюда.
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid2>
+        <Grid2 >
+          <Card onClick={() => handleCardClick('/management/menu')} sx={{ cursor: 'pointer' }}>
+            <CardMedia
+              component="img"
+              height="140"
+              image= {ImageLunch}
+              alt="Manage menu"
+            />
+            <CardContent>
+              <Typography variant="h6" component="div">
+                Управление меню
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 Редактируйте, добавляйте или удаляйте блюда из меню.
@@ -38,7 +57,6 @@ const Management: React.FC = () => {
             </CardContent>
           </Card>
         </Grid2>
-
       </Grid2>
     </Box>
   );

@@ -1,37 +1,37 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Typography, CircularProgress, Grid, Card, CardContent } from '@mui/material';
 
-// Тип данных для MenuValue
+
+// TODO MAV полностью переделать
 interface MenuValue {
   id: string;
   name: string;
   description: string;
-  // Добавьте другие поля, которые возвращает ваш API
 }
 
 const EditDishes: React.FC = () => {
   const [menuData, setMenuData] = useState<MenuValue[]>([]);
-  const [loading, setLoading] = useState<boolean>(true); // Стейт для загрузки
-  const [error, setError] = useState<string | null>(null); // Стейт для ошибок
+  const [loading, setLoading] = useState<boolean>(true); 
+  const [error, setError] = useState<string | null>(null); 
 
   useEffect(() => {
     // Функция для получения данных из API
     const fetchMenuData = async () => {
       try {
-        const response = await fetch('https://localhost:8081/api/dish');  // URL вашего API
+        const response = await fetch('https://localhost:8081/api/Menu'); 
         if (!response.ok) {
           throw new Error('Ошибка при загрузке данных');
         }
         const data = await response.json();
-        setMenuData(data); // Устанавливаем полученные данные
+        setMenuData(data); 
       } catch (error) {
-        setError(error.message); // Обработка ошибки
+        setError(error.message);
       } finally {
-        setLoading(false); // Завершаем загрузку
+        setLoading(false);
       }
     };
 
-    fetchMenuData(); // Вызов функции
+    fetchMenuData();
   }, []);
 
   if (loading) {

@@ -31,8 +31,8 @@ if (isDev && (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath))) {
     }
 }
 
-// const target = env.VITE_API_URL || (env.ASPNETCORE_HTTPS_PORT ? `https://localhost:${env.ASPNETCORE_HTTPS_PORT}` : 'http://localhost:32769');
-const target = env.VITE_API_URL || 'https://localhost:32805';
+const target = env.VITE_API_URL || (env.ASPNETCORE_HTTPS_PORT ? `https://localhost:${env.ASPNETCORE_HTTPS_PORT}` : 'http://localhost:32769');
+// const target = env.VITE_API_URL || 'https://localhost:32773';
 
 // https://vitejs.dev/config/
 export default defineConfig({
