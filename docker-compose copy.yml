@@ -1,29 +1,32 @@
 version: '3.8'
 
 services:
-  mongoMenuService:
-    image: mongo
-    container_name: mongoMenuService
-    ports:
-      - '27017:27017'
-    volumes:
-      - mongo_data:/data/db
-    environment:
-      MONGO_INITDB_DATABASE: 'mongoMenuService'
-
-  menuService:
-    container_name: menuService
+  frontend:
     build:
-      context: .
+      context: ./heliostavern.client 
       dockerfile: Dockerfile
     ports:
-      - '8080:8080'
-      - '8081:8081'
-    depends_on:
-      - mongoMenuService
+      - "63049:80"
     environment:
-      ASPNETCORE_ENVIRONMENT: "Development"
+      - VITE_API_URL=https://backend:7132 
+    depends_on:
+      - backend
+    networks:
+      - heliostavern-network
 
+  backend:
+    build:
+      context: ./heliostavern.server  
+      dockerfile: Dockerfile
+    ports:
+      - "7132:80"  
+    networks:
+      - heliostavern-network
+    environment:
+      - ASPNETCORE_URLS=https://+:80
+    volumes:
+      - ./heliostavern.server:/app
 
-volumes:
-  mongo_data:
+networks:
+  heliostavern-network:
+    driver: bridge

@@ -1,3 +1,4 @@
+using System.Net.Http;
 
 namespace TavernHelios.Server
 {
@@ -7,28 +8,51 @@ namespace TavernHelios.Server
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            // Настройка CORS
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowFrontend",
                     builder =>
                     {
-                        builder.WithOrigins("https://localhost:63049") 
+                        builder.WithOrigins("https://localhost:63049", "http://localhost:3000") // Разрешаем несколько источников
                                .AllowAnyMethod()
-                               .AllowAnyHeader();
+                               .AllowAnyHeader()
+                               .AllowCredentials();
                     });
             });
+
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            // Настраиваем HttpClient с отключенной проверкой SSL (НЕ для продакшена!)
+            //var menuServiceUrl = builder.Configuration.GetSection("ApiSettings:MenuServiceUrl").Value;
+            var menuServiceUrl = Environment.GetEnvironmentVariable("MENU_SERVICE_URL")
+                     ?? builder.Configuration.GetSection("ApiSettings:MenuServiceUrl").Value;
+
+            if (string.IsNullOrEmpty(menuServiceUrl))
+            {
+                throw new Exception("MenuServiceUrl не задан в конфигурации!");
+            }
+
+            builder.Services.AddHttpClient("MenuServiceClient", client =>
+            {
+                client.BaseAddress = new Uri(menuServiceUrl); // Важно: слэш в конце!
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                client.Timeout = TimeSpan.FromSeconds(10);
+            })
+            .ConfigurePrimaryHttpMessageHandler(() =>
+            {
+                var handler = new HttpClientHandler();
+                handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+                return handler;
+            });
 
             var app = builder.Build();
 
             app.UseDefaultFiles();
             app.UseStaticFiles();
 
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
             }
@@ -36,12 +60,9 @@ namespace TavernHelios.Server
                 app.UseSwaggerUI();
 
             app.UseHttpsRedirection();
-
+            app.UseCors("AllowFrontend"); 
             app.UseAuthorization();
-
-
             app.MapControllers();
-
             app.MapFallbackToFile("/index.html");
 
             app.Run();
