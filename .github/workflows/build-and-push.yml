@@ -17,6 +17,7 @@ jobs:
         run: |
           VERSION=$(git describe --tags --abbrev=0)  
           echo "Current version: $VERSION"        
+          cat tavernhelios.client/.env
           echo "VITE_APP_VERSION=$VERSION" >> tavernhelios.client/.env
           cat tavernhelios.client/.env
 
