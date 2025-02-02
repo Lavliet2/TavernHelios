@@ -31,10 +31,9 @@ if (isDev && (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath))) {
     }
 }
 
-const target = env.VITE_API_URL || (env.ASPNETCORE_HTTPS_PORT ? `https://localhost:${env.ASPNETCORE_HTTPS_PORT}` : 'http://localhost:32769');
-// const target = env.VITE_API_URL || 'https://localhost:32773';
+// 🔹 Тут прописываем реальный адрес бэкенда
+const target = env.VITE_API_URL || `https://localhost:32783`;
 
-// https://vitejs.dev/config/
 export default defineConfig({
     plugins: [plugin()],
     resolve: {
@@ -44,9 +43,12 @@ export default defineConfig({
     },
     server: {
         proxy: {
-            '^/weatherforecast': {
-                target,
-                secure: false
+            // 🔹 Перенаправляем ВСЕ запросы, начинающиеся с `/api`
+            '/api': {
+                target, // API-сервер
+                changeOrigin: true, // Меняет `Host` заголовок
+                secure: false, // Игнорируем SSL (можно убрать для продакшена)
+                rewrite: (path) => path.replace(/^\/api/, '/api') // Убираем `/api`, если нужно
             }
         },
         port: 63049,
@@ -57,4 +59,4 @@ export default defineConfig({
             }
         }), 
     }
-})
+});

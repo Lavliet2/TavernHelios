@@ -44,6 +44,7 @@ const MenuDisplay: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedDishes, setSelectedDishes] = useState<Record<number, string>>({});
   const [maxCardHeight, setMaxCardHeight] = useState<number | null>(null);
+  const API_BASE_URL = import.meta.env.VITE_API_URL || '/api/MenuProxy';
 
   // Массив для хранения ref карточек
   const cardRefs = useRef<HTMLDivElement[]>([]);
@@ -58,7 +59,8 @@ const MenuDisplay: React.FC = () => {
   useEffect(() => {
     const fetchMenu = async () => {
       try {
-        const response = await fetch('https://localhost:8081/api/Menu');
+        // const response = await fetch('https://localhost:32783/api/MenuProxy');
+        const response = await fetch(`${API_BASE_URL}`);
         if (!response.ok) {
           throw new Error('Ошибка при загрузке меню');
         }
@@ -83,7 +85,9 @@ const MenuDisplay: React.FC = () => {
         try {
           const dishDetails: Dish[] = await Promise.all(
             menu.dishes.map(async (dishId) => {
-              const res = await fetch(`https://localhost:8081/api/dish/${dishId}`);
+              // const res = await fetch(`https://localhost:32783/api/MenuProxy/dish/${dishId}`);
+              const res = await fetch(`${API_BASE_URL}/dish/${dishId}`);
+              await fetch(`${API_BASE_URL}`);
               if (!res.ok) {
                 throw new Error(`Ошибка при загрузке блюда с id ${dishId}`);
               }
