@@ -10,20 +10,13 @@ on:
 jobs:
   deploy-to-k8s:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Download version artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: deployment-version
-          path: .
-
-      - name: Read version
+      - name: Get Deployment Version
         run: |
-          TAG=$(cat version.txt)
+          TAG="${{ github.event.workflow_run.outputs.DEPLOY_TAG }}"
           echo "Deploying version: $TAG"
           echo "DEPLOY_TAG=$TAG" >> $GITHUB_ENV
 

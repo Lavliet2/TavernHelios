@@ -8,19 +8,20 @@ on:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+    outputs:
+      DEPLOY_TAG: ${{ steps.get-version.outputs.VERSION }}  # Передаём версию в output
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Set version from Git tag
+        id: get-version 
         run: |
-          VERSION=$(git describe --tags --abbrev=0)  
+          VERSION=${{ github.ref_name }}
           echo "Current version: $VERSION"      
-          echo "DEPLOY_TAG=$VERSION" >> $GITHUB_ENV           
-          # sed -i '/VITE_APP_VERSION/d' tavernhelios.client/.env 
-          # echo "VITE_APP_VERSION=$VERSION" >> tavernhelios.client/.env
-          # cat tavernhelios.client/.env
+          echo "DEPLOY_TAG=$VERSION" >> $GITHUB_ENV
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT  
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -38,14 +39,14 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ghcr.io/lavliet2/heliostavern-backend:latest
+          tags: ghcr.io/lavliet2/heliostavern-backend:${{ steps.get-version.outputs.VERSION }}
           build-args: |
-            VITE_APP_VERSION=$VERSION          
+            VITE_APP_VERSION=${{ steps.get-version.outputs.VERSION }}
 
       - name: Build and push MenuService image
         uses: docker/build-push-action@v4
         with:
-          context: .
+          context: ./MenuService/MenuServiceServer
           file: ./MenuService/MenuServiceServer/Dockerfile
           push: true
-          tags: ghcr.io/lavliet2/menuservice:latest
+          tags: ghcr.io/lavliet2/menuservice:${{ steps.get-version.outputs.VERSION }}
