@@ -20,6 +20,11 @@ jobs:
           cat tavernhelios.client/.env
           echo "VERSION=$VERSION" >> $GITHUB_ENV  #
 
+      - name: Debug GitHub Tag
+        run: |
+          echo "github.ref_name=${{ github.ref_name }}"
+          echo "github.ref=${{ github.ref }}"
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
@@ -68,35 +73,36 @@ jobs:
 
       - name: Deploy to Kubernetes via SSH
         run: |
-          ssh -o StrictHostKeyChecking=no -p 2222 lavliet@178.72.83.217 << 'EOF'
-          
+          ssh -o StrictHostKeyChecking=no -p 2222 lavliet@178.72.83.217 << 'EOF'          
           set -e  # Остановить выполнение при ошибке
+
+          echo "Версия докумеента 1.0.7.1"
       
           # Очистка переменной VERSION
-          TAG="$(echo "${VERSION}" | tr -d '[:space:]')"  # Убираем пробелы и переносы строк
+          TAG="$(echo "${VERSION}" | tr -d '[:space:]')"
       
           # Если TAG пустой, используем main
           if [[ -z "$TAG" ]]; then
-            echo "❌ Переменная TAG пустая, деплоим main"
+            echo "Переменная TAG пустая, деплоим main"
             TAG="main"
           fi
       
-          echo "🚀 Deploying version: $TAG"
+          echo "Deploying version: $TAG"
       
           # Удаляем старую версию
           rm -rf /home/lavliet/heliostavern-app
       
           # Проверяем, является ли TAG тегом или веткой
           if git ls-remote --tags https://github.com/Lavliet2/TavernHelios.git | grep -q "refs/tags/$TAG"; then
-            echo "✅ Найден тег: $TAG, клонируем main и переключаемся на тег..."
+            echo " Найден тег: $TAG, клонируем main и переключаемся на тег..."
             git clone --depth 1 https://github.com/Lavliet2/TavernHelios.git /home/lavliet/heliostavern-app
             cd /home/lavliet/heliostavern-app || exit 1
             git checkout tags/"$TAG" -b "$TAG"
           elif git ls-remote --heads https://github.com/Lavliet2/TavernHelios.git | grep -q "refs/heads/$TAG"; then
-            echo "✅ Найдена ветка: $TAG, клонируем её..."
+            echo " Найдена ветка: $TAG, клонируем её..."
             git clone --branch "$TAG" --depth 1 https://github.com/Lavliet2/TavernHelios.git /home/lavliet/heliostavern-app
           else
-            echo "❌ Ошибка: Ветка или тег $TAG не найдены, деплоим main!"
+            echo " Ошибка: Ветка или тег $TAG не найдены, деплоим main!"
             git clone --branch "main" --depth 1 https://github.com/Lavliet2/TavernHelios.git /home/lavliet/heliostavern-app
           fi
       
@@ -109,10 +115,10 @@ jobs:
           kubectl apply -f .k8s/tavernhelios-server-deployment.yaml || exit 1
       
           # Принудительный рестарт подов
-          echo "♻️ Перезапускаем поды..."
+          echo " Перезапускаем поды..."
           kubectl rollout restart deployment tavernhelios-server || exit 1
           kubectl rollout restart deployment menuservice || exit 1
       
-          echo "✅ Деплой успешно завершён!"
+          echo "Деплой успешно завершён!"
           EOF
         
