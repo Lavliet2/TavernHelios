@@ -45,13 +45,13 @@ jobs:
       - name: Build and push MenuService image
         uses: docker/build-push-action@v4
         with:
-          context: ./MenuService/MenuServiceServer
+          context: .
           file: ./MenuService/MenuServiceServer/Dockerfile
           push: true
           tags: |
             ghcr.io/lavliet2/menuservice:${{ env.VERSION }}
             ghcr.io/lavliet2/menuservice:latest
-            
+
       # **Обновляем версию образа в манифесте перед деплоем**
       - name: Update image versions in Kubernetes manifests
         run: |
