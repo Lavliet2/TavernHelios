@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - 'v*'  
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -12,40 +13,44 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0    
-          
+          fetch-depth: 0  # Загружаем ВСЮ историю с тегами и ветками
+
+      # 🔥 Получаем родительскую ветку тега
       - name: Determine branch from tag
         id: get-branch
         run: |
           TAG=${{ github.ref_name }}
           echo "🔍 Looking for the source branch of tag: $TAG"
 
-          BRANCH=$(git for-each-ref --format='%(refname:short) %(objectname)' refs/heads/ | while read branch commit; do
-            if git merge-base --is-ancestor $commit refs/tags/$TAG; then
-              echo $branch
-              break
-            fi
-          done)
+          # Находим коммит, к которому прикреплён тег
+          COMMIT_HASH=$(git rev-list -n 1 $TAG)
+          echo "🔹 Tag $TAG is at commit: $COMMIT_HASH"
+
+          # Находим ветку, в которой этот коммит есть
+          BRANCH=$(git branch -r --contains $COMMIT_HASH | grep -o 'origin/.*' | cut -d '/' -f2 | head -n1)
+
+          if [[ -z "$BRANCH" ]]; then
+            echo "⚠️  Не удалось определить ветку, используем main!"
+            BRANCH="main"
+          fi
 
           echo "✅ Found branch: $BRANCH"
-          echo "BRANCH=$BRANCH" >> $GITHUB_ENV                
+          echo "BRANCH=$BRANCH" >> $GITHUB_ENV
 
       - name: Debug GitHub Tag & Branch
         run: |
           echo "github.ref_name=${{ github.ref_name }}"
-          echo "VERSION=$VERSION"
           echo "Extracted branch: ${{ env.BRANCH }}"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
-  
+
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GHCR_TOKEN }}   
-        
+          password: ${{ secrets.GHCR_TOKEN }}
 
       # **Сборка и публикация контейнера с бэкендом**
       - name: Build and push backend image
@@ -55,7 +60,7 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            ghcr.io/lavliet2/heliostavern-backend:${{ env.VERSION }}
+            ghcr.io/lavliet2/heliostavern-backend:${{ env.BRANCH }}-${{ env.VERSION }}
             ghcr.io/lavliet2/heliostavern-backend:latest 
 
       # **Сборка и публикация контейнера с MenuService**
@@ -66,7 +71,7 @@ jobs:
           file: ./MenuService/MenuServiceServer/Dockerfile
           push: true
           tags: |
-            ghcr.io/lavliet2/menuservice:${{ env.VERSION }}
+            ghcr.io/lavliet2/menuservice:${{ env.BRANCH }}-${{ env.VERSION }}
             ghcr.io/lavliet2/menuservice:latest
 
       - name: Add SSH key
