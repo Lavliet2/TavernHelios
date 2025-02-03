@@ -3,25 +3,22 @@ name: Build and Deploy HeliosTavern App
 on:
   push:
     tags:
-      - 'v*'
-
+      - 'v*'  
 jobs:
-  build-and-push:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    outputs:
-      DEPLOY_TAG: ${{ steps.get-version.outputs.VERSION }}  # Передаём версию в output
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Set version from Git tag
-        id: get-version 
         run: |
-          VERSION=${{ github.ref_name }}
-          echo "Current version: $VERSION"      
-          echo "DEPLOY_TAG=$VERSION" >> $GITHUB_ENV
-          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT  
+          VERSION=${{ github.ref_name }}  
+          echo "Current version: $VERSION"        
+          echo "VITE_APP_VERSION=$VERSION" >> tavernhelios.client/.env
+          cat tavernhelios.client/.env
+          echo "VERSION=$VERSION" >> $GITHUB_ENV  #
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -33,20 +30,68 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GHCR_TOKEN }}
 
+      # **Сборка и публикация контейнера с бэкендом**
       - name: Build and push backend image
         uses: docker/build-push-action@v4
         with:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ghcr.io/lavliet2/heliostavern-backend:${{ steps.get-version.outputs.VERSION }}
-          build-args: |
-            VITE_APP_VERSION=${{ steps.get-version.outputs.VERSION }}
+          tags: |
+            ghcr.io/lavliet2/heliostavern-backend:${{ env.VERSION }}
+            ghcr.io/lavliet2/heliostavern-backend:latest  # Также пушим latest для отладки
 
+      # **Сборка и публикация контейнера с MenuService**
       - name: Build and push MenuService image
         uses: docker/build-push-action@v4
         with:
           context: ./MenuService/MenuServiceServer
           file: ./MenuService/MenuServiceServer/Dockerfile
           push: true
-          tags: ghcr.io/lavliet2/menuservice:${{ steps.get-version.outputs.VERSION }}
+          tags: |
+            ghcr.io/lavliet2/menuservice:${{ env.VERSION }}
+            ghcr.io/lavliet2/menuservice:latest  # Также пушим latest
+
+      # **Обновляем версию образа в манифесте перед деплоем**
+      - name: Update image versions in Kubernetes manifests
+        run: |
+          sed -i "s|ghcr.io/lavliet2/heliostavern-backend:latest|ghcr.io/lavliet2/heliostavern-backend:$VERSION|g" .k8s/tavernhelios-server-deployment.yaml
+          sed -i "s|ghcr.io/lavliet2/menuservice:latest|ghcr.io/lavliet2/menuservice:$VERSION|g" .k8s/menuservice-deployment.yaml
+          cat .k8s/tavernhelios-server-deployment.yaml
+          cat .k8s/menuservice-deployment.yaml
+
+      # **Деплой после обновления манифеста**
+      - name: Add SSH key
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }} 
+
+      - name: Deploy to Kubernetes via SSH
+        run: |
+          ssh -o StrictHostKeyChecking=no -p 2222 lavliet@178.72.83.217 << EOF
+          
+          echo "Deploying version: $VERSION"
+
+          # Проверяем, существует ли такой тег
+          if ! git ls-remote --tags https://github.com/Lavliet2/TavernHelios.git | grep -q "refs/tags/\$VERSION"; then
+            echo "Ошибка: Тег \$VERSION не найден в репозитории!"
+            exit 1
+          fi
+
+          # Удаляем старую версию и клонируем нужный тег
+          rm -rf /home/lavliet/heliostavern-app
+          git clone --branch \$VERSION --depth 1 https://github.com/Lavliet2/TavernHelios.git /home/lavliet/heliostavern-app
+
+          cd /home/lavliet/heliostavern-app
+
+          # Деплой в Kubernetes
+          kubectl apply -f .k8s/tavernhelios-ingress.yaml
+          kubectl apply -f .k8s/mongo-deployment.yaml
+          kubectl apply -f .k8s/menuservice-deployment.yaml
+          kubectl apply -f .k8s/tavernhelios-server-deployment.yaml
+          
+          # Рестарт подов
+          kubectl rollout restart deployment tavernhelios-server
+          kubectl rollout restart deployment menuservice
+          
+          EOF

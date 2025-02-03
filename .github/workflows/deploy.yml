@@ -1,57 +1,52 @@
-name: Deploy HeliosTavern App to Kubernetes
+# name: Deploy HeliosTavern App to Kubernetes
 
-on:
-  workflow_run:
-    workflows:
-      - Build and Deploy HeliosTavern App
-    types:
-      - completed
+# on:
+#   workflow_run:
+#     workflows:
+#       - Build and Deploy HeliosTavern App
+#     types:
+#       - completed
 
-jobs:
-  deploy-to-k8s:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+# jobs:
+#   deploy-to-k8s:
+#     runs-on: ubuntu-latest
 
-      - name: Get Deployment Version
-        run: |
-          TAG="${{ github.event.workflow_run.outputs.DEPLOY_TAG }}"
-          echo "Deploying version: $TAG"
-          echo "DEPLOY_TAG=$TAG" >> $GITHUB_ENV
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v3
 
-      - name: Add SSH key
-        uses: webfactory/ssh-agent@v0.5.3
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }} 
+#       - name: Add SSH key
+#         uses: webfactory/ssh-agent@v0.5.3
+#         with:
+#           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }} 
 
-      - name: Deploy to Kubernetes via SSH
-        run: |
-          ssh -o StrictHostKeyChecking=no -p 2222 lavliet@178.72.83.217 << EOF
+#       - name: Deploy to Kubernetes via SSH
+#         run: |
+#           ssh -o StrictHostKeyChecking=no -p 2222 lavliet@178.72.83.217 << 'EOF'
+#           rm -rf /home/lavliet/heliostavern-app
+#           git clone https://github.com/Lavliet2/TavernHelios.git /home/lavliet/heliostavern-app
+#           cd /home/lavliet/heliostavern-app
           
-          TAG="$DEPLOY_TAG"
-          echo "Deploying version: $TAG"
-
-          # Проверяем, существует ли такой тег
-          if ! git ls-remote --tags https://github.com/Lavliet2/TavernHelios.git | grep -q "refs/tags/\$TAG"; then
-            echo "Ошибка: Тег \$TAG не найден в репозитории!"
-            exit 1
-          fi
-
-          # Удаляем старую версию и клонируем нужный тег
-          rm -rf /home/lavliet/heliostavern-app
-          git clone --branch \$TAG --depth 1 https://github.com/Lavliet2/TavernHelios.git /home/lavliet/heliostavern-app
-
-          cd /home/lavliet/heliostavern-app
-
-          # Деплой в Kubernetes
-          kubectl apply -f .k8s/tavernhelios-ingress.yaml
-          kubectl apply -f .k8s/mongo-deployment.yaml
-          kubectl apply -f .k8s/menuservice-deployment.yaml
-          kubectl apply -f .k8s/tavernhelios-server-deployment.yaml
+#           # Deploy Ingress first
+#           kubectl apply -f /home/lavliet/heliostavern-app/.k8s/tavernhelios-ingress.yaml
           
-          # Рестарт подов
-          kubectl rollout restart deployment tavernhelios-server
-          kubectl rollout restart deployment menuservice
+#           # Deploy MongoDB
+#           kubectl apply -f /home/lavliet/heliostavern-app/.k8s/mongo-deployment.yaml
           
-          EOF
+#           # Wait for MongoDB to be ready (if needed, adjust timeout)
+#           #kubectl wait --for=condition=ready pod -l app=mongo --timeout=300s
+
+#           # Deploy MenuService after MongoDB is ready
+#           kubectl apply -f /home/lavliet/heliostavern-app/.k8s/menuservice-deployment.yaml
+          
+#           # Wait for MenuService to be ready (adjust timeout as needed)
+#           #kubectl wait --for=condition=ready pod -l app=menuservice --timeout=300s
+
+#           # Finally, deploy TavernHelios server after MenuService
+#           kubectl apply -f /home/lavliet/heliostavern-app/.k8s/tavernhelios-server-deployment.yaml
+          
+#           # Restart deployments if needed
+#           kubectl rollout restart deployment tavernhelios-server
+#           kubectl rollout restart deployment menuservice
+          
+#           EOF
