@@ -55,7 +55,7 @@ namespace ReservationServiceServer.Extensions
             IConfiguration configuration)
         {
             services.Configure<ReservationPostgreConnectionSettings>(configuration.GetSection(nameof(ReservationPostgreConnectionSettings)));
-            services.Configure<GrpcMenuServiceSettings>(configuration.GetSection(nameof(GrpcMenuServiceSettings)));
+            services.Configure<GrpcReservationServiceSettings>(configuration.GetSection(nameof(GrpcReservationServiceSettings)));
         }
     }
 }
