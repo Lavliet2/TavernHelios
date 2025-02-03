@@ -16,6 +16,8 @@ const NavigationBar: React.FC = () => {
   const { changeLanguage } = useContext(LanguageContext) || {}; 
   const navigate = useNavigate();
   const appVersion = import.meta.env.VITE_APP_VERSION || 'Unknown Version';
+  console.log("App Version:", import.meta.env.VITE_APP_VERSION);
+
 
   
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
