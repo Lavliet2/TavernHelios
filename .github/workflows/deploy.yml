@@ -23,8 +23,13 @@ jobs:
       - name: Deploy to Kubernetes via SSH
         run: |
           ssh -o StrictHostKeyChecking=no -p 2222 lavliet@178.72.83.217 << 'EOF'
+
+          TAG=${{ github.event.workflow_run.head_commit.message }}
+          echo "Deploying version: $TAG"
+
           rm -rf /home/lavliet/heliostavern-app
-          git clone https://github.com/Lavliet2/TavernHelios.git /home/lavliet/heliostavern-app
+          git clone --branch \$TAG --depth 1 https://github.com/Lavliet2/TavernHelios.git /home/lavliet/heliostavern-app
+          #git clone https://github.com/Lavliet2/TavernHelios.git /home/lavliet/heliostavern-app
           cd /home/lavliet/heliostavern-app
           
           # Deploy Ingress first
