@@ -15,6 +15,7 @@ spec:
       containers:
         - name: menuservice
           image: ghcr.io/lavliet2/menuservice:latest
+          imagePullPolicy: Always
           ports: 
             - containerPort: 8080
           env:

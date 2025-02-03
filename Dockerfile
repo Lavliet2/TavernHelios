@@ -15,14 +15,23 @@ RUN apt-get install curl
 RUN curl -sL https://deb.nodesource.com/setup_20.x | bash
 RUN apt-get -y install nodejs
 
-
+# Сборка проекта (бэкенд + фронт)
 FROM with-node AS build
 ARG BUILD_CONFIGURATION=Release
+ARG VITE_APP_VERSION
+
 WORKDIR /src
 COPY ["TavernHelios.Server/TavernHelios.Server.csproj", "TavernHelios.Server/"]
 COPY ["tavernhelios.client/tavernhelios.client.esproj", "tavernhelios.client/"]
 RUN dotnet restore "./TavernHelios.Server/TavernHelios.Server.csproj"
 COPY . .
+
+# Обновляем .env с версией во фронтенде
+WORKDIR "/src/tavernhelios.client"
+RUN echo "VITE_APP_VERSION=$VITE_APP_VERSION" > .env  
+RUN npm install
+RUN npm run build
+
 WORKDIR "/src/TavernHelios.Server"
 RUN dotnet build "./TavernHelios.Server.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
@@ -35,4 +44,7 @@ RUN dotnet publish "./TavernHelios.Server.csproj" -c $BUILD_CONFIGURATION -o /ap
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+
+ENV APP_VERSION=$VITE_APP_VERSION
+
 ENTRYPOINT ["dotnet", "TavernHelios.Server.dll"]

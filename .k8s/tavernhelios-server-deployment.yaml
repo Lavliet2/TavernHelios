@@ -15,9 +15,13 @@ spec:
       containers:
         - name: tavernhelios-server
           image: ghcr.io/lavliet2/heliostavern-backend:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080  
             - containerPort: 8081 
+          env:
+            - name: MENU_SERVICE_URL
+              value: "http://menuservice:5041/"
       imagePullSecrets:
         - name: ghcr-secret 
 ---

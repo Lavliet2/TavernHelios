@@ -1,3 +1,15 @@
+
+# Changelog
+
+## [1.0.0] - 2025-01-31
+### Added
+- Создано API MenuServis для управления блюдами и меню.
+
+
+## [0.0.0] - 2025-01-20
+
+
+
 This file explains how Visual Studio created the project.
 
 The following tools were used to generate this project:
