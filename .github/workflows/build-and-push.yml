@@ -73,46 +73,50 @@ jobs:
           set -e  # Остановить выполнение при ошибке
       
           # Очистка переменной VERSION
-          TAG="$(echo "${VERSION}" | tr -d '[:space:]')"  # Убираем пробелы и переносы строк
+          TAG="$(echo "${VERSION}" | tr -d '[:space:]')"
       
           # Если TAG пустой, используем main
           if [[ -z "$TAG" ]]; then
-            echo "❌ Переменная TAG пустая, деплоим main"
+            echo "Переменная TAG пустая, деплоим main"
             TAG="main"
           fi
       
-          echo "🚀 Deploying version: $TAG"
+          echo "Deploying version: $TAG"
       
           # Удаляем старую версию
           rm -rf /home/lavliet/heliostavern-app
       
           # Проверяем, является ли TAG тегом или веткой
           if git ls-remote --tags https://github.com/Lavliet2/TavernHelios.git | grep -q "refs/tags/$TAG"; then
-            echo "✅ Найден тег: $TAG, клонируем main и переключаемся на тег..."
+            echo " Найден тег: $TAG, клонируем main и переключаемся на тег..."
             git clone --depth 1 https://github.com/Lavliet2/TavernHelios.git /home/lavliet/heliostavern-app
             cd /home/lavliet/heliostavern-app || exit 1
             git checkout tags/"$TAG" -b "$TAG"
           elif git ls-remote --heads https://github.com/Lavliet2/TavernHelios.git | grep -q "refs/heads/$TAG"; then
-            echo "✅ Найдена ветка: $TAG, клонируем её..."
+            echo " Найдена ветка: $TAG, клонируем её..."
             git clone --branch "$TAG" --depth 1 https://github.com/Lavliet2/TavernHelios.git /home/lavliet/heliostavern-app
           else
-            echo "❌ Ошибка: Ветка или тег $TAG не найдены, деплоим main!"
+            echo " Ошибка: Ветка или тег $TAG не найдены, деплоим main!"
             git clone --branch "main" --depth 1 https://github.com/Lavliet2/TavernHelios.git /home/lavliet/heliostavern-app
           fi
       
           cd /home/lavliet/heliostavern-app || exit 1
       
           # Деплой в Kubernetes
+          echo " Deploy ingress"
           kubectl apply -f .k8s/tavernhelios-ingress.yaml || exit 1
+          echo " Deploy mongo"
           kubectl apply -f .k8s/mongo-deployment.yaml || exit 1
+          echo " Deploy menuservice"
           kubectl apply -f .k8s/menuservice-deployment.yaml || exit 1
+          echo " Deploy tavernhelios"
           kubectl apply -f .k8s/tavernhelios-server-deployment.yaml || exit 1
       
           # Принудительный рестарт подов
-          echo "♻️ Перезапускаем поды..."
+          echo " Перезапускаем поды..."
           kubectl rollout restart deployment tavernhelios-server || exit 1
           kubectl rollout restart deployment menuservice || exit 1
       
-          echo "✅ Деплой успешно завершён!"
+          echo "Деплой успешно завершён!"
           EOF
         
