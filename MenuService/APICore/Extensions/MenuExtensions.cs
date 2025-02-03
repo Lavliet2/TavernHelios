@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MongoRepositories.Entities;
 using TavernHelios.MenuService.ApiCore.DTOValues.Menu;
-using TavernHelios.MenuService.ApiCore.Interfaces;
-using MongoRepositories.Entities;
 
 namespace TavernHelios.MenuService.ApiCore.Extensions
 {

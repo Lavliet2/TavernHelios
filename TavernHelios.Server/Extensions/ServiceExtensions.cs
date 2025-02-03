@@ -21,7 +21,7 @@ namespace MenuServiceServer.Extensions
             services.AddSwaggerGen(c =>
             {
                 c.EnableAnnotations();
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Menu Service Api", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Tavern Helios Main Api", Version = "v1" });
             });
         }
 
