@@ -14,10 +14,10 @@ jobs:
 
       - name: Set version from Git tag
         run: |
-          echo "VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
-          echo "VITE_APP_VERSION=${{ github.ref_name }}" >> tavernhelios.client/.env
-          cat tavernhelios.client/.env
-          echo "VERSION=$VERSION" >> $GITHUB_ENV  #
+          VERSION=${{ github.ref_name }}  
+          echo "Current version: $VERSION"        
+          echo "VITE_APP_VERSION=$VERSION" >> tavernhelios.client/.env
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Debug GitHub Tag
         run: |
@@ -72,40 +72,40 @@ jobs:
 
       - name: Deploy to Kubernetes via SSH
         env:
-          DEPLOY_VERSION: ${{ env.VERSION }} 
+          DEPLOY_VERSION: ${{ env.VERSION }}  
         run: |
           ssh -o StrictHostKeyChecking=no -p 2222 lavliet@178.72.83.217 << 'EOF'          
           set -e  # Остановить выполнение при ошибке
 
-          echo 'Версия документа 1.0.7.4'
-      
-          export TAG=\"${DEPLOY_VERSION}\"
-          echo \"TAG: \$TAG\"
-    
-          if [[ -z \"\$TAG\" ]]; then
-            echo 'Переменная TAG пустая, деплоим main'
-            TAG='main'
+          echo "Версия докумеента 1.0.7.5"
+          
+          # Очистка переменной VERSION
+          TAG="\${DEPLOY_VERSION}"
+          echo "TAG=: \$TAG"
+          echo $TAG
+          # Если TAG пустой, используем main
+          if [[ -z \"$TAG" ]]; then
+            echo "Переменная TAG пустая, деплоим main"
+            TAG="main"
           fi
-    
-          echo '🚀 Deploying version:' \"\$TAG\"
       
           echo "Deploying version: $TAG"
       
           # Удаляем старую версию
           rm -rf /home/lavliet/heliostavern-app
       
-          if git ls-remote --tags https://github.com/Lavliet2/TavernHelios.git | grep -q \"refs/tags/\$TAG\"; then
-            echo '✅ Найден тег:' \"\$TAG\", 'клонируем main и переключаемся...'
-            git clone --branch main --depth 1 https://github.com/Lavliet2/TavernHelios.git /home/lavliet/heliostavern-app
+          # Проверяем, является ли TAG тегом или веткой
+          if git ls-remote --tags https://github.com/Lavliet2/TavernHelios.git | grep -q "refs/tags/$TAG"; then
+            echo " Найден тег: \$TAG, клонируем main и переключаемся на тег..."
+            git clone --depth 1 https://github.com/Lavliet2/TavernHelios.git /home/lavliet/heliostavern-app
             cd /home/lavliet/heliostavern-app || exit 1
-            git fetch --tags
-            git checkout \"\$TAG\"
-          elif git ls-remote --heads https://github.com/Lavliet2/TavernHelios.git | grep -q \"refs/heads/\$TAG\"; then
-            echo '✅ Найдена ветка:' \"\$TAG\", 'клонируем её...'
-            git clone --branch \"\$TAG\" --depth 1 https://github.com/Lavliet2/TavernHelios.git /home/lavliet/heliostavern-app
+            git checkout tags/"\$TAG" -b "\$TAG"
+          elif git ls-remote --heads https://github.com/Lavliet2/TavernHelios.git | grep -q "refs/heads/$TAG"; then
+            echo " Найдена ветка: \$TAG, клонируем её..."
+            git clone --branch "\$TAG" --depth 1 https://github.com/Lavliet2/TavernHelios.git /home/lavliet/heliostavern-app
           else
-            echo '❌ Ошибка: Ветка или тег' \"\$TAG\" 'не найдены, деплоим main!'
-            git clone --branch 'main' --depth 1 https://github.com/Lavliet2/TavernHelios.git /home/lavliet/heliostavern-app
+            echo " Ошибка: Ветка или тег \$TAG не найдены, деплоим main!"
+            git clone --branch "main" --depth 1 https://github.com/Lavliet2/TavernHelios.git /home/lavliet/heliostavern-app
           fi
       
           cd /home/lavliet/heliostavern-app || exit 1
