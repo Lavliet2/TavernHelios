@@ -80,7 +80,7 @@ jobs:
       
           # Очистка переменной VERSION
           TAG="$(echo "${VERSION}" | tr -d '[:space:]')"
-      
+          echo "TAG=: $TAG"
           # Если TAG пустой, используем main
           if [[ -z "$TAG" ]]; then
             echo "Переменная TAG пустая, деплоим main"
