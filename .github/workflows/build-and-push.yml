@@ -22,12 +22,12 @@ jobs:
           TAG=${{ github.ref_name }}
           echo "🔍 Looking for the source branch of tag: $TAG"
 
-          # Находим коммит, к которому прикреплён тег
+          # Получаем коммит, к которому привязан тег
           COMMIT_HASH=$(git rev-list -n 1 $TAG)
           echo "🔹 Tag $TAG is at commit: $COMMIT_HASH"
 
-          # Находим ветку, в которой этот коммит есть
-          BRANCH=$(git branch -r --contains $COMMIT_HASH | grep -o 'origin/.*' | cut -d '/' -f2 | head -n1)
+          # Получаем список всех веток, содержащих этот коммит
+          BRANCH=$(git branch -r --contains $COMMIT_HASH | grep -v 'HEAD' | awk -F'/' '{print $2}' | head -n1)
 
           if [[ -z "$BRANCH" ]]; then
             echo "⚠️  Не удалось определить ветку, используем main!"
@@ -60,7 +60,7 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            ghcr.io/lavliet2/heliostavern-backend:${{ env.BRANCH }}-${{ env.VERSION }}
+            ghcr.io/lavliet2/heliostavern-backend:${{ env.BRANCH }}-${{ github.ref_name }}
             ghcr.io/lavliet2/heliostavern-backend:latest 
 
       # **Сборка и публикация контейнера с MenuService**
@@ -71,7 +71,7 @@ jobs:
           file: ./MenuService/MenuServiceServer/Dockerfile
           push: true
           tags: |
-            ghcr.io/lavliet2/menuservice:${{ env.BRANCH }}-${{ env.VERSION }}
+            ghcr.io/lavliet2/menuservice:${{ env.BRANCH }}-${{ github.ref_name }}
             ghcr.io/lavliet2/menuservice:latest
 
       - name: Add SSH key
