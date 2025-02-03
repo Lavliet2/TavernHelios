@@ -1,10 +1,10 @@
-﻿using APICore.Interfaces;
-using APICore.Settings;
-using Microsoft.OpenApi.Models;
+﻿using TavernHelios.MenuService.ApiCore.Interfaces;
+using TavernHelios.MenuService.ApiCore.Settings;
 using MongoRepositories.Entities;
 using MongoRepositories.Interfaces;
 using MongoRepositories.MockData;
 using MongoRepositories.Repositories;
+using TavernHelios.GrpcCommon.Settings;
 
 namespace MenuServiceServer.Extensions
 {
@@ -29,11 +29,11 @@ namespace MenuServiceServer.Extensions
             services.AddRepositories();
             services.AddCaches();
 
-            services.AddSwaggerGen(c =>
-            {
-                c.EnableAnnotations();
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Menu Service Api", Version = "v1" });
-            });
+            //services.AddSwaggerGen(c =>
+            //{
+            //    c.EnableAnnotations();
+            //    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Menu Service Api", Version = "v1" });
+            //});
         }
 
 
@@ -73,6 +73,7 @@ namespace MenuServiceServer.Extensions
             IConfiguration configuration)
         {
             services.Configure<MongoConnectionSettings>(configuration.GetSection(nameof(MongoConnectionSettings)));
+            services.Configure<GrpcMenuServiceSettings>(configuration.GetSection(nameof(GrpcMenuServiceSettings)));
         }
     }
 }

@@ -1,9 +1,11 @@
-using APICore.Interfaces;
-using APICore.Extensions;
+using TavernHelios.MenuService.ApiCore.Interfaces;
+using TavernHelios.MenuService.ApiCore.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using MongoRepositories.Entities;
-using APICore.DTOValues.Menu;
+using TavernHelios.MenuService.ApiCore.DTOValues.Menu;
+using static GrpcContract.MenuService.MenuService;
 using Swashbuckle.AspNetCore.Annotations;
+using GrpcContract.MenuService;
 
 namespace DishServiceServer.Controllers
 {
@@ -13,26 +15,30 @@ namespace DishServiceServer.Controllers
     {
         private readonly ILogger<DishController> _logger;
         
-        private readonly IRepository<DishEntity> _dishRepository;
+        private readonly MenuServiceClient _grpcClient;
 
         public DishController(
             ILogger<DishController> logger,
-            IRepository<DishEntity> dishRepository
+            MenuServiceClient grpcClient
             )
         {
             _logger = logger;
-            _dishRepository = dishRepository;
-
+            _grpcClient = grpcClient;
         }
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [SwaggerOperation("Получить все блюда")]
-        public async Task<ActionResult<IEnumerable<DishValue>>> GetAllDishsAsync()
+        public async Task<ActionResult<IEnumerable<DishValue>>> GetAllDishesAsync()
         {
-            var test = await _dishRepository.GetAllAsync();
+            var allDishes = await _grpcClient.GetAllDishesAsync(new GrpcContract.EmptyRequest());
 
-            var values = test.Select(x => x.ToDto());
+            if (allDishes.State != GrpcContract.ReplyState.Ok)
+            {
+                return BadRequest(allDishes.Messages);
+            }
+
+            var values = allDishes?.Dishes.Select(x => x.ToDto());
 
             return Ok(values);
         }
@@ -47,12 +53,13 @@ namespace DishServiceServer.Controllers
         [SwaggerOperation("Получить блюдо по Id")]
         public async Task<IActionResult> GetDishByIdAsync(string id)
         {
-            var dish = await _dishRepository.GetByIdAsync(id);
+            var dishReply = await _grpcClient.GetDishAsync(new GrpcContract.IdRequest() { Id = id });
+            var dish = dishReply.Dishes.FirstOrDefault();
 
-            if (dish == null)
-                return NotFound();
+            if (dish == null ||dishReply.State != GrpcContract.ReplyState.Ok)
+                return NotFound(dishReply.Messages);
 
-            return Ok(dish);
+            return Ok(dish.ToDto());
         }
 
         /// <summary>
@@ -65,12 +72,13 @@ namespace DishServiceServer.Controllers
         [SwaggerOperation("Создать блюдо")]
         public async Task<IActionResult> CreateDishAsync([FromBody] DishValue dishValue)
         {
-            var dishResult = await _dishRepository.CreateAsync(dishValue.ToEntity());
+            var dishResult = await _grpcClient.AddDishAsync(dishValue.ToGrpc());
+            var dish = dishResult.Dishes.FirstOrDefault();
 
-            if (dishResult == null)
-                return BadRequest();
+            if (dish == null || dishResult.State != GrpcContract.ReplyState.Ok)
+                return BadRequest(dishResult.Messages);
 
-            var dishModel = dishResult.ToDto();
+            var dishModel = dish.ToDto();
 
             //TODO: correct URI
             return Created("api/v1/dish", dishModel);
@@ -86,12 +94,13 @@ namespace DishServiceServer.Controllers
         [SwaggerOperation("Редактировать блюдо")]
         public async Task<IActionResult> UpdateDishAsync([FromBody] DishValue dishValue)
         {
-            var dishResult = await _dishRepository.UpdateAsync(dishValue.ToEntity());
+            var dishResult = await _grpcClient.UpdateDishAsync(dishValue.ToGrpc());
+            var dish = dishResult.Dishes.FirstOrDefault();
 
-            if (dishResult == null)
-                return BadRequest();
+            if (dish == null || dishResult.State != GrpcContract.ReplyState.Ok)
+                return BadRequest(dishResult.Messages);
 
-            var dishModel = dishResult.ToDto();
+            var dishModel = dish.ToDto();
 
             return Ok(dishModel);
         }
@@ -106,10 +115,10 @@ namespace DishServiceServer.Controllers
         [SwaggerOperation("Удалить блюдо")]
         public async Task<IActionResult> DeleteDishAsync([FromBody] string dishId)
         {
-            var dishResult = await _dishRepository.DeleteAsync(dishId);
+            var dishResult = await _grpcClient.DeleteDishAsync(new GrpcContract.IdRequest() { Id = dishId });
 
-            if (dishResult == string.Empty)
-                return BadRequest();
+            if (dishResult.State != GrpcContract.ReplyState.Ok)
+                return BadRequest(dishResult.Messages);
 
             return NoContent();
         }

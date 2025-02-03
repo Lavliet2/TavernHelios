@@ -1,0 +1,40 @@
+syntax = "proto3";
+package TavernHelios.GrpcContract;
+option csharp_namespace = "GrpcContract.ReservationService";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/wrappers.proto";
+
+import "CommonMessages.proto";
+
+service ReservationService {
+	rpc GetReservations(ReservationQueryRequest) returns (ReservationsReply);
+	rpc AddReservation(Reservation) returns (ReservationsReply);
+	rpc UpdateReservation(Reservation) returns (ReservationsReply);
+	rpc DeleteReservation(IdRequest) returns (IdReply);
+}
+
+message Reservation{
+	string Id = 1;
+	string PersonId = 2;
+	google.protobuf.Timestamp Date = 3;
+	repeated string DishIds = 4;
+}
+
+message ReservationsReply{
+	repeated Reservation Reservations = 1;
+	ReplyState State = 2;
+	repeated string Messages = 3;
+}
+
+//Запрос на получение бронирований. Условия налагаются по "И"
+message ReservationQueryRequest
+{
+	string ReservationId = 1;
+	string PersonId = 2;
+	string DishId = 5;
+	google.protobuf.Timestamp BeginDate = 3;
+	google.protobuf.Timestamp EndDate = 4;
+}
+

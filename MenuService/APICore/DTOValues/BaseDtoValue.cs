@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace APICore.DTOValues
+namespace TavernHelios.MenuService.ApiCore.DTOValues
 {
     public class BaseDtoValue
     {

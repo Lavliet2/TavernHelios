@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace APICore.DTOValues.Menu
+namespace TavernHelios.MenuService.ApiCore.DTOValues.Menu
 {
     public class MenuEditRequest
     {

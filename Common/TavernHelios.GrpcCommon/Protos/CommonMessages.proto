@@ -1,0 +1,22 @@
+syntax = "proto3";
+package TavernHelios.GrpcContract;
+option csharp_namespace = "GrpcContract";
+
+message EmptyRequest {
+ 
+}
+
+message IdRequest {
+	string Id = 1;
+}
+
+message IdReply{
+	string Id = 1;
+	ReplyState State = 2;
+	repeated string Messages = 3;
+}
+
+enum ReplyState{
+	Ok = 0;
+	Error = 1;
+}

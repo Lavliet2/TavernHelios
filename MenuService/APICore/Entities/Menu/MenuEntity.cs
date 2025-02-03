@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using APICore.Entities;
+using TavernHelios.MenuService.ApiCore.Entities;
 
 namespace MongoRepositories.Entities
 {

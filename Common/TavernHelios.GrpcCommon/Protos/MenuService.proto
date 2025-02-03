@@ -1,0 +1,59 @@
+syntax = "proto3";
+package TavernHelios.GrpcContract;
+option csharp_namespace = "GrpcContract.MenuService";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/wrappers.proto";
+
+import "CommonMessages.proto";
+
+service MenuService {
+  rpc GetAllMenus (EmptyRequest) returns (MenusReply);
+  rpc GetMenu (IdRequest) returns (MenusReply);
+  rpc AddMenu (Menu) returns (MenusReply);
+  rpc UpdateMenu (Menu) returns (MenusReply);
+  rpc DeleteMenu (IdRequest) returns (IdReply);
+
+  rpc AddDishToMenu (DishMenuMessage) returns (MenusReply);
+  rpc RemoveDishFromMenu (DishMenuMessage) returns (MenusReply);
+
+  rpc GetAllDishes (EmptyRequest) returns (DishesReply);
+  rpc GetAllDishesForMenu (IdRequest) returns (DishesReply);
+  rpc GetDish (IdRequest) returns (DishesReply);
+  rpc AddDish (Dish) returns (DishesReply);
+  rpc UpdateDish (Dish) returns (DishesReply);
+  rpc DeleteDish (IdRequest) returns (IdReply);
+}
+
+message Dish{
+	string Id = 1;
+	string Name = 2;
+	string Description = 3;
+	int32 DishType = 4;
+	string ImageBase64 = 5;
+}
+
+message DishesReply{
+	repeated Dish Dishes = 1;
+	ReplyState State = 2;
+	repeated string Messages = 3;
+}
+
+message Menu{
+	string Id = 1;
+	string Name = 2;
+	repeated string Dishes = 3;
+}
+
+message MenusReply{
+	repeated Menu Menus = 1;
+	ReplyState State = 2;
+	repeated string Messages = 3;
+}
+
+message DishMenuMessage{
+	string MenuId = 1;
+	string DishId = 2;
+}
+
