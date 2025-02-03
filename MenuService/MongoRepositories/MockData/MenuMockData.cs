@@ -37,11 +37,11 @@ namespace MongoRepositories.MockData
             var allDishes = await _dishRepository.GetAllAsync();
 
             //Пока что для теста создадим 2 одинаковых меню с выбором из 2 блюд каждого типа
-            var menu1 = new MenuEntity();
+            var menu1 = new MenuEntity() { Name = "Меню №1"};
             menu1.Dishes = new List<string>(allDishes.Select(x => x.Id));
             result.Add( await _repository.CreateAsync(menu1));
 
-            var menu2 = new MenuEntity();
+            var menu2 = new MenuEntity() { Name = "Меню №2" };
             menu2.Dishes = new List<string>(allDishes.Select(x => x.Id));
             result.Add(await _repository.CreateAsync(menu2));
 

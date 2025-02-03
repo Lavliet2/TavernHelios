@@ -60,6 +60,7 @@ const NavigationBar: React.FC = () => {
             <Button color="inherit" component={Link} to="/">{t('home')}</Button>
             <Button color="inherit" component={Link} to="/menu">{t('menu')}</Button>
             <Button color="inherit" component={Link} to="/forecast">{t('forecast')}</Button>
+            <Button color="inherit" component={Link} to="/management">{t('management')}</Button>
             <Button color="inherit" component={Link} to="/about">{t('about')}</Button>
           </Box>
           <Typography variant="body2" color="inherit" sx={{ marginRight: '10px' }}>

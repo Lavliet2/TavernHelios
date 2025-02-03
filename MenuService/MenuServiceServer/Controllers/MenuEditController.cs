@@ -28,32 +28,32 @@ namespace MenuServiceServer.Controllers
         }
 
         /// <summary>
-        /// Добавить блюдо в меню
+        /// Р”РѕР±Р°РІРёС‚СЊ Р±Р»СЋРґРѕ РІ РјРµРЅСЋ
         /// </summary>
         /// <returns></returns>
         [HttpPut]
         [ProducesResponseType<MenuValue>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [SwaggerOperation("Добавить блюдо в меню")]
+        [SwaggerOperation("Р”РѕР±Р°РІРёС‚СЊ Р±Р»СЋРґРѕ РІ РјРµРЅСЋ")]
         public async Task<IActionResult> AddDishToMenuAsync([FromBody] MenuEditRequest request)
         {
             var menuEntity = await GetMenuAsync(request.MenuId);
             if (menuEntity == null)
-                return BadRequest($"Меню с ID={request.MenuId} не найдено");
+                return BadRequest($"РњРµРЅСЋ СЃ ID={request.MenuId} РЅРµ РЅР°Р№РґРµРЅРѕ");
 
             if(menuEntity.Dishes.Contains(request.DishId))
-                return BadRequest($"Меню с ID={request.MenuId} уже содержит блюдо с ID={request.DishId}");
+                return BadRequest($"РњРµРЅСЋ СЃ ID={request.MenuId} РЅРµ СѓР¶Рµ СЃРѕРґРµСЂР¶РёС‚ Р±Р»СЋРґРѕ СЃ ID={request.DishId}");
 
             var dishEntity = await GetDishAsync(request.DishId);
             if (dishEntity == null)
-                return BadRequest($"Блюдо с ID={request.DishId} не найдено");
+                return BadRequest($"Р‘Р»СЋРґРѕ СЃ ID={request.DishId} РЅРµ РЅР°Р№РґРµРЅРѕ");
 
             menuEntity.Dishes.Add(request.DishId);
 
             var menuResult = await _menuRepository.UpdateAsync(menuEntity);
 
             if (menuResult == null)
-                return BadRequest("Ошибка при редактировании меню");
+                return BadRequest("РћС€РёР±РєР° РїСЂРё РёР·РјРµРЅРµРЅРёРё РјРµРЅСЋ");
 
             var menuModel = menuResult.ToDto();
 
@@ -61,32 +61,32 @@ namespace MenuServiceServer.Controllers
         }
 
         /// <summary>
-        /// Удалить блюдо из меню
+        /// РЈРґР°Р»РёС‚СЊ Р±Р»СЋРґРѕ РёР· РјРµРЅСЋ
         /// </summary>
         /// <returns></returns>
         [HttpDelete]
         [ProducesResponseType<MenuValue>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [SwaggerOperation("Удалить блюдо из меню")]
+        [SwaggerOperation("РЈРґР°Р»РёС‚СЊ Р±Р»СЋРґРѕ РёР· РјРµРЅСЋ")]
         public async Task<IActionResult> RemoveDishFromMenuAsync([FromBody] MenuEditRequest request)
         {
             var menuEntity = await GetMenuAsync(request.MenuId);
             if (menuEntity == null)
-                return BadRequest($"Меню с ID={request.MenuId} не найдено");
+                return BadRequest($"РњРµРЅСЋ СЃ ID={request.MenuId} РЅРµ РЅР°Р№РґРµРЅРѕ");
 
             if (!menuEntity.Dishes.Contains(request.DishId))
-                return BadRequest($"Меню с ID={request.MenuId} не содержит блюдо с ID={request.DishId}");
+                return BadRequest($"РњРµРЅСЋ СЃ ID={request.MenuId} РЅРµ СЃРѕРґРµСЂР¶РёС‚ Р±Р»СЋРґРѕ СЃ ID={request.DishId}");
 
             var dishEntity = await GetDishAsync(request.DishId);
             if (dishEntity == null)
-                return BadRequest($"Блюдо с ID={request.DishId} не найдено");
+                return BadRequest($"Р‘Р»СЋРґРѕ СЃ ID={request.DishId} РЅРµ РЅР°Р№РґРµРЅРѕ");
 
             menuEntity.Dishes.Remove(menuEntity.Dishes.First(x => x == request.DishId));
 
             var menuResult = await _menuRepository.UpdateAsync(menuEntity);
 
             if (menuResult == null)
-                return BadRequest("Ошибка при редактировании меню");
+                return BadRequest("РћС€РёР±РєР° РїСЂРё РёР·РјРµРЅРµРЅРёРё РјРµРЅСЋ");
 
             var menuModel = menuResult.ToDto();
 

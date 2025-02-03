@@ -29,7 +29,7 @@ namespace MenuServiceServer.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [SwaggerOperation("Получить список меню")]
+        [SwaggerOperation("РџРѕР»СѓС‡РёС‚СЊ РІСЃРµ РјРµРЅСЋ")]
         public async Task<ActionResult<IEnumerable<MenuValue>>> GetAllMenusAsync()
         {
             var test = await _menuRepository.GetAllAsync();
@@ -40,13 +40,13 @@ namespace MenuServiceServer.Controllers
         }
 
         /// <summary>
-        /// Получить данные меню по Id
+        /// РџРѕР»СѓС‡РёС‚СЊ РјРµРЅСЋ РїРѕ Id
         /// </summary>
         /// <returns></returns>
         [HttpGet("{id}")]
         [ProducesResponseType<MenuValueFull>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [SwaggerOperation("Получить данные меню по Id")]
+        [SwaggerOperation("РџРѕР»СѓС‡РёС‚СЊ РјРµРЅСЋ РїРѕ Id")]
         public async Task<IActionResult> GetMenuByIdAsync(string id)
         {
             var menu = await _menuRepository.GetByIdAsync(id);
@@ -60,13 +60,13 @@ namespace MenuServiceServer.Controllers
         }
 
         /// <summary>
-        /// Создать меню
+        /// РЎРѕР·РґР°С‚СЊ РјРµРЅСЋ
         /// </summary>
         /// <returns></returns>
         [HttpPost]
         [ProducesResponseType<MenuValue>(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [SwaggerOperation("Создать меню")]
+        [SwaggerOperation("РЎРѕР·РґР°С‚СЊ РјРµРЅСЋ")]
         public async Task<IActionResult> CreateMenuAsync([FromBody] MenuValue menuValue)
         {
             var menuResult = await _menuRepository.CreateAsync(menuValue.ToEntity());
@@ -81,13 +81,13 @@ namespace MenuServiceServer.Controllers
         }
 
         /// <summary>
-        /// Редактировать меню
+        /// Р РµРґР°РєС‚РёСЂРѕРІР°С‚СЊ РјРµРЅСЋ
         /// </summary>
         /// <returns></returns>
         [HttpPut]
         [ProducesResponseType<MenuValue>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [SwaggerOperation("Редактировать меню")]
+        [SwaggerOperation("Р РµРґР°РєС‚РёСЂРѕРІР°С‚СЊ РјРµРЅСЋ")]
         public async Task<IActionResult> UpdateMenuAsync([FromBody] MenuValue menuValue)
         {
             var menuResult = await _menuRepository.UpdateAsync(menuValue.ToEntity());
@@ -101,13 +101,13 @@ namespace MenuServiceServer.Controllers
         }
 
         /// <summary>
-        /// Удалить меню
+        /// РЈРґР°Р»РёС‚СЊ РјРµРЅСЋ
         /// </summary>
         /// <returns></returns>
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [SwaggerOperation("Удалить меню")]
+        [SwaggerOperation("РЈРґР°Р»РёС‚СЊ РјРµРЅСЋ")]
         public async Task<IActionResult> DeleteMenuAsync([FromBody] string menuId)
         {
             var menuResult = await _menuRepository.DeleteAsync(menuId);

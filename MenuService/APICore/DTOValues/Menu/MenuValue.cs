@@ -14,6 +14,8 @@ namespace APICore.DTOValues.Menu
         {
         }
 
+        public string Name { get; set; } = string.Empty;
+
         public List<string> Dishes { get; set; } = new List<string>();
     }
 
