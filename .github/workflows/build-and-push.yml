@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - 'v*'  
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -11,19 +12,35 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Загружаем ВСЮ историю с тегами и ветками
 
-      - name: Set version from Git tag
+      # 🔥 Получаем родительскую ветку тега
+      - name: Determine branch from tag
+        id: get-branch
         run: |
-          VERSION=${{ github.ref_name }}  
-          echo "Current version: $VERSION"        
-          echo "VITE_APP_VERSION=$VERSION" >> tavernhelios.client/.env
-          cat tavernhelios.client/.env
-          echo "VERSION=$VERSION" >> $GITHUB_ENV  #
+          TAG=${{ github.ref_name }}
+          echo "🔍 Looking for the source branch of tag: $TAG"
 
-      - name: Debug GitHub Tag
+          # Получаем коммит, к которому привязан тег
+          COMMIT_HASH=$(git rev-list -n 1 $TAG)
+          echo "🔹 Tag $TAG is at commit: $COMMIT_HASH"
+
+          # Получаем список всех веток, содержащих этот коммит
+          BRANCH=$(git branch -r --contains $COMMIT_HASH | grep -v 'HEAD' | awk -F'/' '{print $2}' | head -n1)
+
+          if [[ -z "$BRANCH" ]]; then
+            echo "⚠️  Не удалось определить ветку, используем main!"
+            BRANCH="main"
+          fi
+
+          echo "✅ Found branch: $BRANCH"
+          echo "BRANCH=$BRANCH" >> $GITHUB_ENV
+
+      - name: Debug GitHub Tag & Branch
         run: |
           echo "github.ref_name=${{ github.ref_name }}"
-          echo "github.ref=${{ github.ref }}"
+          echo "Extracted branch: ${{ env.BRANCH }}"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -43,7 +60,7 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            ghcr.io/lavliet2/heliostavern-backend:${{ env.VERSION }}
+            ghcr.io/lavliet2/heliostavern-backend:${{ env.BRANCH }}-${{ github.ref_name }}
             ghcr.io/lavliet2/heliostavern-backend:latest 
 
       # **Сборка и публикация контейнера с MenuService**
@@ -54,58 +71,37 @@ jobs:
           file: ./MenuService/MenuServiceServer/Dockerfile
           push: true
           tags: |
-            ghcr.io/lavliet2/menuservice:${{ env.VERSION }}
+            ghcr.io/lavliet2/menuservice:${{ env.BRANCH }}-${{ github.ref_name }}
             ghcr.io/lavliet2/menuservice:latest
 
-      # # **Обновляем версию образа в манифесте перед деплоем**
-      # - name: Update image versions in Kubernetes manifests
-      #   run: |
-      #     sed -i "s|ghcr.io/lavliet2/heliostavern-backend:latest|ghcr.io/lavliet2/heliostavern-backend:$VERSION|g" .k8s/tavernhelios-server-deployment.yaml
-      #     sed -i "s|ghcr.io/lavliet2/menuservice:latest|ghcr.io/lavliet2/menuservice:$VERSION|g" .k8s/menuservice-deployment.yaml
-      #     cat .k8s/tavernhelios-server-deployment.yaml
-      #     cat .k8s/menuservice-deployment.yaml
-
-      # **Деплой после обновления манифеста**
       - name: Add SSH key
         uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }} 
 
       - name: Deploy to Kubernetes via SSH
+        env:
+          DEPLOY_BRANCH: ${{ env.BRANCH }} 
         run: |
-          ssh -o StrictHostKeyChecking=no -p 2222 lavliet@178.72.83.217 << 'EOF'
-          
+          ssh -o StrictHostKeyChecking=no -p 2222 lavliet@178.72.83.217 << EOF          
           set -e  # Остановить выполнение при ошибке
-      
-          # Очистка переменной VERSION
-          TAG="$(echo "${VERSION}" | tr -d '[:space:]')"
-      
-          # Если TAG пустой, используем main
-          if [[ -z "$TAG" ]]; then
-            echo "Переменная TAG пустая, деплоим main"
-            TAG="main"
+
+          echo "🚀 Deploying from branch: $DEPLOY_BRANCH"
+
+          # Если BRANCH пустая, fallback на main
+          if [[ -z "$DEPLOY_BRANCH" ]]; then
+            echo "⚠️  Ветка не найдена, деплоим main!"
+            DEPLOY_BRANCH="main"
           fi
-      
-          echo "Deploying version: $TAG"
       
           # Удаляем старую версию
           rm -rf /home/lavliet/heliostavern-app
-      
-          # Проверяем, является ли TAG тегом или веткой
-          if git ls-remote --tags https://github.com/Lavliet2/TavernHelios.git | grep -q "refs/tags/$TAG"; then
-            echo " Найден тег: $TAG, клонируем main и переключаемся на тег..."
-            git clone --depth 1 https://github.com/Lavliet2/TavernHelios.git /home/lavliet/heliostavern-app
-            cd /home/lavliet/heliostavern-app || exit 1
-            git checkout tags/"$TAG" -b "$TAG"
-          elif git ls-remote --heads https://github.com/Lavliet2/TavernHelios.git | grep -q "refs/heads/$TAG"; then
-            echo " Найдена ветка: $TAG, клонируем её..."
-            git clone --branch "$TAG" --depth 1 https://github.com/Lavliet2/TavernHelios.git /home/lavliet/heliostavern-app
-          else
-            echo " Ошибка: Ветка или тег $TAG не найдены, деплоим main!"
-            git clone --branch "main" --depth 1 https://github.com/Lavliet2/TavernHelios.git /home/lavliet/heliostavern-app
-          fi
-      
+          
+          echo "📥 Клонируем ветку: $DEPLOY_BRANCH"
+          git clone --branch "$DEPLOY_BRANCH" --depth 1 https://github.com/Lavliet2/TavernHelios.git /home/lavliet/heliostavern-app            
           cd /home/lavliet/heliostavern-app || exit 1
+          
+          echo "✅ Репозиторий успешно клонирован. Запускаем деплой..."
       
           # Деплой в Kubernetes
           kubectl apply -f .k8s/tavernhelios-ingress.yaml || exit 1
@@ -114,10 +110,10 @@ jobs:
           kubectl apply -f .k8s/tavernhelios-server-deployment.yaml || exit 1
       
           # Принудительный рестарт подов
-          echo " Перезапускаем поды..."
+          echo "🔄 Перезапускаем поды..."
           kubectl rollout restart deployment tavernhelios-server || exit 1
           kubectl rollout restart deployment menuservice || exit 1
       
-          echo "Деплой успешно завершён!"
+          echo "✅ Деплой успешно завершён!"
           EOF
-        
+  
