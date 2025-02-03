@@ -1,11 +1,11 @@
 name: Deploy HeliosTavern App to Kubernetes
 
 on:
-  workflow_dispatch:
-    inputs:
-      DEPLOY_TAG:
-        description: 'Tag for deployment'
-        required: true
+  workflow_run:
+    workflows:
+      - Build and Deploy HeliosTavern App
+    types:
+      - completed
 
 jobs:
   deploy-to-k8s:
@@ -14,6 +14,17 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
+      - name: Download version artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: deployment-version
+
+      - name: Read version
+        run: |
+          TAG=$(cat version.txt)
+          echo "Deploying version: $TAG"
+          echo "DEPLOY_TAG=$TAG" >> $GITHUB_ENV
 
       - name: Add SSH key
         uses: webfactory/ssh-agent@v0.5.3
@@ -24,8 +35,7 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no -p 2222 lavliet@178.72.83.217 << EOF
           
-          # Получаем тег из workflow_dispatch
-          TAG="${{ github.event.inputs.DEPLOY_TAG }}"
+          TAG="$DEPLOY_TAG"
           echo "Deploying version: $TAG"
 
           # Проверяем, существует ли такой тег
