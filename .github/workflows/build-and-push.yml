@@ -39,7 +39,7 @@ jobs:
           push: true
           tags: |
             ghcr.io/lavliet2/heliostavern-backend:${{ env.VERSION }}
-            ghcr.io/lavliet2/heliostavern-backend:latest  # Также пушим latest для отладки
+            ghcr.io/lavliet2/heliostavern-backend:latest 
 
       # **Сборка и публикация контейнера с MenuService**
       - name: Build and push MenuService image
@@ -50,8 +50,8 @@ jobs:
           push: true
           tags: |
             ghcr.io/lavliet2/menuservice:${{ env.VERSION }}
-            ghcr.io/lavliet2/menuservice:latest  # Также пушим latest
-
+            ghcr.io/lavliet2/menuservice:latest
+            
       # **Обновляем версию образа в манифесте перед деплоем**
       - name: Update image versions in Kubernetes manifests
         run: |
