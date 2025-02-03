@@ -68,30 +68,37 @@ jobs:
 
       - name: Deploy to Kubernetes via SSH
         run: |
-          ssh -o StrictHostKeyChecking=no -p 2222 lavliet@178.72.83.217 << EOF
+          ssh -o StrictHostKeyChecking=no -p 2222 lavliet@178.72.83.217 << 'EOF'
           
-          echo "Deploying version: $VERSION"
-
-          # Проверяем, существует ли такой тег
-          if ! git ls-remote --tags https://github.com/Lavliet2/TavernHelios.git | grep -q "refs/tags/\$VERSION"; then
-            echo "Ошибка: Тег \$VERSION не найден в репозитории!"
-            exit 1
+          set -e  # Остановить выполнение при ошибке
+      
+          # Очистка переменной VERSION
+          TAG="$(echo "${VERSION}" | tr -d '[:space:]')"  # Убираем лишние пробелы и переносы строк
+          echo "🚀 Deploying version: $TAG"
+      
+          # Проверяем, существует ли тег
+          if git ls-remote --tags https://github.com/Lavliet2/TavernHelios.git | grep -q "refs/tags/$TAG"; then
+            echo "✅ Тег $TAG найден, клонируем его..."
+          else
+            echo "❌ Тег $TAG не найден, деплоим main!"
+            TAG="main"
           fi
-
-          # Удаляем старую версию и клонируем нужный тег
+      
+          # Удаляем старую версию и клонируем нужный тег или main
           rm -rf /home/lavliet/heliostavern-app
-          git clone --branch \$VERSION --depth 1 https://github.com/Lavliet2/TavernHelios.git /home/lavliet/heliostavern-app
-
-          cd /home/lavliet/heliostavern-app
-
+          git clone --branch "$TAG" --depth 1 https://github.com/Lavliet2/TavernHelios.git /home/lavliet/heliostavern-app || exit 1
+      
+          cd /home/lavliet/heliostavern-app || exit 1
+      
           # Деплой в Kubernetes
-          kubectl apply -f .k8s/tavernhelios-ingress.yaml
-          kubectl apply -f .k8s/mongo-deployment.yaml
-          kubectl apply -f .k8s/menuservice-deployment.yaml
-          kubectl apply -f .k8s/tavernhelios-server-deployment.yaml
-          
-          # Рестарт подов
-          kubectl rollout restart deployment tavernhelios-server
-          kubectl rollout restart deployment menuservice
-          
+          kubectl apply -f .k8s/tavernhelios-ingress.yaml || exit 1
+          kubectl apply -f .k8s/mongo-deployment.yaml || exit 1
+          kubectl apply -f .k8s/menuservice-deployment.yaml || exit 1
+          kubectl apply -f .k8s/tavernhelios-server-deployment.yaml || exit 1
+      
+          # Убиваем старые поды, чтобы Kubernetes скачал новую версию latest
+          kubectl delete pod -l app=tavernhelios-server || true
+          kubectl delete pod -l app=menuservice || true
+      
+          echo "✅ Деплой успешно завершён!"
           EOF
