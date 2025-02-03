@@ -20,6 +20,11 @@ jobs:
           cat tavernhelios.client/.env
           echo "VERSION=$VERSION" >> $GITHUB_ENV  #
 
+      - name: Debug GitHub Tag
+        run: |
+          echo "github.ref_name=${{ github.ref_name }}"
+          echo "github.ref=${{ github.ref }}"
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
@@ -103,13 +108,9 @@ jobs:
           cd /home/lavliet/heliostavern-app || exit 1
       
           # Деплой в Kubernetes
-          echo " Deploy ingress"
           kubectl apply -f .k8s/tavernhelios-ingress.yaml || exit 1
-          echo " Deploy mongo"
           kubectl apply -f .k8s/mongo-deployment.yaml || exit 1
-          echo " Deploy menuservice"
           kubectl apply -f .k8s/menuservice-deployment.yaml || exit 1
-          echo " Deploy tavernhelios"
           kubectl apply -f .k8s/tavernhelios-server-deployment.yaml || exit 1
       
           # Принудительный рестарт подов
