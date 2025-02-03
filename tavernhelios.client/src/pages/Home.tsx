@@ -5,7 +5,7 @@ function Home() {
     <Box sx={{ padding: 2 }}>
         <Container maxWidth="lg" sx={{ marginTop: 4 }}>
             <Typography variant="h4" color="primary" align="center" sx={{ marginBottom: 2 }}>
-                Привет, команда Helios!!!
+                Привет, команда Helios!
             </Typography>
             <Grid2 container spacing={2} justifyContent="center">
                 <Grid2>

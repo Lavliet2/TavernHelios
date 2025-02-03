@@ -28,7 +28,8 @@ jobs:
           echo "Deploying version: $TAG"
 
           rm -rf /home/lavliet/heliostavern-app
-          git clone https://github.com/Lavliet2/TavernHelios.git /home/lavliet/heliostavern-app
+          git clone --branch \$TAG --depth 1 https://github.com/Lavliet2/TavernHelios.git /home/lavliet/heliostavern-app
+          #git clone https://github.com/Lavliet2/TavernHelios.git /home/lavliet/heliostavern-app
           cd /home/lavliet/heliostavern-app
           
           # Deploy Ingress first
