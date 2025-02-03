@@ -52,13 +52,13 @@ jobs:
             ghcr.io/lavliet2/menuservice:${{ env.VERSION }}
             ghcr.io/lavliet2/menuservice:latest
 
-      # **Обновляем версию образа в манифесте перед деплоем**
-      - name: Update image versions in Kubernetes manifests
-        run: |
-          sed -i "s|ghcr.io/lavliet2/heliostavern-backend:latest|ghcr.io/lavliet2/heliostavern-backend:$VERSION|g" .k8s/tavernhelios-server-deployment.yaml
-          sed -i "s|ghcr.io/lavliet2/menuservice:latest|ghcr.io/lavliet2/menuservice:$VERSION|g" .k8s/menuservice-deployment.yaml
-          cat .k8s/tavernhelios-server-deployment.yaml
-          cat .k8s/menuservice-deployment.yaml
+      # # **Обновляем версию образа в манифесте перед деплоем**
+      # - name: Update image versions in Kubernetes manifests
+      #   run: |
+      #     sed -i "s|ghcr.io/lavliet2/heliostavern-backend:latest|ghcr.io/lavliet2/heliostavern-backend:$VERSION|g" .k8s/tavernhelios-server-deployment.yaml
+      #     sed -i "s|ghcr.io/lavliet2/menuservice:latest|ghcr.io/lavliet2/menuservice:$VERSION|g" .k8s/menuservice-deployment.yaml
+      #     cat .k8s/tavernhelios-server-deployment.yaml
+      #     cat .k8s/menuservice-deployment.yaml
 
       # **Деплой после обновления манифеста**
       - name: Add SSH key
@@ -69,37 +69,29 @@ jobs:
       - name: Deploy to Kubernetes via SSH
         run: |
           ssh -o StrictHostKeyChecking=no -p 2222 lavliet@178.72.83.217 << EOF
-          set -e  # ✅ Останавливаем выполнение при ошибке
-        
-          TAG="${VERSION#v}"  # Убираем префикс 'v'
-          echo "Deploying version: $TAG"
-        
+          
+          echo "Deploying version: $VERSION"
+
           # Проверяем, существует ли такой тег
-          if ! git ls-remote --tags https://github.com/Lavliet2/TavernHelios.git | grep -q "refs/tags/\$TAG"; then
-            echo "❌ Ошибка: Тег \$TAG не найден в репозитории!"
+          if ! git ls-remote --tags https://github.com/Lavliet2/TavernHelios.git | grep -q "refs/tags/\$VERSION"; then
+            echo "Ошибка: Тег \$VERSION не найден в репозитории!"
             exit 1
           fi
-        
+
           # Удаляем старую версию и клонируем нужный тег
-          rm -rf /home/lavliet/heliostavern-app || exit 1
-          git clone --branch \$TAG --depth 1 https://github.com/Lavliet2/TavernHelios.git /home/lavliet/heliostavern-app || exit 1
-        
-          cd /home/lavliet/heliostavern-app || exit 1
-        
+          rm -rf /home/lavliet/heliostavern-app
+          git clone --branch \$VERSION --depth 1 https://github.com/Lavliet2/TavernHelios.git /home/lavliet/heliostavern-app
+
+          cd /home/lavliet/heliostavern-app
+
           # Деплой в Kubernetes
-          kubectl apply -f .k8s/tavernhelios-ingress.yaml || exit 1
-          kubectl apply -f .k8s/mongo-deployment.yaml || exit 1
-          kubectl apply -f .k8s/menuservice-deployment.yaml || exit 1
-          kubectl apply -f .k8s/tavernhelios-server-deployment.yaml || exit 1
-        
-          # Проверяем статус подов
-          echo "🔍 Проверяем статус подов..."
-          kubectl get pods -o wide || exit 1
-        
-            # Рестарт подов
-          kubectl rollout restart deployment tavernhelios-server || exit 1
-          kubectl rollout restart deployment menuservice || exit 1
-        
-          echo "✅ Деплой успешно завершён!"
+          kubectl apply -f .k8s/tavernhelios-ingress.yaml
+          kubectl apply -f .k8s/mongo-deployment.yaml
+          kubectl apply -f .k8s/menuservice-deployment.yaml
+          kubectl apply -f .k8s/tavernhelios-server-deployment.yaml
+          
+          # Рестарт подов
+          kubectl rollout restart deployment tavernhelios-server
+          kubectl rollout restart deployment menuservice
+          
           EOF
-        

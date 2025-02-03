@@ -15,6 +15,7 @@ spec:
       containers:
         - name: tavernhelios-server
           image: ghcr.io/lavliet2/heliostavern-backend:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080  
             - containerPort: 8081 
