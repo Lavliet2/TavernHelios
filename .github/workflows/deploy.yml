@@ -1,11 +1,11 @@
 name: Deploy HeliosTavern App to Kubernetes
 
 on:
-  workflow_run:
-    workflows:
-      - Build and Deploy HeliosTavern App
-    types:
-      - completed
+  workflow_dispatch:
+    inputs:
+      DEPLOY_TAG:
+        description: 'Tag for deployment'
+        required: true
 
 jobs:
   deploy-to-k8s:
@@ -22,39 +22,31 @@ jobs:
 
       - name: Deploy to Kubernetes via SSH
         run: |
-          ssh -o StrictHostKeyChecking=no -p 2222 lavliet@178.72.83.217 << 'EOF'
-
-          TAG="${{ github.ref_name }}"
+          ssh -o StrictHostKeyChecking=no -p 2222 lavliet@178.72.83.217 << EOF
+          
+          # Получаем тег из workflow_dispatch
+          TAG="${{ github.event.inputs.DEPLOY_TAG }}"
           echo "Deploying version: $TAG"
 
-          rm -rf /home/lavliet/heliostavern-app
+          # Проверяем, существует ли такой тег
           if ! git ls-remote --tags https://github.com/Lavliet2/TavernHelios.git | grep -q "refs/tags/\$TAG"; then
             echo "Ошибка: Тег \$TAG не найден в репозитории!"
             exit 1
           fi
-          #git clone --branch \$TAG --depth 1 https://github.com/Lavliet2/TavernHelios.git /home/lavliet/heliostavern-app
-          #git clone https://github.com/Lavliet2/TavernHelios.git /home/lavliet/heliostavern-app
+
+          # Удаляем старую версию и клонируем нужный тег
+          rm -rf /home/lavliet/heliostavern-app
+          git clone --branch \$TAG --depth 1 https://github.com/Lavliet2/TavernHelios.git /home/lavliet/heliostavern-app
+
           cd /home/lavliet/heliostavern-app
-          
-          # Deploy Ingress first
-          kubectl apply -f /home/lavliet/heliostavern-app/.k8s/tavernhelios-ingress.yaml
-          
-          # Deploy MongoDB
-          kubectl apply -f /home/lavliet/heliostavern-app/.k8s/mongo-deployment.yaml
-          
-          # Wait for MongoDB to be ready (if needed, adjust timeout)
-          #kubectl wait --for=condition=ready pod -l app=mongo --timeout=300s
 
-          # Deploy MenuService after MongoDB is ready
-          kubectl apply -f /home/lavliet/heliostavern-app/.k8s/menuservice-deployment.yaml
+          # Деплой в Kubernetes
+          kubectl apply -f .k8s/tavernhelios-ingress.yaml
+          kubectl apply -f .k8s/mongo-deployment.yaml
+          kubectl apply -f .k8s/menuservice-deployment.yaml
+          kubectl apply -f .k8s/tavernhelios-server-deployment.yaml
           
-          # Wait for MenuService to be ready (adjust timeout as needed)
-          #kubectl wait --for=condition=ready pod -l app=menuservice --timeout=300s
-
-          # Finally, deploy TavernHelios server after MenuService
-          kubectl apply -f /home/lavliet/heliostavern-app/.k8s/tavernhelios-server-deployment.yaml
-          
-          # Restart deployments if needed
+          # Рестарт подов
           kubectl rollout restart deployment tavernhelios-server
           kubectl rollout restart deployment menuservice
           

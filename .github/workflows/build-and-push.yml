@@ -16,7 +16,8 @@ jobs:
       - name: Set version from Git tag
         run: |
           VERSION=$(git describe --tags --abbrev=0)  
-          echo "Current version: $VERSION"       
+          echo "Current version: $VERSION"      
+          echo "DEPLOY_TAG=$VERSION" >> $GITHUB_ENV           
           # sed -i '/VITE_APP_VERSION/d' tavernhelios.client/.env 
           # echo "VITE_APP_VERSION=$VERSION" >> tavernhelios.client/.env
           # cat tavernhelios.client/.env
@@ -48,3 +49,13 @@ jobs:
           file: ./MenuService/MenuServiceServer/Dockerfile
           push: true
           tags: ghcr.io/lavliet2/menuservice:latest
+
+
+      # Передаём тег в workflow-run    
+      - name: Trigger Deploy Workflow
+        run: |
+          curl -X POST -H "Accept: application/vnd.github.everest-preview+json" \
+          -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+          https://api.github.com/repos/Lavliet2/TavernHelios/actions/workflows/deploy.yml/dispatches \
+          -d '{"ref":"main","inputs":{"DEPLOY_TAG":"'${{ github.ref_name }}'"}}'
+  
