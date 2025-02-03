@@ -72,14 +72,16 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }} 
 
       - name: Deploy to Kubernetes via SSH
+        env:
+          DEPLOY_VERSION: ${{ env.VERSION }} 
         run: |
           ssh -o StrictHostKeyChecking=no -p 2222 lavliet@178.72.83.217 << 'EOF'          
           set -e  # Остановить выполнение при ошибке
 
-          echo "Версия докумеента 1.0.7.1"
+          echo "Версия докумеента 1.0.7.3"
       
           # Очистка переменной VERSION
-          TAG="$(echo "${VERSION}" | tr -d '[:space:]')"
+          TAG="$(echo "${DEPLOY_VERSION}" | tr -d '[:space:]')"
           echo "TAG=: $TAG"
           # Если TAG пустой, используем main
           if [[ -z "$TAG" ]]; then
