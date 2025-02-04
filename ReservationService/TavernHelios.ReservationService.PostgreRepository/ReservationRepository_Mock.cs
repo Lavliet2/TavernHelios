@@ -70,12 +70,7 @@ namespace TavernHelios.ReservationService.PostgreRepository
         private long LongRandom()
         {
             Random rand = new Random();
-            long min = 1; 
-            long max = long.MaxValue;
-            long result = rand.Next((Int32)(min >> 32), (Int32)(max >> 32));
-            result = (result << 32);
-            result = result | (long)rand.Next((Int32)min, (Int32)max);
-            return result;
+            return rand.NextInt64();
         }
     }
 }
