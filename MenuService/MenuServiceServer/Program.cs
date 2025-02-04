@@ -4,6 +4,7 @@ using MenuServiceServer.MenuService;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Options;
 using TavernHelios.GrpcCommon.Settings;
+//using Grpc.AspNetCore.Server.Reflection;
 
 namespace MenuServiceServer
 {
@@ -14,6 +15,7 @@ namespace MenuServiceServer
             var builder = WebApplication.CreateBuilder(args);
            
             builder.Services.AddGrpc();
+            builder.Services.AddGrpcReflection();
 
             builder.Services.ConfigureServices(builder.Configuration);
 
@@ -27,21 +29,7 @@ namespace MenuServiceServer
                     o.Protocols = HttpProtocols.Http2;
                 });
             });
-
-            // Add services to the container. 
-            //TODO fix
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy("AllowFrontend",
-                    builder =>
-                    {
-                        builder.WithOrigins("https://localhost:63049")
-                               .AllowAnyMethod()
-                               .AllowAnyHeader();
-                    });
-            });
-            
-
+           
 
             var app = builder.Build();
             
@@ -49,6 +37,7 @@ namespace MenuServiceServer
             if (app.Environment.IsDevelopment())
             {
             }
+                app.MapGrpcReflectionService();
 
             var settings = app.Services.GetRequiredService<IOptions<GrpcMenuServiceSettings>>().Value;
             app.MapGrpcService<MenuServiceApi>().RequireHost($"*:{settings.Port}");

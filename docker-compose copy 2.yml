@@ -1,0 +1,62 @@
+# services:
+#   mongoMenuService:
+#     image: mongo
+#     container_name: mongoMenuService
+#     ports:
+#       - '27017:27017'
+#     volumes:
+#       - mongo_data:/data/db
+#     environment:
+#       MONGO_INITDB_DATABASE: 'mongoMenuService'
+
+#   menuService:
+#     container_name: menuService
+#     image: tavernhelios/menuservice 
+#     build:
+#       context: .
+#       dockerfile: ./MenuService/MenuServiceServer/Dockerfile
+#     ports:
+#       - '8080:8080'
+#       - '8081:8081'
+#     depends_on:
+#       - mongoMenuService
+#     environment:
+#       ASPNETCORE_ENVIRONMENT: "Development"
+
+# volumes:
+#   mongo_data:
+
+
+services:
+  mongoMenuService:
+    image: mongo
+    container_name: mongoMenuService
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: 'mongoMenuService'
+
+  menuService:
+    container_name: menuService
+    image: tavernhelios/menuservice 
+    build:
+      context: .
+      dockerfile: ./MenuService/MenuServiceServer/Dockerfile
+    ports:
+      - '8080:8080'
+      - '8081:8081'
+    depends_on:
+      - mongoMenuService
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_URLS: "https://+:8081;http://+:8080"
+      ASPNETCORE_Kestrel__Certificates__Default__Path: /https/aspnetapp.pfx
+      ASPNETCORE_Kestrel__Certificates__Default__Password: "200400"
+    volumes:
+      - "./certs/aspnetapp.pfx:/https/aspnetapp.pfx:ro"
+
+
+volumes:
+  mongo_data:
