@@ -17,7 +17,7 @@ spec:
           image: ghcr.io/lavliet2/menuservice:latest
           imagePullPolicy: Always
           ports: 
-            - containerPort: 8080
+            - containerPort: 5064
           env:
             - name: MONGO_URI
               value: "mongodb://mongo:27017"
@@ -34,6 +34,6 @@ spec:
     app: menuservice
   ports:
     - protocol: TCP
-      port: 5041
-      targetPort: 8080
+      port: 5064
+      targetPort: 5064
       nodePort: 32041 
