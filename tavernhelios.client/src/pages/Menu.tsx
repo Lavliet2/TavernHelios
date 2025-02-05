@@ -45,6 +45,7 @@ const MenuDisplay: React.FC = () => {
   const [selectedDishes, setSelectedDishes] = useState<Record<number, string>>({});
   const [maxCardHeight, setMaxCardHeight] = useState<number | null>(null);
   const API_BASE_URL = import.meta.env.VITE_API_URL  || '/api/Menu';
+  console.log(`API - ${API_BASE_URL}`)
 
   
   // Массив для хранения ref карточек

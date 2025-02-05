@@ -28,6 +28,9 @@ RUN dotnet publish "./TavernHelios.ReservationServiceServer.csproj" -c $BUILD_CO
 
 # Этот этап используется в рабочей среде или при запуске из VS в обычном режиме (по умолчанию, когда конфигурация отладки не используется)
 FROM base AS final
+USER root  
+RUN apt update && apt install -y curl
+USER $APP_UID  
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "TavernHelios.ReservationServiceServer.dll"]

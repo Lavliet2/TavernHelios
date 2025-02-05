@@ -25,6 +25,9 @@ RUN dotnet publish "./MenuServiceServer.csproj" -c $BUILD_CONFIGURATION -o /app/
 
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
+USER root  
+RUN apt update && apt install -y curl
+USER $APP_UID  
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "MenuServiceServer.dll"]

@@ -41,3 +41,11 @@ kubectl exec -it tavernhelios-server-6b6cd58df9-zqlmm -- /bin/bash
 kubectl cp tavernhelios-server-6b6cd58df9-zqlmm:/var/www/html/config/config.php ./config.php
 
 tavernhelios-server-6b67747d4f-lzsjp
+
+
+
+
+
+docker exec -it TavernHelios.Server sh
+
+curl -v --http2-prior-knowledge http://host.docker.internal:5064
