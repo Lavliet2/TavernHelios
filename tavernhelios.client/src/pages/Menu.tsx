@@ -44,7 +44,10 @@ const MenuDisplay: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedDishes, setSelectedDishes] = useState<Record<number, string>>({});
   const [maxCardHeight, setMaxCardHeight] = useState<number | null>(null);
-  const API_BASE_URL = import.meta.env.VITE_API_URL  || '/api/Menu';
+  // const API_BASE_URL = import.meta.env.VITE_API_URL  || '/api/Menu';
+  const API_BASE_URL = window.VITE_API_URL || import.meta.env.VITE_API_URL || "http://localhost:5040";
+
+
   // const API_BASE_URL = "http://tavernhelios-server-service:5040"
   // const API_BASE_URL = "http://heliostavern.local"
   // const API_BASE_URL = "http://178.72.83.217:32040"
