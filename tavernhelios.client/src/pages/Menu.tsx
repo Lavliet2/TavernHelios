@@ -46,13 +46,6 @@ const MenuDisplay: React.FC = () => {
   const [selectedDishes, setSelectedDishes] = useState<Record<number, string>>({});
   const [maxCardHeight, setMaxCardHeight] = useState<number | null>(null);
   // const API_BASE_URL = import.meta.env.VITE_API_URL  || '/api/Menu';
-  // const API_BASE_URL = window.VITE_API_URL || "http://localhost:5040";
-  // const API_BASE_URL = window.VITE_API_URL || import.meta.env.VITE_API_URL || "http://localhost:5040";
-  // const API_BASE_URL = window.VITE_API_URL || "http://localhost:5040";
-
-
-  // const API_BASE_URL = "http://tavernhelios-server-service:5040"
-  // const API_BASE_URL = "http://heliostavern.local"
   // const API_BASE_URL = "http://178.72.83.217:32040"
   console.log(`API - ${API_BASE_URL}`)
 
@@ -72,14 +65,14 @@ const MenuDisplay: React.FC = () => {
       try {
         // const response = await fetch('https://localhost:32789/api/Menu');
         const response = await fetch(`${API_BASE_URL}/api/Menu`);
-        console.log(`API fetchMenu: ${API_BASE_URL}`, response)
+        console.log(`fetchMenu: ${API_BASE_URL}`, response)
         if (!response.ok) {
           throw new Error('Ошибка при загрузке меню');
         }
         const data: Menu[] = await response.json();
         if (data && data.length > 0) {
           setMenu(data[0]);
-          console.log(`API fetchMenu data: - ${API_BASE_URL}`, data)
+          console.log(`fetchMenu data: - ${API_BASE_URL}`, data)
         } else {
           setError('Меню не найдено');
         }
@@ -100,7 +93,7 @@ const MenuDisplay: React.FC = () => {
             menu.dishes.map(async (dishId) => {
               // const res = await fetch(`https://localhost:32789/api/Dish/${dishId}`);
               const res = await fetch(`${API_BASE_URL}/api/Dish/${dishId}`);
-              console.log(`API fetchDishes: ${API_BASE_URL}`, res)
+              console.log(`fetchDish: ${dishId} - ${API_BASE_URL}`, res)
               // await fetch(`${API_BASE_URL}`);
               if (!res.ok) {
                 throw new Error(`Ошибка при загрузке блюда с id ${dishId}`);
