@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reservationservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: reservationservice
+  template:
+    metadata:
+      labels:
+        app: reservationservice
+    spec:
+      containers:
+        - name: reservationservice
+          image: ghcr.io/lavliet2/reservationservice:latest
+          imagePullPolicy: Always
+          ports: 
+            - containerPort: 5065  # gRPC порт
+          env:
+            - name: GRPC_PORT
+              value: "5065"
+      imagePullSecrets:
+        - name: ghcr-secret 
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: reservationservice
+spec:
+  type: NodePort
+  selector:
+    app: reservationservice
+  ports:
+    - protocol: TCP
+      port: 5065
+      targetPort: 5065
+      nodePort: 32042
