@@ -1,6 +1,21 @@
-# See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
+# Этап 1: Сборка приложения с помощью Node.js
+FROM node:19 AS frontend-build
 
-# This stage is used when running from VS in fast mode (Default for Debug configuration)
+WORKDIR /app
+
+# Копируем package.json и устанавливаем зависимости
+COPY package*.json ./
+RUN npm install
+
+# Устанавливаем API URL перед билдом
+ARG VITE_API_URL
+ENV VITE_API_URL=${VITE_API_URL}
+COPY . .
+
+# Строим проект (встраиваем `VITE_API_URL`)
+RUN npm run build
+
+# Этап 2: Объединяем фронт и бэк
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 USER root
 WORKDIR /app
@@ -9,9 +24,8 @@ USER $APP_UID
 EXPOSE 8080
 EXPOSE 8081
 
-
-# This stage is used to build the service project
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+# Этап 3: Сборка бекенда
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS backend-build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["TavernHelios.Server/TavernHelios.Server.csproj", "TavernHelios.Server/"]
@@ -22,13 +36,14 @@ COPY . .
 WORKDIR "/src/TavernHelios.Server"
 RUN dotnet build "./TavernHelios.Server.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
-# This stage is used to publish the service project to be copied to the final stage
-FROM build AS publish
+# Этап 4: Публикация бекенда
+FROM backend-build AS publish
 ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "./TavernHelios.Server.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
-# This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
+# Финальный этап: Объединяем бекенд и фронт
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+COPY --from=frontend-build /app/dist /app/wwwroot
 ENTRYPOINT ["dotnet", "TavernHelios.Server.dll"]

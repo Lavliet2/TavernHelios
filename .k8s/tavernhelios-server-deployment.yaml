@@ -24,8 +24,8 @@ spec:
               value: "http://menuservice:5064"
             - name: RESERVATION_SERVICE_URL
               value: "http://reservationservice:5065"
-            - name: VITE_API_URL
-              value: "http://heliostavern.local"
+          args:
+            - "--build-arg VITE_API_URL=http://178.72.83.217:32040"
       imagePullSecrets:
         - name: ghcr-secret 
 ---

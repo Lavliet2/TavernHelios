@@ -36,6 +36,9 @@ const target = env.VITE_API_URL || `https://localhost:32789`;
 // const target = `https://localhost:32789`;
 
 export default defineConfig({
+    define: {
+        'import.meta.env.VITE_API_URL': JSON.stringify(env.VITE_API_URL || "http://localhost:5040")
+    },
     plugins: [plugin()],
     resolve: {
         alias: {
