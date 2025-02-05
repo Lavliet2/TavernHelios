@@ -26,7 +26,7 @@ kubectl apply -f /home/lavliet/heliostavern-app/.k8s/tavernhelios-server-deploym
 kubectl apply -f /home/lavliet/heliostavern-app/.k8s/tavernhelios-ingress.yaml
 
 kubectl get pods
-kubectl describe pod tavernhelios-server-6b6cd58df9-zqlmm
+kubectl describe pod tavernhelios-server-84575cf97-6kwbx
 kubectl get services
 kubectl get ingress
 kubectl logs tavernhelios-server-6b6cd58df9-zqlmm
@@ -43,6 +43,8 @@ kubectl cp tavernhelios-server-6b6cd58df9-zqlmm:/var/www/html/config/config.php 
 tavernhelios-server-6b67747d4f-lzsjp
 
 
+kubectl get pods
+kubectl exec -it tavernhelios-server-84575cf97-6kwbx -- env | grep VITE_API_URL
 
 
 
