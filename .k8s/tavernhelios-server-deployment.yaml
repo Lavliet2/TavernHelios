@@ -25,7 +25,7 @@ spec:
             - name: RESERVATION_SERVICE_URL
               value: "http://reservationservice:5065"
             - name: VITE_API_URL
-              value: "http://tavernhelios-server-service:5040"
+              value: "value: "http://heliostavern.local"
       imagePullSecrets:
         - name: ghcr-secret 
 ---
