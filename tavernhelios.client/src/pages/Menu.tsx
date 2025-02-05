@@ -14,6 +14,7 @@ import {
   Button
 } from '@mui/material';
 import Grid from '@mui/material/Grid2';
+import { API_BASE_URL } from "../config";
 
 interface Menu {
   id: string;
@@ -45,7 +46,7 @@ const MenuDisplay: React.FC = () => {
   const [selectedDishes, setSelectedDishes] = useState<Record<number, string>>({});
   const [maxCardHeight, setMaxCardHeight] = useState<number | null>(null);
   // const API_BASE_URL = import.meta.env.VITE_API_URL  || '/api/Menu';
-  const API_BASE_URL = window.VITE_API_URL || "http://localhost:5040";
+  // const API_BASE_URL = window.VITE_API_URL || "http://localhost:5040";
   // const API_BASE_URL = window.VITE_API_URL || import.meta.env.VITE_API_URL || "http://localhost:5040";
   // const API_BASE_URL = window.VITE_API_URL || "http://localhost:5040";
 
