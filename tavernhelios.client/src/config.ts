@@ -1,6 +1,6 @@
 const getApiBaseUrl = () => {
     if (import.meta.env.MODE === "development") {
-        return "http://localhost:5040"; 
+        return "http://localhost:32769"; 
     }
     
     if (typeof window !== "undefined" && window.VITE_API_URL) {
