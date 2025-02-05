@@ -20,7 +20,7 @@ spec:
             - containerPort: 8080  
             - containerPort: 8081 
           env:
-           - name: MENU_SERVICE_URL
+            - name: MENU_SERVICE_URL
               value: "http://menuservice:5064"
             - name: RESERVATION_SERVICE_URL
               value: "http://reservationservice:5065"
