@@ -39,6 +39,6 @@ COPY --from=publish /app/publish .
 COPY --from=frontend-build /app/dist /app/wwwroot  # Копируем фронтенд в wwwroot
 
 # 🟢 Вставляем скрипт для динамической настройки API-адреса
-RUN echo '<script>window.VITE_API_URL="${VITE_API_URL}"</script>' > /app/wwwroot/env-config.js
+RUN echo "window.VITE_API_URL='${VITE_API_URL}';" > /app/wwwroot/env-config.js
 
 ENTRYPOINT ["dotnet", "TavernHelios.Server.dll"]
