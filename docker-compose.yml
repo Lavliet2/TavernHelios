@@ -24,5 +24,20 @@ services:
       ASPNETCORE_URLS: "http://+:5064"  
     command: ["dotnet", "MenuServiceServer.dll"]
 
+  ReservationService:
+    container_name: ReservationService
+    image: tavernhelios/reservationservice 
+    build:
+      context: .
+      dockerfile: ./ReservationService\TavernHelios.ReservationServiceServer/Dockerfile
+    ports:
+      - '5065:5065'
+    # depends_on:
+      # - POSGRES?
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_URLS: "http://+:5065"  
+    command: ["dotnet", "TavernHelios.ReservationServiceServer.dll"]
+
 volumes:
   mongo_data:

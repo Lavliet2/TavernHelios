@@ -15,6 +15,7 @@ namespace TavernHelios.ReservationServiceServer
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddGrpc();
+            builder.Services.AddGrpcReflection();
 
             builder.Services.ConfigureServices(builder.Configuration);
 
@@ -36,6 +37,7 @@ namespace TavernHelios.ReservationServiceServer
             if (app.Environment.IsDevelopment())
             {
             }
+            app.MapGrpcReflectionService();
 
             var settings = app.Services.GetRequiredService<IOptions<GrpcReservationServiceSettings>>().Value;
             app.MapGrpcService<ReservationServiceApi>().RequireHost($"*:{settings.Port}");
