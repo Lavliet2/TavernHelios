@@ -31,4 +31,5 @@ RUN dotnet publish "./TavernHelios.Server.csproj" -c $BUILD_CONFIGURATION -o /ap
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+RUN echo "window.VITE_API_URL='${VITE_API_URL}';" > /app/wwwroot/env.js
 ENTRYPOINT ["dotnet", "TavernHelios.Server.dll"]
