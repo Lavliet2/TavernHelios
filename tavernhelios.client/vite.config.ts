@@ -33,12 +33,9 @@ if (isDev && (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath))) {
 
 // 🔹 Тут прописываем реальный адрес бэкенда
 const target = env.VITE_API_URL || `https://localhost:32789`;
-// const target = `https://localhost:32789`;
+// const target = `http://178.72.83.217:32040`;
 
 export default defineConfig({
-    define: {
-        'import.meta.env.VITE_API_URL': JSON.stringify(env.VITE_API_URL || "http://localhost:5040")
-    },
     plugins: [plugin()],
     resolve: {
         alias: {
