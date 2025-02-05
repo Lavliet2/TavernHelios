@@ -20,6 +20,7 @@ function WeatherForecast() {
 
   async function populateWeatherData() {
     const response = await fetch(`${API_BASE_URL}/weatherforecast`);
+    console.log(`Запрос на: ${API_BASE_URL}`)
     if (response.ok) {
       const data = await response.json();
       setForecasts(data);

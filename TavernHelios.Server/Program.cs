@@ -30,26 +30,28 @@ namespace TavernHelios.Server
 
             // ����������� HttpClient � ����������� ��������� SSL (�� ��� ����������!)
             //var menuServiceUrl = builder.Configuration.GetSection("ApiSettings:MenuServiceUrl").Value;
-            var menuServiceUrl = Environment.GetEnvironmentVariable("MENU_SERVICE_URL")
-                     ?? builder.Configuration.GetSection("ApiSettings:MenuServiceUrl").Value;
+            //var menuServiceUrl = Environment.GetEnvironmentVariable("MENU_SERVICE_URL")
+            //         ?? builder.Configuration.GetSection("ApiSettings:MenuServiceUrl").Value;
 
-            if (string.IsNullOrEmpty(menuServiceUrl))
-            {
-                throw new Exception("MenuServiceUrl �� ����� � ������������!");
-            }
+            //if (string.IsNullOrEmpty(menuServiceUrl))
+            //{
+            //    throw new Exception("MenuServiceUrl �� ����� � ������������!");
+            //}
 
-            builder.Services.AddHttpClient("MenuServiceClient", client =>
-            {
-                client.BaseAddress = new Uri(menuServiceUrl); // �����: ���� � �����!
-                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-                client.Timeout = TimeSpan.FromSeconds(10);
-            })
-            .ConfigurePrimaryHttpMessageHandler(() =>
-            {
-                var handler = new HttpClientHandler();
-                handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
-                return handler;
-            });
+            //builder.Services.AddHttpClient("MenuServiceClient", client =>
+            //{
+            //    client.BaseAddress = new Uri(menuServiceUrl); // �����: ���� � �����!
+            //    client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+            //    client.Timeout = TimeSpan.FromSeconds(10);
+            //})
+            //.ConfigurePrimaryHttpMessageHandler(() =>
+            //{
+            //    var handler = new HttpClientHandler();
+            //    handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+            //    return handler;
+            //});
+
+
 
             var app = builder.Build();
 

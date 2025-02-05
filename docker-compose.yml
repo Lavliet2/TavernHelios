@@ -8,6 +8,8 @@ services:
       - mongo_data:/data/db
     environment:
       MONGO_INITDB_DATABASE: 'mongoMenuService'
+    networks:
+      - app_network
 
   menuService:
     container_name: menuService
@@ -23,6 +25,8 @@ services:
       ASPNETCORE_ENVIRONMENT: "Development"
       ASPNETCORE_URLS: "http://+:5064"  
     command: ["dotnet", "MenuServiceServer.dll"]
+    networks:
+      - app_network
 
   ReservationService:
     container_name: ReservationService
@@ -38,6 +42,13 @@ services:
       ASPNETCORE_ENVIRONMENT: "Development"
       ASPNETCORE_URLS: "http://+:5065"  
     command: ["dotnet", "TavernHelios.ReservationServiceServer.dll"]
+    networks:
+      - app_network
+      
+
+networks:
+  app_network:
+    driver: bridge     
 
 volumes:
   mongo_data:

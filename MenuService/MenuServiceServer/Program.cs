@@ -28,6 +28,7 @@ namespace MenuServiceServer
                 {
                     o.Protocols = HttpProtocols.Http2;
                 });
+                Console.WriteLine($"MenuService: {settings.Ip}:{settings.Port}");
             });
            
 

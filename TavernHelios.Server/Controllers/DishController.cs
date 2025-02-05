@@ -13,8 +13,7 @@ namespace DishServiceServer.Controllers
     [Route("api/[controller]")]
     public class DishController : ControllerBase
     {
-        private readonly ILogger<DishController> _logger;
-        
+        private readonly ILogger<DishController> _logger;        
         private readonly MenuServiceClient _grpcClient;
 
         public DishController(
