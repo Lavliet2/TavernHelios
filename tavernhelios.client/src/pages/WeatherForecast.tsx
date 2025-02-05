@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import {Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography } from '@mui/material';
 
+
+const API_BASE_URL = import.meta.env.VITE_API_URL  || 'weatherforecast';
+
 interface Forecast {
   date: string;
   temperatureC: number;
@@ -16,7 +19,7 @@ function WeatherForecast() {
   }, []);
 
   async function populateWeatherData() {
-    const response = await fetch('weatherforecast');
+    const response = await fetch(`${API_BASE_URL}/weatherforecast`);
     if (response.ok) {
       const data = await response.json();
       setForecasts(data);

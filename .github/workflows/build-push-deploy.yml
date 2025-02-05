@@ -75,7 +75,7 @@ jobs:
             ghcr.io/lavliet2/menuservice:latest
 
       # **Сборка и публикация контейнера с ReservationService**
-      - name: Build and push MenuService image
+      - name: Build and push ReservationService image
         uses: docker/build-push-action@v4
         with:
           context: .
@@ -125,6 +125,7 @@ jobs:
           echo "🔄 Перезапускаем поды..."
           kubectl rollout restart deployment tavernhelios-server || exit 1
           kubectl rollout restart deployment menuservice || exit 1
+          kubectl rollout restart deployment reservationservice || exit 1
       
           echo "✅ Деплой успешно завершён!"
           EOF
