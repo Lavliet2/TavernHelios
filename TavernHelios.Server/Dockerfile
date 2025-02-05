@@ -1,21 +1,4 @@
-# Этап 1: Сборка приложения с помощью Node.js
-FROM node:19 AS frontend-build
-
-WORKDIR /app
-
-# Копируем package.json и устанавливаем зависимости
-COPY package*.json ./
-RUN npm install
-
-# Устанавливаем API URL перед билдом
-ARG VITE_API_URL
-ENV VITE_API_URL=${VITE_API_URL}
-COPY . .
-
-# Строим проект (встраиваем `VITE_API_URL`)
-RUN npm run build
-
-# Этап 2: Объединяем фронт и бэк
+п»ї# РСЃРїРѕР»СЊР·СѓРµРј Р±Р°Р·РѕРІС‹Р№ РѕР±СЂР°Р· РґР»СЏ ASP.NET
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 USER root
 WORKDIR /app
@@ -24,8 +7,8 @@ USER $APP_UID
 EXPOSE 8080
 EXPOSE 8081
 
-# Этап 3: Сборка бекенда
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS backend-build
+# 1пёЏвѓЈ РЎС‚СЂРѕРёРј Р±СЌРєРµРЅРґ
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["TavernHelios.Server/TavernHelios.Server.csproj", "TavernHelios.Server/"]
@@ -36,14 +19,33 @@ COPY . .
 WORKDIR "/src/TavernHelios.Server"
 RUN dotnet build "./TavernHelios.Server.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
-# Этап 4: Публикация бекенда
-FROM backend-build AS publish
+# 2пёЏвѓЈ РЎРѕР±РёСЂР°РµРј С„СЂРѕРЅС‚РµРЅРґ РїРµСЂРµРґ РїСѓР±Р»РёРєР°С†РёРµР№
+FROM node:19 AS frontend-build
+WORKDIR /app
+
+# РљРѕРїРёСЂСѓРµРј package.json Рё СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј Р·Р°РІРёСЃРёРјРѕСЃС‚Рё
+COPY package*.json ./
+RUN npm install
+
+# рџ”№ РџСЂРѕР±СЂР°СЃС‹РІР°РµРј `VITE_API_URL` РІРЅСѓС‚СЂСЊ С„СЂРѕРЅС‚Р°
+ARG VITE_API_URL
+ENV VITE_API_URL=${VITE_API_URL}
+
+# РљРѕРїРёСЂСѓРµРј РІРµСЃСЊ С„СЂРѕРЅС‚РµРЅРґ
+COPY . .
+
+# рџ›  РЎРѕР±РёСЂР°РµРј С„СЂРѕРЅС‚ (РїРµСЂРµРјРµРЅРЅР°СЏ РІС€РёРІР°РµС‚СЃСЏ РІ РєРѕРґ!)
+RUN npm run build
+
+# 3пёЏвѓЈ РџСѓР±Р»РёРєСѓРµРј .NET-Р±СЌРєРµРЅРґ Рё С„СЂРѕРЅС‚
+FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "./TavernHelios.Server.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
-# Финальный этап: Объединяем бекенд и фронт
+# 4пёЏвѓЈ Р¤РёРЅР°Р»СЊРЅС‹Р№ РєРѕРЅС‚РµР№РЅРµСЂ СЃ С„СЂРѕРЅС‚РѕРј Рё Р±СЌРєРѕРј
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-COPY --from=frontend-build /app/dist /app/wwwroot
+COPY --from=frontend-build /app/dist /app/wwwroot  # Р”РѕР±Р°РІР»СЏРµРј С„СЂРѕРЅС‚РµРЅРґ РІ wwwroot
+
 ENTRYPOINT ["dotnet", "TavernHelios.Server.dll"]
