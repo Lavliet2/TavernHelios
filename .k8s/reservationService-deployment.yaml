@@ -17,15 +17,15 @@ spec:
           image: ghcr.io/lavliet2/reservationservice:latest
           imagePullPolicy: Always
           ports: 
-            - containerPort: 5065 
+            - containerPort: 5065
           env:
             - name: GRPC_PORT
               value: "5065"
             - name: ASPNETCORE_ENVIRONMENT
-              value: "Production"              
+              value: "Production"
       imagePullSecrets:
-        - name: ghcr-secret 
-
+        - name: ghcr-secret
+---
 apiVersion: v1
 kind: Service
 metadata:
