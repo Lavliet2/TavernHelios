@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import {Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography } from '@mui/material';
 
 
-const API_BASE_URL = import.meta.env.VITE_API_URL  || 'weatherforecast';
+// const API_BASE_URL = import.meta.env.VITE_API_URL  || 'weatherforecast';
+const API_BASE_URL = "http://tavernhelios-server-service:5040"
 
 interface Forecast {
   date: string;
