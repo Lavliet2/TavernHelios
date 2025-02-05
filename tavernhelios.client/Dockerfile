@@ -10,6 +10,10 @@ COPY package*.json ./
 # Устанавливаем зависимости
 RUN npm install
 
+# Устанавливаем переменную окружения перед билдом
+ARG VITE_API_URL
+ENV VITE_API_URL=$VITE_API_URL
+
 # Копируем все файлы проекта
 COPY . .
 
