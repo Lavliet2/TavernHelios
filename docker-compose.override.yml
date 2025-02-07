@@ -1,0 +1,10 @@
+services:
+  server:
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_URLS: "https://+:5555"
+  
+  client:
+    environment:
+      VITE_API_URL: "https://localhost:5555"
+      NODE_ENV: "development"

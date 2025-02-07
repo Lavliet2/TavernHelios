@@ -3,36 +3,21 @@ import { defineConfig } from 'vite';
 import plugin from '@vitejs/plugin-react';
 import fs from 'fs';
 import path from 'path';
-import child_process from 'child_process';
 import { env } from 'process';
 
-const isDev = env.NODE_ENV === 'development';
+// Определяем путь к сертификатам для Windows и Linux
+const isWindows = process.platform === "win32";
+const certDir = isWindows
+    ? path.join(process.cwd(), "nginx", "ssl")  // Локальная папка в проекте
+    : "/etc/nginx/ssl";                         // Для Linux
 
-const baseFolder =
-    env.APPDATA !== undefined && env.APPDATA !== ''
-        ? `${env.APPDATA}/ASP.NET/https`
-        : `${env.HOME}/.aspnet/https`;
-
-const certificateName = "tavernhelios.client";
-const certFilePath = path.join(baseFolder, `${certificateName}.pem`);
-const keyFilePath = path.join(baseFolder, `${certificateName}.key`);
-
-if (isDev && (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath))) {
-    if (0 !== child_process.spawnSync('dotnet', [
-        'dev-certs',
-        'https',
-        '--export-path',
-        certFilePath,
-        '--format',
-        'Pem',
-        '--no-password',
-    ], { stdio: 'inherit' }).status) {
-        throw new Error("Could not create certificate.");
-    }
-}
+const certFilePath = path.join(certDir, "tavernhelios.client.pem");
+const keyFilePath = path.join(certDir, "tavernhelios.client.key");
 
 // Тут прописываем реальный адрес бэкенда
-const target = env.VITE_API_URL || `https://localhost:32769`;
+console.log("NODE_ENV from process:", env.NODE_ENV);
+console.log("VITE_API_URL from process:", env.VITE_API_URL);
+const target = env.VITE_API_URL || `http://178.72.83.217:32040`;
 
 export default defineConfig({
     plugins: [plugin()],
@@ -50,12 +35,10 @@ export default defineConfig({
                 rewrite: (path) => path.replace(/^\/api/, '/api')
             }
         },
-        port: 63049,
-        ...(isDev && {
-            https: {
-                key: fs.readFileSync(keyFilePath),
-                cert: fs.readFileSync(certFilePath),
-            }
-        }), 
+        port: 8888,
+        https: {
+            key: fs.existsSync(keyFilePath) ? fs.readFileSync(keyFilePath) : undefined,
+            cert: fs.existsSync(certFilePath) ? fs.readFileSync(certFilePath) : undefined,
+        }
     }
 });

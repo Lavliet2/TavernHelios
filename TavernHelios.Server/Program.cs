@@ -15,7 +15,7 @@ namespace TavernHelios.Server
                 options.AddPolicy("AllowFrontend",
                     builder =>
                     {
-                        builder.WithOrigins("https://localhost:63049", "http://localhost:3000") // ��������� ��������� ����������
+                        builder.WithOrigins("https://localhost:63049", "https://localhost:5555", "https://localhost:8888") // ��������� ��������� ����������
                                .AllowAnyMethod()
                                .AllowAnyHeader()
                                .AllowCredentials();

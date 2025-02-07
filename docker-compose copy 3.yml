@@ -59,54 +59,8 @@ services:
     command: ["dotnet", "TavernHelios.ReservationServiceServer.dll"]
     networks:
       - app_network
-
-  server:
-    container_name: TavernHelios.Server
-    image: tavernhelios/server
-    build:
-      context: .
-      dockerfile: ./TavernHelios.Server/Dockerfile
-    ports:
-      # - "5000:5000"
-      - "5555:5555"
-    depends_on:
-      - postgres
-      - mongoMenuService
-    environment:
-      ASPNETCORE_ENVIRONMENT: "Development"
-      ASPNETCORE_URLS: "https://+:5555"
-      ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/aspnetapp.pfx"
-      ASPNETCORE_Kestrel__Certificates__Default__Password: "helios"
-      # VITE_API_URL: "https://localhost:5555"
-    volumes:
-      - ${USERPROFILE}/.aspnet/https:/https:ro
-    command: ["dotnet", "TavernHelios.Server.dll"]
-    networks:
-      - app_network
-
-  client:
-    container_name: tavernhelios.client
-    image: tavernhelios/client
-    build:
-      context: .
-      dockerfile: ./tavernhelios.client/Dockerfile
-      args:
-        NODE_ENV: "development"
-        VITE_API_URL: "https://localhost:5555"
-    environment:
-      NODE_ENV: "development"
-      VITE_API_URL: "https://localhost:5555"
-    ports:
-      - "8888:443"
-    depends_on:
-      - server
-    networks:
-      - app_network
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./nginx/conf.d:/etc/nginx/conf.d
-      - ./nginx/ssl:/etc/nginx/ssl
       
+
 networks:
   app_network:
     driver: bridge     

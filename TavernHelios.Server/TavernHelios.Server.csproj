@@ -25,9 +25,9 @@
     <ProjectReference Include="..\Common\TavernHelios.GrpcCommon\TavernHelios.GrpcCommon.csproj" />
     <ProjectReference Include="..\MenuService\APICore\TavernHelios.MenuService.APICore.csproj" />
     <ProjectReference Include="..\ReservationService\TavernHelios.ReservationService.APICore\TavernHelios.ReservationService.APICore.csproj" />
-    <ProjectReference Include="..\tavernhelios.client\tavernhelios.client.esproj">
+    <!--<ProjectReference Include="..\tavernhelios.client\tavernhelios.client.esproj">
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
+    </ProjectReference>-->
   </ItemGroup>
 
 </Project>

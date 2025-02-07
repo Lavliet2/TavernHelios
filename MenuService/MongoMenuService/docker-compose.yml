@@ -9,5 +9,12 @@ services:
     environment:
       MONGO_INITDB_DATABASE: 'mongoMenuService'
 
+  tavernhelios.server:
+    image: ${DOCKER_REGISTRY-}tavernheliosserver
+    build:
+      context: ../..
+      dockerfile: TavernHelios.Server/Dockerfile
+
 volumes:
   mongo_data:
+
