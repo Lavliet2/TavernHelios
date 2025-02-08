@@ -5,24 +5,20 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"  
 spec:
-  ingressClassName: nginx
-  tls:
-    - hosts:
-        - heliostavern.local
-      secretName: tavernhelios-tls
+  ingressClassName: nginx 
   rules:
     - host: heliostavern.local
       http:
         paths:
+          # Бэкенд работает по HTTP
           - path: /api
             pathType: Prefix
             backend:
               service:
                 name: tavernhelios-server-service
                 port:
-                  number: 8080  
+                  number: 8080
 
           - path: /
             pathType: Prefix
@@ -30,7 +26,7 @@ spec:
               service:
                 name: tavernhelios-server-service
                 port:
-                  number: 8080  
+                  number: 8080
 
           # gRPC-сервисы
           - path: /menu
@@ -39,7 +35,7 @@ spec:
               service:
                 name: menuservice
                 port:
-                  number: 5064
+                  number: 5064 
 
           - path: /reservation
             pathType: Prefix
@@ -47,4 +43,4 @@ spec:
               service:
                 name: reservationservice
                 port:
-                  number: 5065
+                  number: 5065 
