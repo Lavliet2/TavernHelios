@@ -7,7 +7,6 @@ using static GrpcContract.ReservationService.ReservationService;
 using GrpcContract.ReservationService;
 using TavernHelios.ReservationService.ApiCore.Extensions;
 using TavernHelios.ReservationService.APICore.Entities;
-using GrpcContract.MenuService;
 
 namespace ReservationServiceServer.ReservationService
 {
@@ -50,25 +49,34 @@ namespace ReservationServiceServer.ReservationService
             }
         }
 
-        public override Task<IdReply> DeleteReservation(IdRequest request, ServerCallContext context)
+        public override async Task<IdReply> DeleteReservation(IdRequest request, ServerCallContext context)
         {
-            //TODO:
-            throw new NotImplementedException();
+            try
+            {
+                var deleteResult = await _reservationRepository.DeleteAsync(long.Parse(request.Id));
+
+                if (deleteResult <= 0)
+                {
+                    return CreateErrorIdReply("Ошибка при удалении брони");
+                }
+
+                var result = new IdReply() { State = ReplyState.Ok };
+                result.Id = deleteResult.ToString();
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return CreateErrorIdReply(ex.Message);
+            }
         }
 
         public override async Task<ReservationsReply> GetReservations(ReservationQueryRequest request, ServerCallContext context)
         {
             try
             {
-                var addResult = await _reservationRepository.GetAllAsync();
-
-                if (addResult == null)
-                {
-                    return CreateErrorReply("Ошибка при получении блюд из БД");
-                }
-
+                var getResult = await _reservationRepository.GetByQueryAsync(request.ToQuery());
                 var result = new ReservationsReply() { State = ReplyState.Ok };
-                result.Reservations.AddRange(addResult.Select(x => x.ToGrpc()));
+                result.Reservations.AddRange(getResult.Select(x => x.ToGrpc()));
                 return result;
             }
             catch (Exception ex)
@@ -77,10 +85,19 @@ namespace ReservationServiceServer.ReservationService
             }
         }
 
-        public override Task<ReservationsReply> UpdateReservation(Reservation request, ServerCallContext context)
+        public override async Task<ReservationsReply> UpdateReservation(Reservation request, ServerCallContext context)
         {
-            //TODO:
-            throw new NotImplementedException();
+            try
+            {
+                var getResult = await _reservationRepository.UpdateAsync(request.ToEntity());
+                var result = new ReservationsReply() { State = ReplyState.Ok };
+                result.Reservations.Add(getResult.ToGrpc());
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return CreateErrorReply(ex.Message);
+            }
         }
 
         private IdReply CreateErrorIdReply(string message)

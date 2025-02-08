@@ -1,19 +1,22 @@
-﻿namespace TavernHelios.ReservationService.ApiCore.Interfaces
+﻿using System.Linq.Expressions;
+
+namespace TavernHelios.ReservationService.ApiCore.Interfaces
 {
     public interface IRepository<T> where T : IEntity
     {
-        /// <summary>
-        /// Получить все сущности
-        /// </summary>
-        /// <returns></returns>
-        Task<IEnumerable<T>> GetAllAsync();
-
         /// <summary>
         /// Получить сущность по Id
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         Task<T> GetByIdAsync(long id);
+
+        /// <summary>
+        /// Получить сущность по условию
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task<IEnumerable<T>> GetByQueryAsync(Expression<Func<T, bool>> condition);
 
         /// <summary>
         /// Создать сущность
@@ -34,13 +37,7 @@
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        Task<string> DeleteAsync(long entityId);
-
-        /// <summary>
-        /// Удалить ВСЁ
-        /// </summary>
-        /// <returns></returns>
-        Task<long> DeleteAll();
+        Task<long> DeleteAsync(long entityId);
 
     }
 }
