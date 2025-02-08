@@ -12,7 +12,7 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS with-node
 RUN apt-get update
 RUN apt-get install curl
-RUN curl -sL https://deb.nodesource.com/setup_20.x | bash
+RUN curl -sL https://deb.nodesource.com/setup_23.x | bash
 RUN apt-get -y install nodejs
 
 # Сборка проекта (бэкенд + фронт)
@@ -36,6 +36,8 @@ RUN npm install
 RUN npm run build
 
 WORKDIR "/src/TavernHelios.Server"
+RUN mkdir -p /app/wwwroot
+RUN cp -r /src/tavernhelios.client/dist/* /app/wwwroot/
 RUN dotnet build "./TavernHelios.Server.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # Этот этап используется для публикации проекта службы, который будет скопирован на последний этап
@@ -47,7 +49,7 @@ RUN dotnet publish "./TavernHelios.Server.csproj" -c $BUILD_CONFIGURATION -o /ap
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+COPY --from=build /app/wwwroot /app/wwwroot
 
 ENV APP_VERSION=$VITE_APP_VERSION
-
 ENTRYPOINT ["dotnet", "TavernHelios.Server.dll"]
