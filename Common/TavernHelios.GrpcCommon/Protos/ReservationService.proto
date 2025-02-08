@@ -31,10 +31,10 @@ message ReservationsReply{
 //Запрос на получение бронирований. Условия налагаются по "И"
 message ReservationQueryRequest
 {
-	string ReservationId = 1;
-	string PersonId = 2;
-	string DishId = 5;
-	google.protobuf.Timestamp BeginDate = 3;
-	google.protobuf.Timestamp EndDate = 4;
+	optional int64 ReservationId = 1;
+	optional string PersonId = 2;
+	optional string DishId = 5;
+	optional google.protobuf.Timestamp BeginDate = 3;
+	optional google.protobuf.Timestamp EndDate = 4;
 }
 
