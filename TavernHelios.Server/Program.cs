@@ -18,7 +18,8 @@ namespace TavernHelios.Server
                         builder.WithOrigins("https://localhost:63049", "https://localhost:5555", "https://localhost:8888") // ��������� ��������� ����������
                                .AllowAnyMethod()
                                .AllowAnyHeader()
-                               .AllowCredentials();
+                               .AllowAnyOrigin();
+                               //.AllowCredentials();
                     });
             });
 
@@ -28,31 +29,6 @@ namespace TavernHelios.Server
 
             builder.Services.ConfigureServices(builder.Configuration);
 
-            // ����������� HttpClient � ����������� ��������� SSL (�� ��� ����������!)
-            //var menuServiceUrl = builder.Configuration.GetSection("ApiSettings:MenuServiceUrl").Value;
-            //var menuServiceUrl = Environment.GetEnvironmentVariable("MENU_SERVICE_URL")
-            //         ?? builder.Configuration.GetSection("ApiSettings:MenuServiceUrl").Value;
-
-            //if (string.IsNullOrEmpty(menuServiceUrl))
-            //{
-            //    throw new Exception("MenuServiceUrl �� ����� � ������������!");
-            //}
-
-            //builder.Services.AddHttpClient("MenuServiceClient", client =>
-            //{
-            //    client.BaseAddress = new Uri(menuServiceUrl); // �����: ���� � �����!
-            //    client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-            //    client.Timeout = TimeSpan.FromSeconds(10);
-            //})
-            //.ConfigurePrimaryHttpMessageHandler(() =>
-            //{
-            //    var handler = new HttpClientHandler();
-            //    handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
-            //    return handler;
-            //});
-
-
-
             var app = builder.Build();
 
             app.UseDefaultFiles();
@@ -61,8 +37,8 @@ namespace TavernHelios.Server
             if (app.Environment.IsDevelopment())
             {
             }
-            app.UseSwagger();
-            app.UseSwaggerUI();
+                app.UseSwagger();
+                app.UseSwaggerUI();
 
             app.UseHttpsRedirection();
             app.UseCors("AllowFrontend");

@@ -11,11 +11,12 @@ EXPOSE 8081
 # Этот этап используется для сборки проекта службы
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
-#RUN curl -fsSL https://deb.nodesource.com/setup_23.x | bash - && \
-    #apt-get install -y nodejs && \
-    #npm install -g npm
+RUN curl -fsSL https://deb.nodesource.com/setup_23.x | bash - && \
+    apt-get install -y nodejs && \
+    npm install -g npm
 WORKDIR /src
 COPY ["TavernHelios.Server/TavernHelios.Server.csproj", "TavernHelios.Server/"]
+COPY ["tavernhelios.client/tavernhelios.client.esproj", "tavernhelios.client/"]
 COPY ["Common/TavernHelios.GrpcCommon/TavernHelios.GrpcCommon.csproj", "Common/TavernHelios.GrpcCommon/"]
 COPY ["MenuService/APICore/TavernHelios.MenuService.APICore.csproj", "MenuService/APICore/"]
 COPY ["ReservationService/TavernHelios.ReservationService.APICore/TavernHelios.ReservationService.APICore.csproj", "ReservationService/TavernHelios.ReservationService.APICore/"]

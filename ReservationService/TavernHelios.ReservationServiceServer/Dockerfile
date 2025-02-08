@@ -2,9 +2,9 @@
 
 # Этот этап используется при запуске из VS в быстром режиме (по умолчанию для конфигурации отладки)
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER root
+#USER root
 WORKDIR /app
-RUN apt update && apt install -y curl
+#RUN apt update && apt install -y curl
 USER $APP_UID
 EXPOSE 8080
 EXPOSE 8081

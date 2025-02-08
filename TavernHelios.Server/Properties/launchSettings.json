@@ -9,7 +9,7 @@
         "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.SpaProxy"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "http://localhost:32769"
+      "applicationUrl": "http://localhost:5554"
     },
     "https": {
       "commandName": "Project",
@@ -20,8 +20,7 @@
         "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.SpaProxy"
       },
       "dotnetRunMessages": true,
-      //"applicationUrl": "https://localhost:32769;http://localhost:5057",
-      "applicationUrl": "https://localhost:32769"
+      "applicationUrl": "https://localhost:5555"
     },
     "IIS Express": {
       "commandName": "IISExpress",
@@ -35,11 +34,14 @@
     "Container (Dockerfile)": {
       "commandName": "Docker",
       "launchBrowser": true,
-      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
+      "launchUrl": "{Scheme}://localhost:5555/swagger",
       "environmentVariables": {
-        "ASPNETCORE_HTTPS_PORTS": "8081",
-        "ASPNETCORE_HTTP_PORTS": "8080"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "DOTNET_USE_POLLING_FILE_WATCHER": "1",
+        "ASPNETCORE_URLS": "https://+:5555;http://+:5000"
       },
+      "httpPort": 5000,
+      "sslPort": 5555,
       "publishAllPorts": true,
       "useSSL": true
     }

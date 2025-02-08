@@ -17,8 +17,7 @@
 
 
 // export const API_BASE_URL = getApiBaseUrl();
-console.log("NODE_ENV from process:", process.env.NODE_ENV);
-console.log("VITE_API_URL from process:", process.env.VITE_API_URL);
-console.log("VITE_API_URL from env:", import.meta.env.VITE_API_URL);
+
 
 export const API_BASE_URL = import.meta.env.VITE_API_URL || "http://178.72.83.217:32040";
+console.log("VITE_API_URL from env:", import.meta.env.VITE_API_URL);
