@@ -1,13 +1,13 @@
-docker down
-docker-compose down
-docker-compose up --build -d
+
 
 docker network inspect app_network
 docker network rm app_network
 docker network create --driver bridge --attachable app_network
-docker network connect app_network TavernHelios.Server_2
+docker network connect app_network TavernHelios.Server_2 #имя центрального сервера
 
-
+docker down
+docker-compose down
+docker-compose up --build -d
 
 docker exec -it TavernHelios.Server sh
 
