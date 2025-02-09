@@ -21,20 +21,20 @@ namespace TavernHelios.ReservationService.PostgreRepository
             {
                 entity.Id = LongRandom();
 
-                //Пример того как это будет храниться в реальной БД ( в двух таблицах со связью один ко многим )
-                foreach (var dish in entity.DishIds)
-                {
-                    var dishReservation = new DishReservationEntity()
-                    {
-                        DishId = dish,
+                ////Пример того как это будет храниться в реальной БД ( в двух таблицах со связью один ко многим )
+                //foreach (var dish in entity.DishIds)
+                //{
+                //    var dishReservation = new DishReservationEntity()
+                //    {
+                //        DishId = dish,
 
-                        //Следующие поля EF должна заполнять автоматом
-                        Id = LongRandom(),
-                        Reservation = entity,
-                        ReservationId = entity.Id
-                    };
-                    _dishReservations.Add(dishReservation);
-                }
+                //        //Следующие поля EF должна заполнять автоматом
+                //        Id = LongRandom(),
+                //        Reservation = entity,
+                //        ReservationId = entity.Id
+                //    };
+                //    _dishReservations.Add(dishReservation);
+                //}
                 _reservations[entity.Id] = entity;
 
                 return entity;
@@ -47,10 +47,10 @@ namespace TavernHelios.ReservationService.PostgreRepository
             return await Task.FromResult(entityId);
         }
 
-        public async Task<IEnumerable<ReservationEntity>> GetByQueryAsync(Expression<Func<ReservationEntity, bool>> condition)
+        public async Task<IEnumerable<ReservationEntity>> GetByQueryAsync(Func<ReservationEntity, bool> condition)
         {
-            var func = condition.Compile();
-            var queryResult = _reservations.Values.Where(func);
+            
+            var queryResult = _reservations.Values.Where(condition);
             return await Task.FromResult(queryResult);
         }
 

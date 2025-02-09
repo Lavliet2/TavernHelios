@@ -26,7 +26,10 @@ namespace TavernHelios.ReservationService.ApiCore.Extensions
             result.Id = long.Parse(value.Id);
             result.PersonId = value.PersonId;
             result.Date = value.Date.ToDateTime();
-            result.DishIds = value.DishIds.ToList();
+            foreach(var dishId in value.DishIds)
+            {
+                result.DishReservations.Add(new DishReservationEntity() { DishId = dishId });
+            }
             return result;
         }
 
@@ -56,7 +59,7 @@ namespace TavernHelios.ReservationService.ApiCore.Extensions
             result.Id = value.Id.ToString();
             result.PersonId = value.PersonId;
             result.Date = value.Date.ToTimestamp();
-            result.DishIds.AddRange(value.DishIds);
+            result.DishIds.AddRange(value.DishReservations.Select(x => x.DishId));
             return result;
         }
 
@@ -91,7 +94,7 @@ namespace TavernHelios.ReservationService.ApiCore.Extensions
 
             if (value.HasDishId)
             {
-                result = result.AndAlso(x => x.DishIds.Contains(value.DishId));
+                result = result.AndAlso(x => x.DishReservations.FirstOrDefault(d => d.DishId == value.DishId) != null);
             }
 
             if (value.BeginDate != null)

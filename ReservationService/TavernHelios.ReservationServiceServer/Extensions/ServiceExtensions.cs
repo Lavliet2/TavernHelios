@@ -1,8 +1,10 @@
-﻿using TavernHelios.GrpcCommon.Settings;
+﻿using Microsoft.EntityFrameworkCore;
+using TavernHelios.GrpcCommon.Settings;
 using TavernHelios.ReservationService.ApiCore.Interfaces;
 using TavernHelios.ReservationService.ApiCore.Settings;
 using TavernHelios.ReservationService.APICore.Entities;
 using TavernHelios.ReservationService.PostgreRepository;
+using TavernHelios.ReservationService.PostgreRepository.Repositories.EF;
 
 namespace ReservationServiceServer.Extensions
 {
@@ -15,14 +17,7 @@ namespace ReservationServiceServer.Extensions
             services.AddDbConfiguration();
             services.AddRepositories();
             services.AddCaches();
-
-            //services.AddSwaggerGen(c =>
-            //{
-            //    c.EnableAnnotations();
-            //    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Menu Service Api", Version = "v1" });
-            //});
         }
-
 
         /// <summary>
         /// всё что не входит в отдельные категории или просто нет смысла выделять отдельный метод для этого
@@ -35,13 +30,18 @@ namespace ReservationServiceServer.Extensions
 
         private static void AddRepositories(this IServiceCollection services)
         {
-            services.AddSingleton<IRepository<ReservationEntity>, ReservationRepository_Mock>();
+            //Connection string goes into context constructor via DI
+
+            services.AddDbContext<DatabaseContext>();
+            services.AddScoped<DbContext>(p => p.GetRequiredService<DatabaseContext>());
+            
+            services.AddScoped<IRepository<ReservationEntity>, ReservationRepository>();
+            //services.AddSingleton<IRepository<ReservationEntity>, ReservationRepository_Mock>();
         }
 
         private static void AddDbConfiguration(this IServiceCollection services)
         {
-            //services.AddSingleton<IDBInitializer, DBInitializer.DBInitializer>();
-            //services.AddSingleton<IDBCreator, DBCreator>(); 
+           
         }
 
         private static void AddCaches(this IServiceCollection services)
