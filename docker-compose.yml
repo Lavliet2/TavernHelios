@@ -83,6 +83,22 @@ services:
     command: ["dotnet", "TavernHelios.Server.dll"]
     networks:
       - app_network
+  
+  postgresAuth:
+    image: postgres:latest
+    container_name: postgres
+    restart: always
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_DB: authdb
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: helios
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app_network
+
 
   client:
     container_name: tavernhelios.client
