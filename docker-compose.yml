@@ -15,16 +15,23 @@ services:
     image: postgres:latest
     container_name: postgres
     restart: always
+    user: postgres
     ports:
       - "5433:5432"
     environment:
-      POSTGRES_DB: reservationdb
-      POSTGRES_USER: admin
+      PGUSER: postgres
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: helios
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
     networks:
       - app_network
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   menuService:
     container_name: menuService

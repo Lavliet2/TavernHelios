@@ -21,20 +21,20 @@ namespace TavernHelios.ReservationService.PostgreRepository
             {
                 entity.Id = LongRandom();
 
-                //Пример того как это будет храниться в реальной БД ( в двух таблицах со связью один ко многим )
-                foreach (var dish in entity.DishIds)
-                {
-                    var dishReservation = new DishReservationEntity()
-                    {
-                        DishId = dish,
+                ////Пример того как это будет храниться в реальной БД ( в двух таблицах со связью один ко многим )
+                //foreach (var dish in entity.DishIds)
+                //{
+                //    var dishReservation = new DishReservationEntity()
+                //    {
+                //        DishId = dish,
 
-                        //Следующие поля EF должна заполнять автоматом
-                        Id = LongRandom(),
-                        Reservation = entity,
-                        ReservationId = entity.Id
-                    };
-                    _dishReservations.Add(dishReservation);
-                }
+                //        //Следующие поля EF должна заполнять автоматом
+                //        Id = LongRandom(),
+                //        Reservation = entity,
+                //        ReservationId = entity.Id
+                //    };
+                //    _dishReservations.Add(dishReservation);
+                //}
                 _reservations[entity.Id] = entity;
 
                 return entity;

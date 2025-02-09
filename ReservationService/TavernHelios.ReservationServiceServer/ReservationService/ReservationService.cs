@@ -74,7 +74,7 @@ namespace ReservationServiceServer.ReservationService
         {
             try
             {
-                var getResult = await _reservationRepository.GetByQueryAsync(request.ToQuery());
+                var getResult = await _reservationRepository.GetByQueryAsync(request.ToQuery().Compile());
                 var result = new ReservationsReply() { State = ReplyState.Ok };
                 result.Reservations.AddRange(getResult.Select(x => x.ToGrpc()));
                 return result;

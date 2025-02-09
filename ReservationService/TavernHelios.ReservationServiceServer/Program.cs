@@ -44,14 +44,16 @@ namespace TavernHelios.ReservationServiceServer
             {
                 var db = scope.ServiceProvider.GetRequiredService<DbContext>();
                 //закомментировать для миграций
-                db.Database.EnsureDeletedAsync();
-                Console.WriteLine("Database deleted");
-                db.Database.EnsureCreatedAsync();
-                Console.WriteLine("Database created");
+               //var task = db.Database.EnsureDeletedAsync();
+               // task.Wait();
+               // Console.WriteLine("Database deleted");
+               // task = db.Database.EnsureCreatedAsync();
+               // task.Wait();
+               // Console.WriteLine("Database created");
 
                 //расскомментировать для миграций
                 //метод мигрирования взят отсюда: https://www.learnentityframeworkcore.com/migrations/add-migration
-                //db.Database.Migrate();
+                db.Database.Migrate();
             }
 
             var settings = app.Services.GetRequiredService<IOptions<GrpcReservationServiceSettings>>().Value;

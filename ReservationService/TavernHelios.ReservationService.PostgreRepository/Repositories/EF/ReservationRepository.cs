@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using TavernHelios.ReservationService.ApiCore.Interfaces;
 using TavernHelios.ReservationService.APICore.Entities;
 
@@ -11,29 +12,40 @@ namespace TavernHelios.ReservationService.PostgreRepository.Repositories.EF
 {
     public class ReservationRepository : EfRepositoryBase<ReservationEntity>
     {
-        public Task<ReservationEntity> CreateAsync(ReservationEntity entity)
+        protected readonly DbSet<DishReservationEntity> _dishSet;
+        public ReservationRepository(DbContext context) : base(context)
         {
-            throw new NotImplementedException();
+            _dishSet = context.Set<DishReservationEntity>();
         }
 
-        public Task<long> DeleteAsync(long entityId)
+        public override Task<ReservationEntity> CreateAsync(ReservationEntity entity)
         {
-            throw new NotImplementedException();
+            return base.CreateAsync(entity);
         }
 
-        public Task<ReservationEntity> GetByIdAsync(long id)
+        public override Task<long> DeleteAsync(long entityId)
         {
-            throw new NotImplementedException();
+            return base.DeleteAsync(entityId);
         }
 
-        public Task<IEnumerable<ReservationEntity>> GetByQueryAsync(Expression<Func<ReservationEntity, bool>> condition)
+        public override Task<ReservationEntity> GetByIdAsync(long id)
         {
-            throw new NotImplementedException();
+            return base.GetByIdAsync(id);
         }
 
-        public Task<ReservationEntity> UpdateAsync(ReservationEntity entity)
+        public override async Task<ReservationEntity> UpdateAsync(ReservationEntity entity)
         {
-            throw new NotImplementedException();
+            var existingDishBinds = _dishSet.Where(x => x.ReservationId == entity.Id).ToList();
+            if (existingDishBinds.Any())
+            {
+                _dishSet.RemoveRange(existingDishBinds);
+            }
+            return await base.UpdateAsync(entity);
+        }
+
+        protected override IEnumerable<ReservationEntity> GetQuerySet()
+        {
+            return _entitySet.Include(x => x.DishReservations);
         }
     }
 }
