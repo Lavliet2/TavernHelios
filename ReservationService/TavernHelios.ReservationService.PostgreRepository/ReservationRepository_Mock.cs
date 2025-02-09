@@ -47,10 +47,10 @@ namespace TavernHelios.ReservationService.PostgreRepository
             return await Task.FromResult(entityId);
         }
 
-        public async Task<IEnumerable<ReservationEntity>> GetByQueryAsync(Expression<Func<ReservationEntity, bool>> condition)
+        public async Task<IEnumerable<ReservationEntity>> GetByQueryAsync(Func<ReservationEntity, bool> condition)
         {
-            var func = condition.Compile();
-            var queryResult = _reservations.Values.Where(func);
+            
+            var queryResult = _reservations.Values.Where(condition);
             return await Task.FromResult(queryResult);
         }
 

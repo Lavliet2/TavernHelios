@@ -16,7 +16,7 @@ namespace TavernHelios.ReservationService.ApiCore.Interfaces
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task<IEnumerable<T>> GetByQueryAsync(Expression<Func<T, bool>> condition);
+        Task<IEnumerable<T>> GetByQueryAsync(Func<T, bool> condition);
 
         /// <summary>
         /// Создать сущность
