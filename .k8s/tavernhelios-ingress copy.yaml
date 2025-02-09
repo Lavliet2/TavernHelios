@@ -18,7 +18,7 @@ spec:
               service:
                 name: tavernhelios-server-service
                 port:
-                  number: 8080
+                  number: 5040
 
           - path: /
             pathType: Prefix
@@ -26,7 +26,7 @@ spec:
               service:
                 name: tavernhelios-server-service
                 port:
-                  number: 8080
+                  number: 5040
 
           # gRPC-сервисы
           - path: /menu

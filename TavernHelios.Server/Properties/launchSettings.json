@@ -35,6 +35,7 @@
       "commandName": "Docker",
       "launchBrowser": true,
       "launchUrl": "{Scheme}://localhost:5555/swagger",
+      "dockerNetwork": "app_network",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "DOTNET_USE_POLLING_FILE_WATCHER": "1",

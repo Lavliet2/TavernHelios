@@ -3,8 +3,15 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
       ASPNETCORE_URLS: "https://+:5555"
-  
+    networks:
+      - app_network      
+    
   client:
     environment:
       VITE_API_URL: "https://localhost:5555"
       NODE_ENV: "development"
+
+
+networks:
+  app_network:
+    external: true
