@@ -107,9 +107,9 @@ services:
       - ./nginx/conf.d:/etc/nginx/conf.d
       - ./nginx/ssl:/etc/nginx/ssl
       
-networks:
-  app_network:
-    driver: bridge     
+# networks:
+#   app_network:
+#     driver: bridge     
 
 volumes:
   mongo_data:

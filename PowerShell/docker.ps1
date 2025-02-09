@@ -1,3 +1,17 @@
+docker down
+docker-compose down
+docker-compose up --build -d
+
+docker network inspect app_network
+docker network rm app_network
+docker network create --driver bridge --attachable app_network
+docker network connect app_network TavernHelios.Server_2
+
+
+
+docker exec -it TavernHelios.Server sh
+
+
 docker build -t heliostavern-frontend .
 docker run -d -p 63049:80 --name TavernHelios.Client heliostavern-frontend
 
@@ -6,7 +20,7 @@ docker build -t heliostavern-backend:latest -f TavernHelios.Server/Dockerfile D:
 docker run -d -p 8080:8080 --name heliostavern-backend heliostavern-backend:latest
 
 
-docker down
+
 
 
 
@@ -47,7 +61,3 @@ kubectl get pods
 kubectl exec -it tavernhelios-server-84575cf97-6kwbx -- env | grep VITE_API_URL
 
 
-
-docker exec -it TavernHelios.Server sh
-
-curl -v --http2-prior-knowledge http://host.docker.internal:5064

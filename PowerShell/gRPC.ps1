@@ -22,3 +22,4 @@ grpcurl -plaintext 178.72.83.217:32042 describe TavernHelios.GrpcContract.Reserv
 docker exec -it menuService curl -v --http2-prior-knowledge http://localhost:5064
 docker exec -it ReservationService curl -v --http2-prior-knowledge http://localhost:5066
 
+curl -v --http2-prior-knowledge http://host.docker.internal:5064
