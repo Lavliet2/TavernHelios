@@ -35,6 +35,7 @@ import About from './pages/About';
 import Management from './pages/Management/Management';
 import EditDishes from './pages/Management/EditDishes';
 import EditMenu from './pages/Management/EditMenu';
+import Reservations from "./pages/Management/Reservations";
 
 // Защищенный маршрут
 const ProtectedRoute = () => {
@@ -60,6 +61,7 @@ function App() {
             <Route path="/management" element={<Management />} />
             <Route path="/management/dishes" element={<EditDishes />} />
             <Route path="/management/menu" element={<EditMenu />} />
+            <Route path="/management/reservations" element={<Reservations />} />
           </Route>
         </Route>
       </Routes>

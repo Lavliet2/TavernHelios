@@ -14,11 +14,7 @@ import {
   Button
 } from '@mui/material';
 import Grid from '@mui/material/Grid2';
-import { useNavigate } from "react-router-dom"; //MAV delete
 import { API_BASE_URL } from "../config";
-
-import ReservationList from "../components/Management/ReservationList";
-import dishTypes from "../constants//dishTypes";
 // import { API_BASE_URL } from "../../vite.config";
 
 interface Menu {
@@ -35,6 +31,12 @@ interface Dish {
   imageBase64: string;
 }
 
+const dishTypes = [
+  { value: 0, label: 'Супы' },
+  { value: 1, label: 'Горячее' },
+  { value: 2, label: 'Салаты' },
+  { value: 3, label: 'Напитки' }
+];
 
 const MenuDisplay: React.FC = () => {
   const [menu, setMenu] = useState<Menu | null>(null);
@@ -44,57 +46,11 @@ const MenuDisplay: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedDishes, setSelectedDishes] = useState<Record<number, string>>({});
   const [maxCardHeight, setMaxCardHeight] = useState<number | null>(null);
-  const [username] = useState<string>(() => localStorage.getItem("username") || ""); //setUsername
-  const [selectedTime, setSelectedTime] = useState<string>("12:00");
-  const [refreshKey, setRefreshKey] = useState<number>(0);
-  const navigate = useNavigate(); //MAV delete
-  console.log(`User - ${username}`)
+  // const API_BASE_URL = import.meta.env.VITE_API_URL  || '/api/Menu';
+  // const API_BASE_URL = "http://178.72.83.217:32040"
   console.log(`API - ${API_BASE_URL}`)
 
-  const handleReservation = async () => {
-    if (!username.trim()) {
-      alert("Введите имя перед бронированием!");
-      return;
-    }
   
-    const selectedDishIds = Object.values(selectedDishes);
-    if (selectedDishIds.length === 0) {
-      alert("Выберите хотя бы одно блюдо!");
-      return;
-    }
-  
-    const today = new Date();
-    const [hours, minutes] = selectedTime.split(":").map(Number);
-    today.setHours(hours, minutes, 0, 0);
-
-    const reservationData = {
-      personId: username, 
-      date: today.toISOString(),
-      dishIds: selectedDishIds
-    };
-
-    console.log("Отправляем бронь:", reservationData);
-  
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/Reservation`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(reservationData),
-      });
-  
-      if (!response.ok) {
-        throw new Error("Ошибка при создании брони");
-      }
-  
-      alert("Бронь успешно создана!");
-      setRefreshKey((prev) => prev + 1);
-    } catch (error) {
-      alert(`Ошибка: ${(error as Error).message}`);
-    }
-  };
-
   // Массив для хранения ref карточек
   const cardRefs = useRef<HTMLDivElement[]>([]);
 
@@ -168,11 +124,7 @@ const MenuDisplay: React.FC = () => {
   }, [loadingDishes, dishes]);
 
   const handleSelectionChange = (dishType: number, dishId: string) => {
-    setSelectedDishes(prev => {
-      const updatedSelection = { ...prev, [dishType]: dishId };
-      console.log("Выбранные блюда:", updatedSelection);
-      return updatedSelection;
-    });
+    setSelectedDishes(prev => ({ ...prev, [dishType]: dishId }));
   };
 
   if (loadingMenu) {
@@ -300,25 +252,11 @@ const MenuDisplay: React.FC = () => {
           ))}
         </Grid>
       )}
-      <Box sx={{ textAlign: 'center', mt: 2 }}>
-        <Typography variant="h6" gutterBottom>Выберите время бронирования:</Typography>
-        <FormControl component="fieldset">
-          <RadioGroup
-            row
-            value={selectedTime}
-            onChange={(e) => setSelectedTime(e.target.value)}
-          >
-            <FormControlLabel value="12:00" control={<Radio />} label="12:00" />
-            <FormControlLabel value="13:00" control={<Radio />} label="13:00" />
-          </RadioGroup>
-        </FormControl>
-      </Box>
       <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
         <Button
           variant="contained"
           color="primary"
           size="large"
-          onClick={handleReservation}
           sx={{
             borderRadius: 2,  
             px: 4,            
@@ -328,30 +266,7 @@ const MenuDisplay: React.FC = () => {
           }}
         >
           Забронировать
-        </Button>       
-      </Box>
-      <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
-        <Container maxWidth="lg" sx={{ mt: 4 }}>
-          <ReservationList key={refreshKey}/>
-        </Container>
-      </Box>
-      <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
-        <Button
-            variant="outlined"
-            color="secondary"
-            size="large"
-            onClick={() => navigate("../management/reservations")}
-            sx={{
-              borderRadius: 2,
-              px: 4,
-              py: 1,
-              textTransform: "none",
-              boxShadow: 3,
-              mt: 2,
-            }}
-          >
-            Посмотреть брони
-        </Button> 
+        </Button>
       </Box>
     </Container>
   );
