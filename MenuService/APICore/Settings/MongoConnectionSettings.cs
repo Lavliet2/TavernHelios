@@ -13,9 +13,12 @@ namespace TavernHelios.MenuService.ApiCore.Settings
 
         public string DbName { get; set; } = "";
 
+        public bool ReInitDbWithTestData { get; set; } = false;
+
         public string GetConnectionString()
         {
             return $"mongodb://{Ip}:{Port}";
         }
+
     }
 }

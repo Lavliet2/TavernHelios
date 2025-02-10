@@ -4,6 +4,7 @@ using MenuServiceServer.MenuService;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Options;
 using TavernHelios.GrpcCommon.Settings;
+using TavernHelios.MenuService.ApiCore.Settings;
 //using Grpc.AspNetCore.Server.Reflection;
 
 namespace MenuServiceServer
@@ -43,7 +44,13 @@ namespace MenuServiceServer
             var settings = app.Services.GetRequiredService<IOptions<GrpcMenuServiceSettings>>().Value;
             app.MapGrpcService<MenuServiceApi>().RequireHost($"*:{settings.Port}");
 
-            Task.WaitAll(app.FillMockDataAsync());
+
+            var mongoSettings = app.Services.GetRequiredService<IOptions<MongoConnectionSettings>>().Value;
+            if(mongoSettings.ReInitDbWithTestData)
+            {
+                Task.WaitAll(app.FillMockDataAsync());
+            }
+            
 
             app.Run();
 

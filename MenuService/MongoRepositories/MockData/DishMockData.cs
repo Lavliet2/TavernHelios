@@ -21,7 +21,7 @@ namespace MongoRepositories.MockData
         {
 
             Console.WriteLine("Заполнение БД Блюд тестовыми данными BEGIN");
-            var deletedCount = await _repository.DeleteAll();
+            var deletedCount = await _repository.DeleteAll(); 
             
             var result = new List<DishEntity>();
             foreach(var item in _dishEntities)
