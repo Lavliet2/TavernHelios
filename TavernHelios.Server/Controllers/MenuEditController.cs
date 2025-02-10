@@ -1,5 +1,5 @@
-using TavernHelios.MenuService.ApiCore.DTOValues.Menu;
-using TavernHelios.MenuService.ApiCore.Extensions;
+using TavernHelios.MenuService.Common.DTOValues.Menu;
+using TavernHelios.MenuService.Common.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using static GrpcContract.MenuService.MenuService;
 using Swashbuckle.AspNetCore.Annotations;

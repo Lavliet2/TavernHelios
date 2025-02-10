@@ -4,7 +4,7 @@ using MenuServiceServer.MenuService;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Options;
 using TavernHelios.GrpcCommon.Settings;
-using TavernHelios.MenuService.ApiCore.Settings;
+using TavernHelios.MenuService.Common.Settings;
 //using Grpc.AspNetCore.Server.Reflection;
 
 namespace MenuServiceServer

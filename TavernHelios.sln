@@ -9,11 +9,11 @@ Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "tavernhelios.client", "tave
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MenuService", "MenuService", "{217FC705-70C0-4ECC-8570-F2641A5F1CF5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MenuServiceServer", "MenuService\MenuServiceServer\MenuServiceServer.csproj", "{898EA84C-1625-4EC4-8236-B1EB12D137E9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TavernHelios.MenuService.MenuServiceServer", "MenuService\MenuServiceServer\TavernHelios.MenuService.MenuServiceServer.csproj", "{898EA84C-1625-4EC4-8236-B1EB12D137E9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TavernHelios.MenuService.APICore", "MenuService\APICore\TavernHelios.MenuService.APICore.csproj", "{FDBFC1A6-0886-483C-8E91-C5695BAE81F1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoRepositories", "MenuService\MongoRepositories\MongoRepositories.csproj", "{E5BF226B-148A-49FA-A37C-86FEB8B03347}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TavernHelios.MenuService.MongoRepositories", "MenuService\MongoRepositories\TavernHelios.MenuService.MongoRepositories.csproj", "{E5BF226B-148A-49FA-A37C-86FEB8B03347}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "MongoMenuService", "MenuService\mongoMenuService\MongoMenuService.dcproj", "{65C4625B-6A2B-4994-9201-6791911BBAAF}"
 EndProject

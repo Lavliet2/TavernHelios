@@ -18,7 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Common\TavernHelios.GrpcCommon\TavernHelios.GrpcCommon.csproj" />
     <ProjectReference Include="..\APICore\TavernHelios.MenuService.APICore.csproj" />
-    <ProjectReference Include="..\MongoRepositories\MongoRepositories.csproj" />
+    <ProjectReference Include="..\MongoRepositories\TavernHelios.MenuService.MongoRepositories.csproj" />
   </ItemGroup>
 
   <ItemGroup>

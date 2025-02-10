@@ -1,12 +1,12 @@
-﻿using TavernHelios.MenuService.ApiCore.Interfaces;
+﻿using TavernHelios.MenuService.Common.Interfaces;
 using Grpc.Core;
 using GrpcContract;
 using Microsoft.Extensions.Options;
-using MongoRepositories.Entities;
+using TavernHelios.MenuService.Common.Entities;
 using TavernHelios.GrpcCommon.Settings;
 using static GrpcContract.MenuService.MenuService;
 using GrpcContract.MenuService;
-using TavernHelios.MenuService.ApiCore.Extensions;
+using TavernHelios.MenuService.Common.Extensions;
 
 namespace MenuServiceServer.MenuService
 {

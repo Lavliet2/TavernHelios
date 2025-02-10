@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TavernHelios.MenuService.ApiCore.Enums;
-using TavernHelios.MenuService.ApiCore.Interfaces;
-using MongoRepositories.Entities;
+using TavernHelios.MenuService.Common.Enums;
+using TavernHelios.MenuService.Common.Interfaces;
+using TavernHelios.MenuService.Common.Entities;
 
-namespace MongoRepositories.MockData
+namespace TavernHelios.MenuService.MongoRepositories.MockData
 {
     //Конвертировал картинки в base64 тут: https://www.base64-image.de/
     public class DishMockData : MockDataWriterBase<DishEntity>

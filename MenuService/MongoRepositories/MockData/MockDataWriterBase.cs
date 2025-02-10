@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TavernHelios.MenuService.ApiCore.Entities;
-using TavernHelios.MenuService.ApiCore.Interfaces;
-using MongoRepositories.Interfaces;
+using TavernHelios.MenuService.Common.Entities;
+using TavernHelios.MenuService.Common.Interfaces;
+using TavernHelios.MenuService.MongoRepositories.Interfaces;
 
-namespace MongoRepositories.MockData
+namespace TavernHelios.MenuService.MongoRepositories.MockData
 {
     public abstract class MockDataWriterBase<T> : IDbMockDataWriter<T> where T : IEntity
     {

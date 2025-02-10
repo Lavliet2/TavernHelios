@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TavernHelios.MenuService.ApiCore.Settings
+namespace TavernHelios.MenuService.Common.Settings
 {
     public class MongoConnectionSettings
     {

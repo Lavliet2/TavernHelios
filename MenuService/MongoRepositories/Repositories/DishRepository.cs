@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TavernHelios.MenuService.ApiCore.Settings;
-using Microsoft.Extensions.Options;
-using MongoRepositories.Entities;
+﻿using Microsoft.Extensions.Options;
+using TavernHelios.MenuService.Common.Entities;
+using TavernHelios.MenuService.Common.Settings;
 
-namespace MongoRepositories.Repositories
+namespace TavernHelios.MenuService.MongoRepositories.Repositories
 {
     public class DishRepository : BaseMongoRepository<DishEntity>
     {

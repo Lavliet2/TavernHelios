@@ -1,9 +1,9 @@
-﻿using TavernHelios.MenuService.ApiCore.Interfaces;
-using TavernHelios.MenuService.ApiCore.Settings;
-using MongoRepositories.Entities;
-using MongoRepositories.Interfaces;
-using MongoRepositories.MockData;
-using MongoRepositories.Repositories;
+﻿using TavernHelios.MenuService.Common.Interfaces;
+using TavernHelios.MenuService.Common.Settings;
+using TavernHelios.MenuService.Common.Entities;
+using TavernHelios.MenuService.MongoRepositories.Interfaces;
+using TavernHelios.MenuService.MongoRepositories.MockData;
+using TavernHelios.MenuService.MongoRepositories.Repositories;
 using TavernHelios.GrpcCommon.Settings;
 
 namespace MenuServiceServer.Extensions

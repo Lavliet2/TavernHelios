@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TavernHelios.MenuService.ApiCore.Entities;
+using TavernHelios.MenuService.Common.Entities;
 
-namespace MongoRepositories.Entities
+namespace TavernHelios.MenuService.Common.Entities
 {
     /// <summary>
     /// Сущность Меню, хранимая в БД

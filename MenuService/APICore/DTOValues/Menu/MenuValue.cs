@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace TavernHelios.MenuService.ApiCore.DTOValues.Menu
+namespace TavernHelios.MenuService.Common.DTOValues.Menu
 {
     public class MenuValue : BaseDtoValue
     {

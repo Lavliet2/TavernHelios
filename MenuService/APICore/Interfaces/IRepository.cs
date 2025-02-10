@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TavernHelios.MenuService.ApiCore.Entities;
+using TavernHelios.MenuService.Common.Entities;
 
-namespace TavernHelios.MenuService.ApiCore.Interfaces
+namespace TavernHelios.MenuService.Common.Interfaces
 {
     public interface IRepository<T> where T : IEntity
     {
