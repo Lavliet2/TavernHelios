@@ -30,13 +30,13 @@ namespace TavernHelios.Server.Controllers
         /// Получить меню по Id
         /// </summary>
         /// <returns></returns>
-        [HttpGet("{condition}")]
+        [HttpGet]
         [ProducesResponseType<ReservationValue>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [SwaggerOperation("Получить бронь по Id")]
-        public async Task<IActionResult> GetReservationsByCondition(ReservationQueryRequest condition)
+        [SwaggerOperation("Получить одну или несколько броней удовлетворяющих условию")]
+        public async Task<IActionResult> GetReservationsByCondition([FromQuery] ReservationQueryRequestValue condition)
         {
-            var replyReservation = await _grpcClient.GetReservationsAsync(condition);
+            var replyReservation = await _grpcClient.GetReservationsAsync(condition.ToGrpc());
 
             var reservations= replyReservation.Reservations.Select(x => x.ToDto());
 
@@ -51,7 +51,7 @@ namespace TavernHelios.Server.Controllers
         [ProducesResponseType<ReservationValue>(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [SwaggerOperation("Создать бронь")]
-        public async Task<IActionResult> CreateReservationAsync([FromBody] ReservationValue ReservationValue)
+        public async Task<IActionResult> CreateReservationAsync([FromBody] ReservationCreateValue ReservationValue)
         {
             var ReservationResult = await _grpcClient.AddReservationAsync(ReservationValue.ToGrpc());
             var Reservation = ReservationResult.Reservations.FirstOrDefault();
@@ -61,7 +61,6 @@ namespace TavernHelios.Server.Controllers
 
             var ReservationModel = Reservation.ToDto();
 
-            //TODO: correct URI
             return Created("api/v1/Reservations", ReservationModel);
         }
 

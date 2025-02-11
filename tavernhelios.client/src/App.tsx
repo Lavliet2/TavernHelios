@@ -11,6 +11,7 @@ import EditMenu from './pages/Management/EditMenu';
 import ErrorHandler from './components/ErrorHandler';
 import { useEffect } from 'react';
 import { useUserContext } from './contexts/UserContext';
+import Reservations from "./pages/Management/Reservations";
 
 function App() {
   const userContext = useUserContext();
@@ -38,6 +39,7 @@ function App() {
             <Route path="/management" element={<Management />} />
             <Route path="/management/dishes" element={<EditDishes />} />
             <Route path="/management/menu" element={<EditMenu />} />
+            <Route path="/management/reservations" element={<Reservations />} />
           </Route>
           {/* </Route> */}
         </Routes>

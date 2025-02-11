@@ -1,4 +1,6 @@
-﻿using TavernHelios.ReservationService.ApiCore.Interfaces;
+﻿using System.Linq;
+using System.Linq.Expressions;
+using TavernHelios.ReservationService.ApiCore.Interfaces;
 using TavernHelios.ReservationService.APICore.Entities;
 
 namespace TavernHelios.ReservationService.PostgreRepository
@@ -10,7 +12,7 @@ namespace TavernHelios.ReservationService.PostgreRepository
     public class ReservationRepository_Mock : IRepository<ReservationEntity>
     {
 
-        private List<ReservationEntity> _reservations = new List<ReservationEntity>();
+        private Dictionary<long, ReservationEntity> _reservations = new Dictionary<long,ReservationEntity>();
         private List<DishReservationEntity> _dishReservations = new List<DishReservationEntity>();
         
         public async Task<ReservationEntity> CreateAsync(ReservationEntity entity)
@@ -19,52 +21,49 @@ namespace TavernHelios.ReservationService.PostgreRepository
             {
                 entity.Id = LongRandom();
 
-                //Пример того как это будет храниться в реальной БД ( в двух таблицах со связью один ко многим )
-                foreach (var dish in entity.DishIds)
-                {
-                    var dishReservation = new DishReservationEntity()
-                    {
-                        DishId = dish,
+                ////Пример того как это будет храниться в реальной БД ( в двух таблицах со связью один ко многим )
+                //foreach (var dish in entity.DishIds)
+                //{
+                //    var dishReservation = new DishReservationEntity()
+                //    {
+                //        DishId = dish,
 
-                        //Следующие поля EF должна заполнять автоматом
-                        Id = LongRandom(),
-                        Reservation = entity,
-                        ReservationId = entity.Id
-                    };
-                    _dishReservations.Add(dishReservation);
-                }
-                _reservations.Add(entity);
+                //        //Следующие поля EF должна заполнять автоматом
+                //        Id = LongRandom(),
+                //        Reservation = entity,
+                //        ReservationId = entity.Id
+                //    };
+                //    _dishReservations.Add(dishReservation);
+                //}
+                _reservations[entity.Id] = entity;
 
                 return entity;
             });
         }
 
-        public async Task<long> DeleteAll()
+        public async Task<long> DeleteAsync(long entityId)
         {
-            throw new NotImplementedException();
+            _reservations.Remove(entityId);
+            return await Task.FromResult(entityId);
         }
 
-        public async Task<string> DeleteAsync(long entityId)
+        public async Task<IEnumerable<ReservationEntity>> GetByQueryAsync(Func<ReservationEntity, bool> condition)
         {
-            throw new NotImplementedException();
-        }
-
-        public async Task<IEnumerable<ReservationEntity>> GetAllAsync()
-        {
-            return await Task.Factory.StartNew<IEnumerable<ReservationEntity>>(() =>
-            {
-                return _reservations.ToArray();
-            });
+            
+            var queryResult = _reservations.Values.Where(condition);
+            return await Task.FromResult(queryResult);
         }
 
         public async Task<ReservationEntity> GetByIdAsync(long id)
         {
-            throw new NotImplementedException();
+            var queryResult = _reservations[id];
+            return await Task.FromResult(queryResult);
         }
 
         public async Task<ReservationEntity> UpdateAsync(ReservationEntity entity)
         {
-            throw new NotImplementedException();
+            _reservations[entity.Id] = entity;
+            return await Task.FromResult(entity);
         }
 
         private long LongRandom()

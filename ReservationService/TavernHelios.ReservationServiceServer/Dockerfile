@@ -8,7 +8,7 @@ WORKDIR /app
 USER $APP_UID
 EXPOSE 8080
 EXPOSE 8081
-
+EXPOSE 5065
 
 # Этот этап используется для сборки проекта службы
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build

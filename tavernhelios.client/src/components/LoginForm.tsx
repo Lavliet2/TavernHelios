@@ -43,6 +43,7 @@ const LoginForm: React.FC = () => {
 
     // Заглушка для авторизации
     if (username === "test" && password === "test") {
+      localStorage.setItem("username", username);
       login(); // Устанавливаем состояние аутентификации
       navigate("/"); // Переход на главную страницу
     } else {
