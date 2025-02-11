@@ -25,6 +25,8 @@ spec:
               value: "Production"
             - name: CONNECTION_STRING
               value: "Host=postgres-reservation;Port=5432;Database=reservationdb;Username=postgres;Password=helios"                      
+            - name: PGPORT
+              value: "5432"
       imagePullSecrets:
         - name: ghcr-secret
 
