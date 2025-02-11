@@ -1,23 +1,23 @@
 services:
-  mongoMenuService:
+  mongoMenu:
     image: mongo
-    container_name: mongoMenuService
+    container_name: mongoMenu
     ports:
       - '27017:27017'
     volumes:
       - mongo_data:/data/db
     environment:
-      MONGO_INITDB_DATABASE: 'mongoMenuService'
+      MONGO_INITDB_DATABASE: 'mongoMenu'
     networks:
       - app_network
 
-  postgres:
+  postgresReservation:
     image: postgres:latest
-    container_name: postgres
+    container_name: postgresReservation
     restart: always
     user: postgres
     ports:
-      - "5433:5432"
+      - "5434:5432"
     environment:
       PGUSER: postgres
       POSTGRES_DB: postgres
@@ -26,7 +26,7 @@ services:
     networks:
       - app_network
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgresReservation_data:/var/lib/postgresql/data
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
       interval: 10s
@@ -42,7 +42,7 @@ services:
     ports:
       - '5064:5064'
     depends_on:
-      - mongoMenuService
+      - mongoMenu
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
       ASPNETCORE_URLS: "http://+:5064"  
@@ -59,7 +59,7 @@ services:
     ports:
       - '5065:5065'
     depends_on:
-      - postgres
+      - postgresReservation
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
       ASPNETCORE_URLS: "http://+:5065"  
@@ -76,9 +76,7 @@ services:
     ports:
       # - "5000:5000"
       - "5555:5555"
-    depends_on:
-      - postgres
-      - mongoMenuService
+
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
       ASPNETCORE_URLS: "https://+:5555"
@@ -120,4 +118,4 @@ services:
 
 volumes:
   mongo_data:
-  postgres_data:
+  postgresReservation_data:

@@ -4,6 +4,8 @@ docker network inspect app_network
 docker network rm app_network
 docker network create --driver bridge --attachable app_network
 docker network connect app_network TavernHelios.Server_2 #имя центрального сервера
+# и перезагрузите контейнер
+
 
 docker down
 docker-compose down
