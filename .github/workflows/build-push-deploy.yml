@@ -120,6 +120,7 @@ jobs:
           kubectl apply -f .k8s/menuservice-deployment.yaml || exit 1
           kubectl apply -f .k8s/postgresReservatione-deployment.yaml || exit 1
           kubectl apply -f .k8s/reservationService-deployment.yaml || exit 1
+          kubectl apply -f .k8s/postgresAuth-deployment.yaml || exit 1
           kubectl apply -f .k8s/tavernhelios-server-deployment.yaml || exit 1
       
           # Принудительный рестарт подов
