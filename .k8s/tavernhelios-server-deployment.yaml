@@ -51,11 +51,13 @@ spec:
   selector:
     app: tavernhelios-server
   ports:
-    - protocol: TCP
+    - name: http  
+      protocol: TCP
       port: 8080      
       targetPort: 8080  
-      nodePort: 32050 
-    - protocol: TCP
-      port: 8443     
+      nodePort: 32041  
+    - name: https
+      protocol: TCP
+      port: 8443      
       targetPort: 8443  
-      nodePort: 32040 
+      nodePort: 32040  
