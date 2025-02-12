@@ -17,10 +17,9 @@ public class Program
             options.AddPolicy("AllowFrontend",
                 builder =>
                 {
-                    builder.WithOrigins("https://localhost:63049", "https://localhost:5555", "https://localhost:8888", "https://localhost:8888", "http://178.72.83.217:32040")
+                    builder.WithOrigins("http://localhost:63049", "http://localhost:5555", "http://localhost:8888", "http://178.72.83.217:32050") // ❗Меняем на HTTP
                            .AllowAnyMethod()
                            .AllowAnyHeader()
-                           //.AllowAnyOrigin();
                            .AllowCredentials();
                 });
         });
@@ -40,7 +39,8 @@ public class Program
             })
             .AddCookie(options =>
             {
-                options.Cookie.SameSite = SameSiteMode.None;
+                options.Cookie.SameSite = SameSiteMode.Lax;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.None;
             })
             .AddYandex("Yandex", options =>
             {
@@ -71,7 +71,7 @@ public class Program
             try
             {
                 var context = services.GetRequiredService<EfDbContext>();
-                context.Database.Migrate();  // 🔹 Накатываем миграции автоматически
+                context.Database.Migrate();  //Накатываем миграции автоматически
             }
             catch (Exception ex)
             {
@@ -85,7 +85,9 @@ public class Program
         app.UseSwagger();
         app.UseSwaggerUI();
 
-        app.UseHttpsRedirection();
+        // Убираем HTTPS редирект
+        // app.UseHttpsRedirection();
+
         app.UseCors("AllowFrontend");
         app.UseAuthentication();
         app.UseAuthorization();
