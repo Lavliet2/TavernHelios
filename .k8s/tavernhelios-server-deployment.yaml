@@ -17,19 +17,27 @@ spec:
           image: ghcr.io/lavliet2/heliostavern-backend:latest
           imagePullPolicy: Always
           ports:
-            - containerPort: 8080  
-            - containerPort: 8081 
+            - containerPort: 8080  # HTTP
+            - containerPort: 8443 
           env:
             - name: MENU_SERVICE_URL
               value: "http://menuservice:5064"
             - name: RESERVATION_SERVICE_URL
               value: "http://reservationservice:5065"
             - name: VITE_API_URL
-              value: "http://178.72.83.217:32040"
+              value: "https://178.72.83.217:32040"
             - name: CONNECTION_STRING
               value: "Host=postgres-auth;Port=5432;Database=postgres-auth;Username=postgres;Password=helios"
             - name: PGPORT
               value: "5432"
+          volumeMounts:
+            - name: tls-certs
+              mountPath: "/app/certs"
+              readOnly: true   
+      volumes:
+        - name: tls-certs
+          secret:
+            secretName: heliostavern-tls                         
       imagePullSecrets:
         - name: ghcr-secret 
 
@@ -44,6 +52,10 @@ spec:
     app: tavernhelios-server
   ports:
     - protocol: TCP
-      port: 5040      
+      port: 8080      
       targetPort: 8080  
+      nodePort: 32050 
+    - protocol: TCP
+      port: 8443     
+      targetPort: 8443  
       nodePort: 32040 

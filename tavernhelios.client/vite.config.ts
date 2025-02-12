@@ -10,7 +10,7 @@ const isDocker = env.DOCKER === "true";
 const isWindows = process.platform === "win32";
 const certDir = isWindows
     ? path.join(process.cwd(), "nginx", "ssl")  // Локальная папка в проекте
-    : "/etc/nginx/ssl";                         // Для Linux
+    : "/app/ssl";                         // Для Linux
 
 const certFilePath = path.join(certDir, "nginx.crt");
 const keyFilePath = path.join(certDir, "nginx.key");
@@ -25,7 +25,7 @@ console.log("VITE_API_URL from process:", env.VITE_API_URL);
 
 // const target = env.VITE_API_URL || `http://178.72.83.217:32040`;
 const target = env.VITE_API_URL 
-    || (!isDocker ? `https://localhost:5555` : `http://178.72.83.217:32040`);
+    || (!isDocker ? `https://localhost:5555` : `https://178.72.83.217:32040`);
 
 console.log("API Target:", target);
 
@@ -46,7 +46,7 @@ export default defineConfig({
             '/api': {
                 target,
                 changeOrigin: true,
-                secure: false,
+                secure: true,
                 rewrite: (path) => path.replace(/^\/api/, '/api')
             }
         },

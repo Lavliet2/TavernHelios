@@ -11,6 +11,16 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
+        builder.WebHost.ConfigureKestrel(options =>
+        {
+            options.ListenAnyIP(8080);
+            options.ListenAnyIP(8443, listenOptions =>
+            {
+                listenOptions.UseHttps("/app/certs/tls.crt", "/app/certs/tls.key");
+            });
+        });
+
+
         // Настройка CORS
         builder.Services.AddCors(options =>
         {
