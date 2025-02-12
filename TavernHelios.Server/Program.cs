@@ -20,8 +20,8 @@ public class Program
                     builder.WithOrigins("https://localhost:63049", "https://localhost:5555", "https://localhost:8888", "https://localhost:8888", "http://178.72.83.217:32040")
                            .AllowAnyMethod()
                            .AllowAnyHeader()
-                           .AllowAnyOrigin();
-                           //.AllowCredentials();
+                           //.AllowAnyOrigin();
+                           .AllowCredentials();
                 });
         });
 

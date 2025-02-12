@@ -125,7 +125,7 @@ jobs:
       
           # Принудительный рестарт подов
           echo "🔄 Перезапускаем поды..."
-          kubectl rollout restart deployment postgres-auth || exit 1
+          # kubectl rollout restart deployment postgres-auth || exit 1
           kubectl rollout restart deployment tavernhelios-server || exit 1
           kubectl rollout restart deployment menuservice || exit 1
           kubectl rollout restart deployment reservationservice || exit 1
