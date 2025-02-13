@@ -27,7 +27,7 @@ spec:
             - name: VITE_API_URL
               value: "http://178.72.83.217:32040"
             - name: CONNECTION_STRING
-              value: "Host=postgres-auth;Port=5432;Database=postgres-auth;Username=postgres;Password=helios"
+              value: "Host=postgres-auth;Port=5432;Database=authdb;Username=postgres;Password=helios"
             - name: PGPORT
               value: "5432"
       imagePullSecrets:
