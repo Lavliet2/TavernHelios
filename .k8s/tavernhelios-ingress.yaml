@@ -16,27 +16,19 @@ spec:
     - host: tavernhelios.duckdns.org
       http:
         paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: tavernhelios-server-service
-                port:
-                  number: 8080
-
           - path: /api
             pathType: Prefix
             backend:
               service:
-                name: tavernhelios-server-service
+                name: tavernhelios-server-service  # Бэкенд
                 port:
-                  number: 8080
+                  number: 8080  
 
           - path: /menu
             pathType: Prefix
             backend:
               service:
-                name: menuservice
+                name: menuservice  # Меню сервис
                 port:
                   number: 5064
 
@@ -44,6 +36,14 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: reservationservice
+                name: reservationservice  # Резервация
                 port:
                   number: 5065
+
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: tavernhelios-server-service  # Фронт (он же в API)
+                port:
+                  number: 8080
