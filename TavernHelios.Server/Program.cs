@@ -17,7 +17,7 @@ public class Program
             options.AddPolicy("AllowFrontend",
                 builder =>
                 {
-                    builder.WithOrigins("http://localhost:63049", "http://localhost:5555", "http://localhost:8888", "http://178.72.83.217:32050") // ❗Меняем на HTTP
+                    builder.WithOrigins("http://localhost:63049", "http://localhost:5555", "http://localhost:8888", "http://178.72.83.217:32050", "https://tavernhelios.duckdns.org") // ❗Меняем на HTTP
                            .AllowAnyMethod()
                            .AllowAnyHeader()
                            .AllowCredentials();
