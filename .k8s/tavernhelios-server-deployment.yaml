@@ -1,51 +1,46 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
-  name: tavernhelios-server
+  name: tavernhelios-ingress
+  namespace: default
+  annotations:
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: tavernhelios-server
-  template:
-    metadata:
-      labels:
-        app: tavernhelios-server
-    spec:
-      containers:
-        - name: tavernhelios-server
-          image: ghcr.io/lavliet2/heliostavern-backend:latest
-          imagePullPolicy: Always
-          ports:
-            - containerPort: 8080  
-            - containerPort: 8081 
-          env:
-            - name: MENU_SERVICE_URL
-              value: "http://menuservice:5064"
-            - name: RESERVATION_SERVICE_URL
-              value: "http://reservationservice:5065"
-            - name: VITE_API_URL
-              value: "https://tavernhelios.duckdns.org"
-            # - name: VITE_API_URL
-            #   value: "http://178.72.83.217:32040"
-            - name: CONNECTION_STRING
-              value: "Host=postgres-auth;Port=5432;Database=authdb;Username=postgres;Password=helios"
-            - name: PGPORT
-              value: "5432"
-      imagePullSecrets:
-        - name: ghcr-secret 
-
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: tavernhelios-server-service
-spec:
-  type: NodePort
-  selector:
-    app: tavernhelios-server
-  ports:
-    - protocol: TCP
-      port: 5040      
-      targetPort: 8080  
-      nodePort: 32040 
+  ingressClassName: nginx
+  rules:
+  - host: tavernhelios.duckdns.org
+    http:
+      paths:
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: tavernhelios-server-service
+            port:
+              number: 8080
+      - path: /menu
+        pathType: Prefix
+        backend:
+          service:
+            name: menuservice
+            port:
+              number: 5064
+      - path: /reservation
+        pathType: Prefix
+        backend:
+          service:
+            name: reservationservice
+            port:
+              number: 5065
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: tavernhelios-server-service
+            port:
+              number: 8080
+  tls:
+  - hosts:
+    - tavernhelios.duckdns.org
+    secretName: heliostavern-tls
