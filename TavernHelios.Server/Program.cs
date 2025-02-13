@@ -39,8 +39,8 @@ public class Program
             })
             .AddCookie(options =>
             {
-                options.Cookie.SameSite = SameSiteMode.Lax;
-                options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+                options.Cookie.SameSite = SameSiteMode.None;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
             })
             .AddYandex("Yandex", options =>
             {
@@ -49,7 +49,7 @@ public class Program
                 options.AuthorizationEndpoint = "https://oauth.yandex.com/authorize";
                 options.TokenEndpoint = "https://oauth.yandex.com/token";
                 options.UserInformationEndpoint = "https://login.yandex.ru/info";
-                options.CallbackPath = "/yandexAuth/login";
+                options.CallbackPath = "/yandexAuth/login"; 
                 options.SaveTokens = true;
             });
 
@@ -85,8 +85,7 @@ public class Program
         app.UseSwagger();
         app.UseSwaggerUI();
 
-        // Убираем HTTPS редирект
-        // app.UseHttpsRedirection();
+        app.UseHttpsRedirection();
 
         app.UseCors("AllowFrontend");
         app.UseAuthentication();
