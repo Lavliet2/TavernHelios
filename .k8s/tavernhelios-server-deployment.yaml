@@ -25,7 +25,9 @@ spec:
             - name: RESERVATION_SERVICE_URL
               value: "http://reservationservice:5065"
             - name: VITE_API_URL
-              value: "http://178.72.83.217:32040"
+              value: "https://tavernhelios.duckdns.org"
+            # - name: VITE_API_URL
+            #   value: "http://178.72.83.217:32040"
             - name: CONNECTION_STRING
               value: "Host=postgres-auth;Port=5432;Database=authdb;Username=postgres;Password=helios"
             - name: PGPORT

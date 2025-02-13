@@ -25,6 +25,7 @@ console.log("VITE_API_URL from process:", env.VITE_API_URL);
 
 // const target = env.VITE_API_URL || `http://178.72.83.217:32040`;
 const target = env.VITE_API_URL || `https://tavernhelios.duckdns.org`;
+// const target = `https://tavernhelios.duckdns.org`;
 // const target = env.VITE_API_URL 
 //     || (!isDocker ? `https://localhost:5555` : `http://178.72.83.217:32040`);
 

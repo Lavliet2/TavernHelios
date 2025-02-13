@@ -19,5 +19,7 @@
 // export const API_BASE_URL = getApiBaseUrl();
 
 
-export const API_BASE_URL = import.meta.env.VITE_API_URL || "http://178.72.83.217:32040";
+// export const API_BASE_URL = import.meta.env.VITE_API_URL || "http://178.72.83.217:32040";
+export const API_BASE_URL = import.meta.env.VITE_API_URL || "https://tavernhelios.duckdns.org";
+
 console.log("VITE_API_URL from env:", import.meta.env.VITE_API_URL);
