@@ -16,7 +16,7 @@ const NavigationBar: React.FC = () => {
   const { t, i18n } = useTranslation();
   const { changeLanguage } = useContext(LanguageContext) || {};
   const navigate = useNavigate();
-  const appVersion = import.meta.env.VITE_APP_VERSION || 'Unknown Version';
+  const appVersion = import.meta.env.VITE_APP_VERSION || '2.0.1';
   console.log("App Version:", import.meta.env.VITE_APP_VERSION);
   const userContext = useUserContext();
 

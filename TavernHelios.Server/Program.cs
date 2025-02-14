@@ -17,7 +17,7 @@ public class Program
             options.AddPolicy("AllowFrontend",
                 builder =>
                 {
-                    builder.WithOrigins("http://localhost:63049", "http://localhost:5555", "http://localhost:8888", "http://178.72.83.217:32050", "https://tavernhelios.duckdns.org") 
+                    builder.WithOrigins("https://localhost:63049", "https://localhost:5555", "https://localhost:8888", "https://localhost:8888", "http://178.72.83.217:32040")
                            .AllowAnyMethod()
                            .AllowAnyHeader()
                            //.AllowAnyOrigin();
@@ -41,12 +41,11 @@ public class Program
             .AddCookie(options =>
             {
                 options.Cookie.SameSite = SameSiteMode.None;
-                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
             })
             .AddYandex("Yandex", options =>
             {
-                options.ClientId = "…";
-                options.ClientSecret = "…";
+                options.ClientId = yandexOptions.ClientId;
+                options.ClientSecret = yandexOptions.ClientSecret;
                 options.AuthorizationEndpoint = "https://oauth.yandex.com/authorize";
                 options.TokenEndpoint = "https://oauth.yandex.com/token";
                 options.UserInformationEndpoint = "https://login.yandex.ru/info";
