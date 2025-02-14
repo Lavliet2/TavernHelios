@@ -17,9 +17,10 @@ public class Program
             options.AddPolicy("AllowFrontend",
                 builder =>
                 {
-                    builder.WithOrigins("http://localhost:63049", "http://localhost:5555", "http://localhost:8888", "http://178.72.83.217:32050", "https://tavernhelios.duckdns.org") // ❗Меняем на HTTP
+                    builder.WithOrigins("http://localhost:63049", "http://localhost:5555", "http://localhost:8888", "http://178.72.83.217:32050", "https://tavernhelios.duckdns.org") 
                            .AllowAnyMethod()
                            .AllowAnyHeader()
+                           //.AllowAnyOrigin();
                            .AllowCredentials();
                 });
         });
@@ -40,7 +41,6 @@ public class Program
             .AddCookie(options =>
             {
                 options.Cookie.SameSite = SameSiteMode.None;
-                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
             })
             .AddYandex("Yandex", options =>
             {
@@ -49,7 +49,7 @@ public class Program
                 options.AuthorizationEndpoint = "https://oauth.yandex.com/authorize";
                 options.TokenEndpoint = "https://oauth.yandex.com/token";
                 options.UserInformationEndpoint = "https://login.yandex.ru/info";
-                options.CallbackPath = "/yandexAuth/login"; 
+                options.CallbackPath = "/yandexAuth/login";
                 options.SaveTokens = true;
             });
 
@@ -71,7 +71,7 @@ public class Program
             try
             {
                 var context = services.GetRequiredService<EfDbContext>();
-                context.Database.Migrate();  //Накатываем миграции автоматически
+                context.Database.Migrate();  // 🔹 Накатываем миграции автоматически
             }
             catch (Exception ex)
             {
@@ -86,7 +86,6 @@ public class Program
         app.UseSwaggerUI();
 
         app.UseHttpsRedirection();
-
         app.UseCors("AllowFrontend");
         app.UseAuthentication();
         app.UseAuthorization();
