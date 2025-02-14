@@ -22,7 +22,7 @@ const LoginForm: React.FC = () => {
       {
         client_id: "5c9531b9a1cb48628ffb70ea2582afc8",
         response_type: "token",
-        redirect_uri: `${API_BASE_URL}/yandexAuth/login/`
+        redirect_uri: `${API_BASE_URL}/yandexAuth/login`
       },
       `${API_BASE_URL}`, // ???
       {

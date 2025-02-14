@@ -40,6 +40,14 @@ spec:
             name: tavernhelios-server-service
             port:
               number: 8080
+
+      - path: /.well-known/acme-challenge
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: acme-challenge-service
+            port:
+              number: 80              
   tls:
   - hosts:
     - tavernhelios.duckdns.org
