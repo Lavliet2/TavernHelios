@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { TextField, Button, Box, Typography, Paper } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -16,7 +16,7 @@ const LoginForm: React.FC = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  // ❌ Комментируем/удаляем YaAuthSuggest, чтобы не использовать Implicit Flow
+  // Комментируем/удаляем YaAuthSuggest, чтобы не использовать Implicit Flow
   /*
   useEffect(() => {
     window.YaAuthSuggest.init(
