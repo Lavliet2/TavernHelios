@@ -16,15 +16,16 @@ const LoginForm: React.FC = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
 
+  // ❌ Комментируем/удаляем YaAuthSuggest, чтобы не использовать Implicit Flow
+  /*
   useEffect(() => {
-    // @ts-ignore
     window.YaAuthSuggest.init(
       {
         client_id: "5c9531b9a1cb48628ffb70ea2582afc8",
         response_type: "token",
         redirect_uri: `${API_BASE_URL}/yandexAuth/login`
       },
-      `${API_BASE_URL}`, // ???
+      `${API_BASE_URL}`,
       {
         view: "button",
         parentId: "yandexAuth",
@@ -34,44 +35,22 @@ const LoginForm: React.FC = () => {
         buttonBorderRadius: "8",
         buttonIcon: 'ya',
       }
-    )
-    // @ts-ignore
-      .then(({ handler }) => handler())}, [])
+    ).then(({ handler }: any) => handler())
+  }, []);
+  */
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Заглушка для авторизации
+    // Заглушка для локального логина/пароля
     if (username === "test" && password === "test") {
       localStorage.setItem("username", username);
-      login(); // Устанавливаем состояние аутентификации
-      navigate("/"); // Переход на главную страницу
+      login(); 
+      navigate("/");
     } else {
       setError("Неверные данные");
     }
   };
-
-  //Когда будет API
-//   const handleSubmit = async (e: React.FormEvent) => {
-//     e.preventDefault();
-  
-//     try {
-//       const response = await fetch("/api/login", {
-//         method: "POST",
-//         headers: { "Content-Type": "application/json" },
-//         body: JSON.stringify({ username, password }),
-//       });
-  
-//       if (response.ok) {
-//         login();
-//         navigate("/");
-//       } else {
-//         setError("Неверные данные");
-//       }
-//     } catch (err) {
-//       setError("Ошибка сервера. Попробуйте позже.");
-//     }
-//   };
 
   return (
     <ThemeProvider theme={Theme}>
@@ -117,104 +96,44 @@ const LoginForm: React.FC = () => {
           )}
 
           <form onSubmit={handleSubmit}>
-          <TextField
-            label={t("login")}
-            variant="outlined"
-            fullWidth
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            margin="normal"
-            sx={{
-                input: {
-                color: 'text.primary',
-                },
-                '& .MuiInputLabel-root': {
-                color: 'text.primary',
-                zIndex: 1, 
-                },
+            <TextField
+              label={t("login")}
+              variant="outlined"
+              fullWidth
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              margin="normal"
+              sx={{
+                input: { color: 'text.primary' },
+                '& .MuiInputLabel-root': { color: 'text.primary', zIndex: 1 },
                 '& .MuiOutlinedInput-root': {
-                '& fieldset': {
-                    borderColor: 'primary.main', 
+                  '& fieldset': {
+                    borderColor: 'primary.main',
+                  },
+                  '&:hover fieldset': { borderColor: 'primary.main' },
+                  '&.Mui-focused fieldset': { borderColor: 'primary.main' },
                 },
-                '&:hover fieldset': {
-                    borderColor: 'primary.main', 
-                },
-                '&.Mui-focused fieldset': {
-                    borderColor: 'primary.main', 
-                },
-                },
-
-                '& input:-webkit-autofill': {
-                backgroundColor: 'transparent !important',
-                color: 'text.primary !important',
-                transition: 'background-color 5000s ease-in-out 0s, color 5000s ease-in-out 0s',
-                zIndex: 0, 
-                },
-                '& input:-moz-autofill': {
-                backgroundColor: 'transparent !important',
-                color: 'text.primary !important',
-                transition: 'background-color 5000s ease-in-out 0s, color 5000s ease-in-out 0s', 
-                zIndex: 0, 
-                },
-                '& input:-webkit-autofill:focus': {
-                backgroundColor: 'transparent !important',
-                color: 'text.primary !important',
-                },
-                '& input:-moz-autofill:focus': {
-                backgroundColor: 'transparent !important',
-                color: 'text.primary !important',
-                },
-            }}
+              }}
             />
             <TextField
-            label={t("password")}
-            type="password"
-            variant="outlined"
-            fullWidth
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            margin="normal"
-            sx={{
-                input: {
-                color: 'text.primary', 
-                },
-                '& .MuiInputLabel-root': {
-                color: 'text.primary', 
-                zIndex: 1, 
-                },
+              label={t("password")}
+              type="password"
+              variant="outlined"
+              fullWidth
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              margin="normal"
+              sx={{
+                input: { color: 'text.primary' },
+                '& .MuiInputLabel-root': { color: 'text.primary', zIndex: 1 },
                 '& .MuiOutlinedInput-root': {
-                '& fieldset': {
-                    borderColor: 'primary.main', 
+                  '& fieldset': {
+                    borderColor: 'primary.main',
+                  },
+                  '&:hover fieldset': { borderColor: 'primary.main' },
+                  '&.Mui-focused fieldset': { borderColor: 'primary.main' },
                 },
-                '&:hover fieldset': {
-                    borderColor: 'primary.main', 
-                },
-                '&.Mui-focused fieldset': {
-                    borderColor: 'primary.main', 
-                },
-                },
-                
-                '& input:-webkit-autofill': {
-                backgroundColor: 'transparent !important',
-                color: 'text.primary !important',
-                transition: 'background-color 5000s ease-in-out 0s, color 5000s ease-in-out 0s',
-                zIndex: 0, 
-                },
-                '& input:-moz-autofill': {
-                backgroundColor: 'transparent !important',
-                color: 'text.primary !important',
-                transition: 'background-color 5000s ease-in-out 0s, color 5000s ease-in-out 0s',
-                zIndex: 0, 
-                },
-                '& input:-webkit-autofill:focus': {
-                backgroundColor: 'transparent !important',
-                color: 'text.primary !important',
-                },
-                '& input:-moz-autofill:focus': {
-                backgroundColor: 'transparent !important',
-                color: 'text.primary !important',
-                },
-            }}
+              }}
             />
             <Button
               type="submit"
@@ -225,9 +144,23 @@ const LoginForm: React.FC = () => {
             >
               {t("signIn")}
             </Button>
-
-            <div style={{marginTop: "10px"}} id='yandexAuth'></div>
           </form>
+
+          {/* Вот кнопка, которая ведёт на серверный /yandexAuth/login */}
+          <Button
+            variant="contained"
+            color="secondary"
+            fullWidth
+            sx={{ marginTop: 2 }}
+            onClick={() => {
+              window.location.href = `${API_BASE_URL}/yandexAuth/login`;
+            }}
+          >
+            {t("signInWithYandex")}
+          </Button>
+
+          {/* Убираем/комментируем div с id='yandexAuth' */}
+          {/* <div style={{marginTop: "10px"}} id='yandexAuth'></div> */}
         </Paper>
       </Box>
     </ThemeProvider>

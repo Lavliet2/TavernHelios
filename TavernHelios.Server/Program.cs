@@ -41,11 +41,12 @@ public class Program
             .AddCookie(options =>
             {
                 options.Cookie.SameSite = SameSiteMode.None;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
             })
             .AddYandex("Yandex", options =>
             {
-                options.ClientId = yandexOptions.ClientId;
-                options.ClientSecret = yandexOptions.ClientSecret;
+                options.ClientId = "…";
+                options.ClientSecret = "…";
                 options.AuthorizationEndpoint = "https://oauth.yandex.com/authorize";
                 options.TokenEndpoint = "https://oauth.yandex.com/token";
                 options.UserInformationEndpoint = "https://login.yandex.ru/info";
