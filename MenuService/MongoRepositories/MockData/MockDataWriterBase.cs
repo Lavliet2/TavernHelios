@@ -23,12 +23,12 @@ namespace TavernHelios.MenuService.MongoRepositories.MockData
 
         public virtual async Task<bool> IsNeedFillMockDataAsync()
         {
-            //Всегда вернуть true
-            return await Task.FromResult(true);
+            ////Всегда вернуть true
+            //return await Task.FromResult(true);
 
-            ////Если нет данный, вернуть true
-            //var existingData = await _repository.GetAllAsync();
-            //return !existingData.Any();
+            //Если нет данный, вернуть true
+            var existingData = await _repository.GetAllAsync();
+            return !existingData.Any();
         }
     }
 }

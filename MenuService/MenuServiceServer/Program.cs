@@ -46,10 +46,9 @@ namespace MenuServiceServer
 
 
             var mongoSettings = app.Services.GetRequiredService<IOptions<MongoConnectionSettings>>().Value;
-            if(mongoSettings.ReInitDbWithTestData)
-            {
-                Task.WaitAll(app.FillMockDataAsync());
-            }
+            
+            Task.WaitAll(app.FillMockDataAsync());
+            
             
 
             app.Run();
