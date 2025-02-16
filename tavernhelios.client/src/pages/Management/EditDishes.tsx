@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Typography, CircularProgress, IconButton, Tooltip, Snackbar, Alert } from "@mui/material";
+import { Container, Typography, IconButton, Tooltip, Snackbar, Alert } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import useDishes from "../../hooks/Management/useDishes";
 import DishList from "../../components/Management/DishList";
