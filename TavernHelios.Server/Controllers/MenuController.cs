@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 
 using Swashbuckle.AspNetCore.Annotations;
-using TavernHelios.MenuService.ApiCore.DTOValues.Menu;
+using TavernHelios.MenuService.Common.DTOValues.Menu;
 using static GrpcContract.MenuService.MenuService;
-using TavernHelios.MenuService.ApiCore.Extensions;
+using TavernHelios.MenuService.Common.Extensions;
 using GrpcContract.MenuService;
 
 namespace TavernHelios.Server.Controllers

@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using System;
 using System.Reflection.Metadata.Ecma335;
-using TavernHelios.MenuService.ApiCore.Entities;
-using TavernHelios.MenuService.ApiCore.Interfaces;
-using TavernHelios.MenuService.ApiCore.Settings;
+using TavernHelios.MenuService.Common.Entities;
+using TavernHelios.MenuService.Common.Interfaces;
+using TavernHelios.MenuService.Common.Settings;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
@@ -11,7 +11,7 @@ using MongoDB.Bson.Serialization.IdGenerators;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 
-namespace MongoRepositories
+namespace TavernHelios.MenuService.MongoRepositories
 {
     //Перед запуском - запустить MongoDB.
     //Например в докере: docker run --name myMongoTestDb -p 27017:27017 -d mongo

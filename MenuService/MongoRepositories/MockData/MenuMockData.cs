@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TavernHelios.MenuService.ApiCore.Enums;
-using TavernHelios.MenuService.ApiCore.Interfaces;
-using MongoRepositories.Entities;
-using MongoRepositories.Interfaces;
+using TavernHelios.MenuService.Common.Enums;
+using TavernHelios.MenuService.Common.Interfaces;
+using TavernHelios.MenuService.Common.Entities;
+using TavernHelios.MenuService.MongoRepositories.Interfaces;
 
-namespace MongoRepositories.MockData
+namespace TavernHelios.MenuService.MongoRepositories.MockData
 {
     public class MenuMockData : MockDataWriterBase<MenuEntity>
     {

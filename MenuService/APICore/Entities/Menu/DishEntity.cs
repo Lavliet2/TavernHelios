@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TavernHelios.MenuService.ApiCore.Entities;
-using TavernHelios.MenuService.ApiCore.Enums;
+using TavernHelios.MenuService.Common.Entities;
+using TavernHelios.MenuService.Common.Enums;
 
 
-namespace MongoRepositories.Entities
+namespace TavernHelios.MenuService.Common.Entities
 {
     /// <summary>
     /// Сущность Блюда, хранимая в БД

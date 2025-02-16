@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TavernHelios.MenuService.ApiCore.Entities;
-using TavernHelios.MenuService.ApiCore.Interfaces;
+using TavernHelios.MenuService.Common.Entities;
+using TavernHelios.MenuService.Common.Interfaces;
 
-namespace MongoRepositories.Interfaces
+namespace TavernHelios.MenuService.MongoRepositories.Interfaces
 {
     public interface IDbMockDataWriter<T> where T : IEntity
     {

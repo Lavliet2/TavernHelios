@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TavernHelios.MenuService.ApiCore.Settings
+namespace TavernHelios.MenuService.Common.Settings
 {
     public class MongoConnectionSettings
     {
@@ -13,9 +13,12 @@ namespace TavernHelios.MenuService.ApiCore.Settings
 
         public string DbName { get; set; } = "";
 
+        public bool ReInitDbWithTestData { get; set; } = false;
+
         public string GetConnectionString()
         {
             return $"mongodb://{Ip}:{Port}";
         }
+
     }
 }

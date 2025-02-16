@@ -1,7 +1,7 @@
-﻿using MongoRepositories.Entities;
-using TavernHelios.MenuService.ApiCore.DTOValues.Menu;
+﻿using TavernHelios.MenuService.Common.Entities;
+using TavernHelios.MenuService.Common.DTOValues.Menu;
 
-namespace TavernHelios.MenuService.ApiCore.Extensions
+namespace TavernHelios.MenuService.Common.Extensions
 {
     public static class MenuExtensions
     {

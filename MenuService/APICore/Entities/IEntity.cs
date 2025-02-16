@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TavernHelios.MenuService.ApiCore.Entities
+namespace TavernHelios.MenuService.Common.Entities
 {
     public interface IEntity
     {

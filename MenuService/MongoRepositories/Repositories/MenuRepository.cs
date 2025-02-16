@@ -1,9 +1,9 @@
-﻿using TavernHelios.MenuService.ApiCore.Interfaces;
-using TavernHelios.MenuService.ApiCore.Settings;
-using Microsoft.Extensions.Options;
-using MongoRepositories.Entities;
+﻿using Microsoft.Extensions.Options;
+using TavernHelios.MenuService.Common.Entities;
+using TavernHelios.MenuService.Common.Interfaces;
+using TavernHelios.MenuService.Common.Settings;
 
-namespace MongoRepositories.Repositories
+namespace TavernHelios.MenuService.MongoRepositories.Repositories
 {
     public class MenuRepository : BaseMongoRepository<MenuEntity>
     {

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using TavernHelios.MenuService.ApiCore.Enums;
+using TavernHelios.MenuService.Common.Enums;
 
-namespace TavernHelios.MenuService.ApiCore.DTOValues.Menu
+namespace TavernHelios.MenuService.Common.DTOValues.Menu
 {
     public class DishValue : BaseDtoValue
     {

@@ -45,7 +45,7 @@ services:
       - mongoMenu
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
-      ASPNETCORE_URLS: "http://+:5064"  
+      ASPNETCORE_URLS: "http://+:5064"
     command: ["dotnet", "MenuServiceServer.dll"]
     networks:
       - app_network
