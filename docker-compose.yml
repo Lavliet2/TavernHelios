@@ -33,11 +33,11 @@ services:
       timeout: 5s
       retries: 5
 
-
   postgresAuth:
     image: postgres:latest
     container_name: postgresAuth
     restart: always
+    user: postgres
     ports:
       - "5435:5432"
     environment:

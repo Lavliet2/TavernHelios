@@ -15,6 +15,7 @@ const LoginForm: React.FC = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const { login } = useAuth();
+  console.log(`Login form redirect_uri: ${API_BASE_URL}/yandexAuth/login/` )
 
   useEffect(() => {
     // @ts-ignore
