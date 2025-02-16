@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { TextField, Button, Box, Typography, Paper } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -6,6 +6,7 @@ import { useAuth } from "../contexts/AuthContext";
 import Logo from "../assets/logo_login_bg.png";
 import { ThemeProvider } from "@mui/material/styles";
 import Theme from "../styles/theme";
+import { API_BASE_URL } from "../config";
 
 const LoginForm: React.FC = () => {
   const { t } = useTranslation();
@@ -14,6 +15,29 @@ const LoginForm: React.FC = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const { login } = useAuth();
+  console.log(`Login form redirect_uri: ${API_BASE_URL}/yandexAuth/login/` )
+
+  useEffect(() => {
+    // @ts-ignore
+    window.YaAuthSuggest.init(
+      {
+        client_id: "5c9531b9a1cb48628ffb70ea2582afc8",
+        response_type: "token",
+        redirect_uri: `${API_BASE_URL}/yandexAuth/login/`
+      },
+      `${API_BASE_URL}`, // ???
+      {
+        view: "button",
+        parentId: "yandexAuth",
+        buttonSize: 'm',
+        buttonView: 'main',
+        buttonTheme: 'light',
+        buttonBorderRadius: "8",
+        buttonIcon: 'ya',
+      }
+    )
+    // @ts-ignore
+      .then(({ handler }) => handler())}, [])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -202,6 +226,8 @@ const LoginForm: React.FC = () => {
             >
               {t("signIn")}
             </Button>
+
+            <div style={{marginTop: "10px"}} id='yandexAuth'></div>
           </form>
         </Paper>
       </Box>
