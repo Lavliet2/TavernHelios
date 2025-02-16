@@ -140,8 +140,11 @@ const MenuDisplay: React.FC = () => {
               const res = await fetch(`${API_BASE_URL}/api/Dish/${dishId}`);
               console.log(`fetchDish: ${dishId} - ${API_BASE_URL}`, res)
               // await fetch(`${API_BASE_URL}`);
-              if (!res.ok) {
-                throw new Error(`Ошибка при загрузке блюда с id ${dishId}`);
+              if (!res.ok) {                
+                // TODO MAV если мы из блюд удаляем сущность и 
+                // если она была забронирована пользователем то ошибка вылетает. 
+                // Возможно на бэке надо и у пользователя удалять из списка это блюдо
+                // throw new Error(`Ошибка при загрузке блюда с id ${dishId}`);
               }
               return res.json();
             })
