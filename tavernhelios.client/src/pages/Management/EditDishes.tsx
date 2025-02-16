@@ -1,34 +1,17 @@
 import React, { useEffect, useState } from "react";
-import {
-  Container,
-  Typography,
-  CircularProgress,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  IconButton,
-  Modal,
-  Box,
-  TextField,
-  Select,
-  MenuItem,
-  InputLabel,
-  FormControl,
-  Button,
-  Tooltip
+import { Container, Typography, CircularProgress,
+  Table, TableBody, TableCell, TableContainer,
+  TableHead, TableRow, Paper, Accordion,
+  AccordionSummary, AccordionDetails, IconButton,
+  Modal, Box, TextField, Select, MenuItem,
+  InputLabel, FormControl, Button, Tooltip
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AddIcon from "@mui/icons-material/Add";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+
 import { API_BASE_URL } from "../../config";
 import dishTypes from "../../constants/dishTypes";
 
@@ -100,17 +83,6 @@ const EditDishes: React.FC = () => {
       alert(error instanceof Error ? error.message : "Ошибка при добавлении");
     }
   };
-
-  // const handleNewImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   const file = event.target.files?.[0];
-  //   if (!file) return;
-  
-  //   const reader = new FileReader();
-  //   reader.onloadend = () => {
-  //     setNewDish((prev) => ({ ...prev, imageBase64: reader.result as string }));
-  //   };
-  //   reader.readAsDataURL(file);
-  // };
 
   const handleDelete = async (dishId: string) => {
     if (!window.confirm("Вы уверены, что хотите удалить это блюдо?")) return;
@@ -212,6 +184,9 @@ const EditDishes: React.FC = () => {
       <Typography variant="h4" color="primary" align="center" sx={{ mb: 4 }}>
         Редактирование блюд
       </Typography>
+        <Typography variant="body1" color="text.secondary" align="center" sx={{ mb: 4 }}>
+          Здесь вы можете редактировать блюда, добавлять новые или удалять существующие.
+        </Typography>
       <Tooltip title="Добавить блюдо">
         <IconButton color="success" onClick={() => setIsAddModalOpen(true)} sx={{ mb: 2 }}>
           <AddIcon />
