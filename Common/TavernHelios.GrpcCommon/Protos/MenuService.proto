@@ -24,6 +24,11 @@ service MenuService {
   rpc AddDish (Dish) returns (DishesReply);
   rpc UpdateDish (Dish) returns (DishesReply);
   rpc DeleteDish (IdRequest) returns (IdReply);
+
+  rpc GetMenuSchedules(MenuScheduleQueryRequest) returns (MenuSchedulesReply); 
+  rpc AddMenuSchedule(MenuScheduleRequest) returns (MenuSchedulesReply); 
+  rpc UpdateMenuSchedule(MenuScheduleRequest) returns (MenuSchedulesReply); 
+  rpc DeleteMenuSchedule(IdRequest) returns (IdReply); 
 }
 
 message Dish{
@@ -55,5 +60,31 @@ message MenusReply{
 message DishMenuMessage{
 	string MenuId = 1;
 	string DishId = 2;
+}
+
+message MenuScheduleRequest{
+	string Id = 1;
+	string MenuId = 2;
+	google.protobuf.Timestamp DateTime = 3;
+}
+
+message MenuScheduleFull{
+	string Id = 1;
+	Menu Menu = 2;
+	google.protobuf.Timestamp DateTime = 3;
+}
+
+message MenuSchedulesReply{
+	repeated MenuScheduleFull MenusSchedules = 1;
+	ReplyState State = 2;
+	repeated string Messages = 3;
+}
+
+message MenuScheduleQueryRequest
+{
+	optional string ScheduleId = 1;
+	optional string MenuId = 2;
+	optional google.protobuf.Timestamp BeginDate = 3;
+	optional google.protobuf.Timestamp EndDate = 4;
 }
 

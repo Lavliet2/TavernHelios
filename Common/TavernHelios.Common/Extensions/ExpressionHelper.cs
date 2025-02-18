@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TavernHelios.ReservationService.APICore.Extensions
+namespace TavernHelios.Common.Extensions
 {
     public static class ExpressionExtensions
     {
@@ -45,5 +45,5 @@ namespace TavernHelios.ReservationService.APICore.Extensions
         }
 
     }
-    
+
 }

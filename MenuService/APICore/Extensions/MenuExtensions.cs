@@ -1,5 +1,7 @@
 ﻿using TavernHelios.MenuService.Common.Entities;
 using TavernHelios.MenuService.Common.DTOValues.Menu;
+using TavernHelios.MenuService.APICore.DTOValues.Menu;
+using Google.Protobuf.WellKnownTypes;
 
 namespace TavernHelios.MenuService.Common.Extensions
 {
@@ -38,6 +40,15 @@ namespace TavernHelios.MenuService.Common.Extensions
             result.Id = menuValue.Id;
             result.Name = menuValue.Name;
             result.Dishes.AddRange(menuValue.Dishes);
+            return result;
+        }
+
+        public static GrpcContract.MenuService.Menu ToGrpc(this MenuCreateValue value)
+        {
+            var result = new GrpcContract.MenuService.Menu();
+            result.Id = "";
+            result.Name = value.Name;
+            result.Dishes.AddRange(value.Dishes);
             return result;
         }
 
