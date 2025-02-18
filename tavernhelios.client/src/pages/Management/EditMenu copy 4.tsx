@@ -1,5 +1,5 @@
-import React, { useState, useCallback } from "react";
-import { Container, Typography, CircularProgress, Card,
+import React, { useState } from "react";
+import { Container, Typography, CircularProgress, Card, TextField,
   CardContent, List, ListItem, ListItemText, ListItemAvatar,
   Avatar, IconButton, Box, Tooltip } from "@mui/material";
 import Grid from "@mui/material/Grid2";
@@ -10,39 +10,45 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 import dishTypes from "../../constants/dishTypes";
+import { Dish } from "../../types"
 import { useMenu } from "../../hooks/Management/useMenu";
 
 import MenuAddDishModal from "../../components/Management/MenuAddDishModal";
 import MenuCreateModal from "../../components/Management/MenuCreateModal";
 
 
+
+
 const EditMenu: React.FC = () => {
   const {
     menuData, dishesData, loading, snackbarMessage, createMenu, 
     removeMenu, addDishToMenu, removeDishFromMenu, isAddModalOpen,
-    setIsAddModalOpen, isCreateMenuModalOpen, setIsCreateMenuModalOpen,
-    snackbarOpen, setSnackbarOpen, setSnackbarMessage, availableDishes, setAvailableDishes
+    setIsAddModalOpen, isCreateMenuModalOpen, setIsCreateMenuModalOpen
   } = useMenu();
 
   const [error] = useState<string | null>(null);
   const [selectedMenu, setSelectedMenu] = useState<string | null>(null);
-  
+  const [availableDishes, setAvailableDishes] = useState<Dish[]>([]);
+  // const [newMenuName, setNewMenuName] = useState<string>("");
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+
   // Открытие модального окна и фильтрация доступных блюд
-  const handleOpenAddDishModal = useCallback((menuId: string, category: string) => {
+  const handleOpenAddDishModal = (menuId: string, category: string) => {
     setSelectedMenu(menuId);
-  
+
     const menu = menuData.find((m) => m.id === menuId);
     if (!menu) return;
-  
+
     const available = Object.values(dishesData).filter(
       (dish) =>
         dishTypes.find((type) => type.value === dish.dishType)?.label === category &&
         !menu.dishes.includes(dish.id)
     );
-  
+
     setAvailableDishes(available);
     setIsAddModalOpen(true);
-  }, [menuData, dishesData, setIsAddModalOpen]);
+  };
 
   if (loading) {
     return (
@@ -158,27 +164,12 @@ const EditMenu: React.FC = () => {
         </Grid>        
       </Grid>
       <MenuCreateModal open={isCreateMenuModalOpen} onClose={() => setIsCreateMenuModalOpen(false)} onCreate={createMenu} />
-      <MenuAddDishModal 
-        open={isAddModalOpen} 
-        onClose={() => {
-          setIsAddModalOpen(false);
-          setAvailableDishes([]);
-        }} 
-        availableDishes={availableDishes} 
-        onSelectDish={(dishId) => selectedMenu && addDishToMenu(selectedMenu, dishId)} 
-      />
-        <Snackbar 
-          open={snackbarOpen} 
-          autoHideDuration={3000} 
-          onClose={() => {
-            setSnackbarOpen(false);
-            setSnackbarMessage(null);
-          }}
-        >
-        <Alert 
-          severity={snackbarMessage?.includes("Ошибка") ? "error" : "success"} 
-          onClose={() => setSnackbarOpen(false)}
-        >
+      <MenuAddDishModal open={isAddModalOpen} onClose={() => 
+        setIsAddModalOpen(false)} 
+        availableDishes={availableDishes} onSelectDish={(dishId) => 
+          selectedMenu && addDishToMenu(selectedMenu, dishId)} />
+      <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={() => setSnackbarOpen(false)}>
+        <Alert severity="error" onClose={() => setSnackbarOpen(false)}>
           {snackbarMessage}
         </Alert>
       </Snackbar>

@@ -14,6 +14,17 @@ export const fetchDishData = async (): Promise<Dish[]> => {
   }
 };
 
+export const fetchDishById = async (dishId: string): Promise<Dish> => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/dish/${dishId}`);
+      if (!response.ok) throw new Error("Ошибка при загрузке блюда");
+      return response.json();
+    } catch (error) {
+      console.error("Ошибка при получении блюда:", error);
+      throw error;
+    }
+  }; 
+
 export const addDish = async (newDish: Dish): Promise<Dish> => {
   try {
     const response = await fetch(`${API_BASE_URL}/api/dish`, {
