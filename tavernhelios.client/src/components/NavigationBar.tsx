@@ -7,7 +7,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import Logo from "../assets/logo.svg";
 import Theme from '../styles/theme';
 import { LanguageContext } from '../contexts/LanguageContext'; 
-import WorldFlag from 'react-world-flags';
+// import WorldFlag from 'react-world-flags';
+import ruFlag from "@/assets/flags/ru.svg";
+import usFlag from "@/assets/flags/us.svg";
+
 
 const NavigationBar: React.FC = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -17,7 +20,11 @@ const NavigationBar: React.FC = () => {
   const navigate = useNavigate();
   const appVersion = import.meta.env.VITE_APP_VERSION || 'Unknown Version';
   console.log("App Version:", import.meta.env.VITE_APP_VERSION);
-
+  const flags = {
+    ru: ruFlag,
+    us: usFlag,
+  };
+  
 
   
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -88,12 +95,12 @@ const NavigationBar: React.FC = () => {
               }}
             >
               <MenuItem onClick={() => handleLanguageChange('ru')}>
-                <WorldFlag code="RU" style={{ width: '20px', marginRight: '10px' }} />
-                RU
+                <img src={flags.ru} alt="Russian Flag" style={{ width: "20px", marginRight: "10px" }} />
+                  RU
               </MenuItem>
               <MenuItem onClick={() => handleLanguageChange('en')}>
-                <WorldFlag code="US" style={{ width: '20px', marginRight: '10px' }} />
-                EN
+                <img src={flags.us} alt="US Flag" style={{ width: "20px", marginRight: "10px" }} />
+                  EN
               </MenuItem>
             </Menu>
 
@@ -125,8 +132,10 @@ const NavigationBar: React.FC = () => {
             onClose={handleMenuClose}            
           >
             <Button color="inherit" onClick={handleLanguageMenuClick}>
-              <WorldFlag code={i18n.language === 'ru' ? 'RU' : 'US'} style={{ width: '20px', marginRight: '5px' }} />
-              {i18n.language === 'ru' ? 'RU' : 'EN'}
+              <img src={i18n.language === "ru" ? flags.ru : flags.us} 
+                alt={i18n.language === "ru" ? "Russian Flag" : "US Flag"} 
+                style={{ width: "20px", marginRight: "5px" }} />
+              {i18n.language === "ru" ? "RU" : "EN"}
             </Button>
             <MenuItem onClick={handleMenuClose}>{t('profile')}</MenuItem>
             <MenuItem onClick={handleMenuLogout}>{t('logout')}</MenuItem>
