@@ -37,6 +37,6 @@
     "globals": "latest",
     "typescript": "latest",
     "typescript-eslint": "latest",
-    "vite": "^6.1.0"
+    "vite": "^6.1.1"
   }
 }

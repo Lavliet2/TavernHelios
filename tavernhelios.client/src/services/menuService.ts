@@ -30,7 +30,7 @@ export const addMenu = async (menuName: string): Promise<Menu> => {
 
 export const updateMenu = async (updatedMenu: Menu): Promise<void> => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/Menu/${updatedMenu.id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/Menu`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updatedMenu),
@@ -41,20 +41,20 @@ export const updateMenu = async (updatedMenu: Menu): Promise<void> => {
       console.error("Ошибка при обновлении меню:", error);
       throw error;
     }
-};
+  };
   
+
 export const deleteMenu = async (menuId: string): Promise<void> => {
-try {
-    const response = await fetch(`${API_BASE_URL}/api/Menu/${menuId}`, {
-    method: "DELETE",
-    headers: { "Content-Type": "application/json" },
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/Menu`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(menuId),
     });
 
     if (!response.ok) throw new Error("Ошибка при удалении меню");
-} catch (error) {
+  } catch (error) {
     console.error("Ошибка при удалении меню:", error);
     throw error;
-}
+  }
 };
-  
-

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { fetchMenus, addMenu, updateMenu, deleteMenu } from "../../services/menuService";
 import { fetchDishData } from "../../services/dishService";
-import { Menu, Dish } from "../../types";
+import { Menu, Dish } from "../../types/Management";
 
 export const useMenu = () => {
   const [menuData, setMenuData] = useState<Menu[]>([]);

@@ -1,6 +1,6 @@
 import React from "react";
 import { Modal, Box, Typography, List, ListItem, ListItemText, ListItemAvatar, Avatar, Button } from "@mui/material";
-import { Dish } from "../../types";
+import { Dish } from "../../types/Management";
 
 interface MenuAddDishModalProps {
   open: boolean;
