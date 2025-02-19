@@ -17,7 +17,7 @@ import Grid from '@mui/material/Grid2';
 import { useNavigate } from "react-router-dom"; //MAV delete
 import { API_BASE_URL } from "../config";
 
-import ReservationList from "../components/Management/ReservationList";
+import ReservationList from "../components/Menu/ReservationList";
 import dishTypes from "../constants//dishTypes";
 // import { API_BASE_URL } from "../../vite.config";
 

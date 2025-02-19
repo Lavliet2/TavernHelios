@@ -1,5 +1,5 @@
 import React from "react";
-import ReservationList from "../../components/Management/ReservationList";
+import ReservationList from "../../components/Menu/ReservationList";
 import { Container, Typography } from "@mui/material";
 
 const ReservationsPage: React.FC = () => {
