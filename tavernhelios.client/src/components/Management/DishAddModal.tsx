@@ -46,9 +46,12 @@ const DishAddModal: React.FC<DishAddModalProps> = ({ dish, open, onClose, onSave
             <img src={dish.imageBase64} alt="Предпросмотр" width="100%" style={{ maxHeight: "200px", objectFit: "contain", borderRadius: 4 }} />
           </Box>
         )}
-        <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
+        <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2, mt: 3 }}>
           <Button variant="contained" color="success" onClick={onSave}>
             Добавить
+          </Button>
+          <Button variant="contained" color="secondary" onClick={onClose}>
+            Отмена
           </Button>
         </Box>
       </Box>

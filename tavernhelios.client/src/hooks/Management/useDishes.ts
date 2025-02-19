@@ -124,7 +124,6 @@ const useDishes = () => {
     setNewDish({ id: "", name: "", description: "", dishType: dishTypes[0].value, imageBase64: "" });
   };
 
-
   return {
     DishData,
     loading,
@@ -136,6 +135,7 @@ const useDishes = () => {
     snackbarMessage,
     snackbarOpen,
     setSnackbarOpen,
+    setSnackbarMessage,
     handleAddDish,
     handleDelete,
     handleEdit,

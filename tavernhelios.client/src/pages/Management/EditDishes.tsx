@@ -7,7 +7,6 @@ import DishAddModal from "../../components/Management/DishAddModal";
 import DishEditModal from "../../components/Management/DishEditModal";
 import DishListSkeleton from "../../components/Management/DishListSkeleton";
 
-
 const EditDishes: React.FC = () => {
   const {
     DishData,
@@ -19,6 +18,7 @@ const EditDishes: React.FC = () => {
     snackbarMessage,
     snackbarOpen,
     setSnackbarOpen,
+    setSnackbarMessage,
     handleAddDish,
     handleDelete,
     handleEdit,
@@ -53,9 +53,23 @@ const EditDishes: React.FC = () => {
       </Tooltip>
       <DishList dishes={DishData} onEdit={handleEdit} onDelete={handleDelete} />
       <DishEditModal dish={editingDish} open={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} onSave={handleEditSave} onChange={handleEditChange} onImageUpload={(e) => handleImageUpload(e, false)} />
-      <DishAddModal dish={newDish} open={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} onSave={handleAddDish} onChange={handleAddChange} onImageUpload={(e) => handleImageUpload(e, true)} />
-      <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={() => setSnackbarOpen(false)} anchorOrigin={{ vertical: "bottom", horizontal: "center" }}>
-        <Alert severity="info" onClose={() => setSnackbarOpen(false)}>
+      <DishAddModal dish={newDish} open={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} onSave={handleAddDish} onChange={handleAddChange} onImageUpload={(e) => handleImageUpload(e, true)} />    
+      <Snackbar 
+        open={snackbarOpen} 
+        autoHideDuration={3000} 
+        onClose={() => {
+          setSnackbarOpen(false);
+          setSnackbarMessage(null);
+        }}
+      >
+        <Alert 
+          severity={
+            snackbarMessage?.toLowerCase().includes("ошибка") ? "error" :
+            snackbarMessage?.toLowerCase().includes("обязательно") ? "warning" :
+            "success"
+          } 
+          onClose={() => setSnackbarOpen(false)}
+        >
           {snackbarMessage}
         </Alert>
       </Snackbar>

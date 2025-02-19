@@ -48,9 +48,12 @@ const DishEditModal: React.FC<DishEditModalProps> = ({ dish, open, onClose, onSa
             <img src={dish.imageBase64} alt="Предпросмотр" width="100%" style={{ maxHeight: "200px", objectFit: "contain", borderRadius: 4 }} />
           </Box>
         )}
-        <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
-          <Button variant="contained" color="primary" onClick={onSave} sx={{ mt: 2 }}>
+        <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2, mt: 3 }}>
+          <Button variant="contained" color="primary" onClick={onSave}>
             Сохранить
+          </Button>
+          <Button variant="contained" color="secondary" onClick={onClose}>
+            Отмена
           </Button>
         </Box>
       </Box>
