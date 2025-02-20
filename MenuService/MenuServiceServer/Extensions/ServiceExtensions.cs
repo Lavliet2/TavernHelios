@@ -5,6 +5,7 @@ using TavernHelios.MenuService.MongoRepositories.Interfaces;
 using TavernHelios.MenuService.MongoRepositories.MockData;
 using TavernHelios.MenuService.MongoRepositories.Repositories;
 using TavernHelios.GrpcCommon.Settings;
+using TavernHelios.MenuService.APICore.Entities.Menu;
 
 namespace MenuServiceServer.Extensions
 {
@@ -50,6 +51,7 @@ namespace MenuServiceServer.Extensions
         {
             services.AddSingleton<IRepository<DishEntity>, DishRepository>();
             services.AddSingleton<IRepository<MenuEntity>, MenuRepository>();
+            services.AddSingleton<IRepository<MenuScheduleEntity>, MenuScheduleRepository>();
 
             ///Для заполнения тестовыми данными
             services.AddSingleton<IDbMockDataWriter<DishEntity>, DishMockData>();

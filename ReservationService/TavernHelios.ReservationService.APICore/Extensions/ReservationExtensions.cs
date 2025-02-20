@@ -2,9 +2,9 @@
 
 using System.Linq.Expressions;
 using Google.Protobuf.WellKnownTypes;
+using TavernHelios.Common.Extensions;
 using TavernHelios.ReservationService.APICore.DTOValues;
 using TavernHelios.ReservationService.APICore.Entities;
-using TavernHelios.ReservationService.APICore.Extensions;
 
 namespace TavernHelios.ReservationService.ApiCore.Extensions
 {
@@ -38,7 +38,7 @@ namespace TavernHelios.ReservationService.ApiCore.Extensions
             var result = new GrpcContract.ReservationService.Reservation();
             result.Id = value.Id;
             result.PersonId = value.PersonId;
-            result.Date = value.Date.ToTimestamp();
+            result.Date = value.Date.ToUniversalTime().ToTimestamp();
             result.DishIds.AddRange(value.DishIds);
             return result;
         }
@@ -48,7 +48,7 @@ namespace TavernHelios.ReservationService.ApiCore.Extensions
             var result = new GrpcContract.ReservationService.Reservation();
             result.Id = "0";
             result.PersonId = value.PersonId;
-            result.Date = value.Date.ToTimestamp();
+            result.Date = value.Date.ToUniversalTime().ToTimestamp();
             result.DishIds.AddRange(value.DishIds);
             return result;
         }
@@ -58,7 +58,7 @@ namespace TavernHelios.ReservationService.ApiCore.Extensions
             var result = new GrpcContract.ReservationService.Reservation();
             result.Id = value.Id.ToString();
             result.PersonId = value.PersonId;
-            result.Date = value.Date.ToTimestamp();
+            result.Date = value.Date.ToUniversalTime().ToTimestamp();
             result.DishIds.AddRange(value.DishReservations.Select(x => x.DishId));
             return result;
         }
@@ -70,8 +70,8 @@ namespace TavernHelios.ReservationService.ApiCore.Extensions
             if (value.ReservationId != null) result.ReservationId = value.ReservationId.Value;
             if (value.PersonId != null) result.PersonId = value.PersonId;
             if (value.DishId != null) result.DishId = value.DishId;
-            if (value.BeginDate != null) result.BeginDate = value.BeginDate.Value.ToTimestamp();
-            if (value.EndDate != null) result.EndDate = value.EndDate.Value.ToTimestamp();
+            if (value.BeginDate != null) result.BeginDate = value.BeginDate.Value.ToUniversalTime().ToTimestamp();
+            if (value.EndDate != null) result.EndDate = value.EndDate.Value.ToUniversalTime().ToTimestamp();
 
             return result;
         }
@@ -99,12 +99,12 @@ namespace TavernHelios.ReservationService.ApiCore.Extensions
 
             if (value.BeginDate != null)
             {
-                result = result.AndAlso(x => x.Date >= value.BeginDate.ToDateTime());
+                result = result.AndAlso(x => x.Date >= value.BeginDate.ToDateTime().ToUniversalTime());
             }
 
             if (value.EndDate != null)
             {
-                result = result.AndAlso(x => x.Date <= value.EndDate.ToDateTime());
+                result = result.AndAlso(x => x.Date <= value.EndDate.ToDateTime().ToUniversalTime());
             }
 
             return result;

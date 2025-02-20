@@ -28,4 +28,10 @@ namespace TavernHelios.MenuService.Common.DTOValues.Menu
 
        public List<DishValue> DishesFull { get; set; } = new List<DishValue>();
     }
+
+    public class MenuCreateValue
+    {
+        public string Name { get; set; }
+        public List<string> Dishes { get; set; } = new List<string>();
+    }
 }

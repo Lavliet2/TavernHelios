@@ -81,7 +81,7 @@ namespace TavernHelios.Server.Controllers
         [ProducesResponseType<MenuValue>(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [SwaggerOperation("Создать меню")]
-        public async Task<IActionResult> CreateMenuAsync([FromBody] MenuValue menuValue)
+        public async Task<IActionResult> CreateMenuAsync([FromBody] MenuCreateValue menuValue)
         {
             var menuResult = await _grpcClient.AddMenuAsync(menuValue.ToGrpc());
             var menu = menuResult.Menus.FirstOrDefault();
