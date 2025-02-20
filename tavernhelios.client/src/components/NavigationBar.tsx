@@ -4,7 +4,7 @@ import { AccountCircle } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next'; 
 import { ThemeProvider } from '@mui/material/styles';
 import { Link, useNavigate } from 'react-router-dom';
-import Logo from "../assets/logo.svg";
+import Logo from "../assets/logo_login_bg.webp";
 import Theme from '../styles/theme';
 import { LanguageContext } from '../contexts/LanguageContext'; 
 // import WorldFlag from 'react-world-flags';
