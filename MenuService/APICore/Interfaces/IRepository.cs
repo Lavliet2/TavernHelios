@@ -23,6 +23,13 @@ namespace TavernHelios.MenuService.Common.Interfaces
         Task<T> GetByIdAsync(string id);
 
         /// <summary>
+        /// Получить сущность по Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task<IEnumerable<T>> GetByConditionAsync(Func<T, bool> condition);
+
+        /// <summary>
         /// Создать сущность
         /// </summary>
         /// <param name="entity"></param>

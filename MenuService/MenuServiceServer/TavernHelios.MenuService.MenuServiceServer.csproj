@@ -10,6 +10,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Controllers\**" />
+    <Content Remove="Controllers\**" />
+    <EmbeddedResource Remove="Controllers\**" />
+    <None Remove="Controllers\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Grpc.AspNetCore.Server.Reflection" Version="2.67.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
 	<PackageReference Include="Grpc.AspNetCore" Version="2.67.0" />
@@ -19,10 +26,6 @@
     <ProjectReference Include="..\..\Common\TavernHelios.GrpcCommon\TavernHelios.GrpcCommon.csproj" />
     <ProjectReference Include="..\APICore\TavernHelios.MenuService.APICore.csproj" />
     <ProjectReference Include="..\MongoRepositories\TavernHelios.MenuService.MongoRepositories.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\" />
   </ItemGroup>
 
 </Project>

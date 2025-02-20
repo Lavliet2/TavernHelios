@@ -10,6 +10,7 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.IdGenerators;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 
 namespace TavernHelios.MenuService.MongoRepositories
 {
@@ -36,9 +37,11 @@ namespace TavernHelios.MenuService.MongoRepositories
             {
                 cm.AutoMap();
                 cm.SetIgnoreExtraElements(true);
+                cm.SetIdMember(
                 cm.MapIdProperty(c => ((T)c).Id)
-                .SetIdGenerator(StringObjectIdGenerator.Instance)
-                .SetSerializer(new StringSerializer(BsonType.ObjectId));
+                    .SetIdGenerator(StringObjectIdGenerator.Instance)
+                    .SetSerializer(new StringSerializer(BsonType.ObjectId))
+                );
             });
 
             var connectionString = mongoSettings.Value.GetConnectionString();
@@ -68,7 +71,6 @@ namespace TavernHelios.MenuService.MongoRepositories
         public virtual async Task<T> CreateAsync(T entity)
         {
             var collection = await GetCollectionAsync(_dbCollectionName);
-            //entity.Id = Guid.NewGuid();
             try
             {
                 await collection.InsertOneAsync(entity);
@@ -141,6 +143,14 @@ namespace TavernHelios.MenuService.MongoRepositories
                 await _database.CreateCollectionAsync(_dbCollectionName);
                 return _database.GetCollection<T>(_dbCollectionName);
             }
+        }
+
+        public async Task<IEnumerable<T>> GetByConditionAsync(Func<T, bool> condition)
+        {
+            return (await GetCollectionAsync(_dbCollectionName))
+                .AsQueryable()
+                .Where(condition)
+                .ToList();
         }
     }
 }

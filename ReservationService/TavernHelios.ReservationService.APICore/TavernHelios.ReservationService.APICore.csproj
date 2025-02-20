@@ -7,6 +7,7 @@
   </PropertyGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\Common\TavernHelios.Common\TavernHelios.Common.csproj" />
 		<ProjectReference Include="..\..\Common\TavernHelios.GrpcCommon\TavernHelios.GrpcCommon.csproj" />
 	</ItemGroup>
 
