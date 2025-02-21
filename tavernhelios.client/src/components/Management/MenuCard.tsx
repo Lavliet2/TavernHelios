@@ -1,23 +1,89 @@
-import React from "react";
-import { Card, CardContent, Typography, IconButton, Tooltip } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { Menu } from "../../types/Management";
+import React, { useState, useEffect } from "react";
+import { Card, CardContent, Typography, Avatar, List, ListItem, ListItemText, Box, CircularProgress } from "@mui/material";
+import { Menu, Dish } from "../../types/Management";
+import dishTypes from "../../constants/dishTypes";
+import { fetchDishById } from "../../services/dishService"; // Подключаем сервис
 
-interface Props {
+interface MenuCardProps {
   menu: Menu;
-  onDelete: (menuId: string) => void;
 }
 
-const MenuCard: React.FC<Props> = ({ menu, onDelete }) => {
+const MenuCard: React.FC<MenuCardProps> = ({ menu }) => {
+  const [dishes, setDishes] = useState<{ [key: string]: Dish }>({});
+  const [loading, setLoading] = useState(true);
+  console.log('mav', menu)
+  useEffect(() => {
+    const loadDishes = async () => {
+      setLoading(true);
+      try {
+        console.log("menu.dishes:", menu.dishes);
+
+        if (!menu.dishes || menu.dishes.length === 0) {
+          console.warn("Нет блюд для загрузки.");
+          setDishes({});
+          setLoading(false);
+          return;
+        }
+
+        const dishPromises = menu.dishes.map((id) => {
+          console.log("Fetching dish:", id);
+          return fetchDishById(id);
+        });
+
+        const dishResults = await Promise.all(dishPromises);
+        console.log("Loaded dishes:", dishResults);
+
+        const dishMap = Object.fromEntries(dishResults.filter(dish => dish).map((dish) => [dish.id, dish]));
+        console.log("Mapped dishes:", dishMap);
+
+        setDishes(dishMap);
+      } catch (error) {
+        console.error("Ошибка загрузки блюд:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadDishes();
+  }, [menu.dishes]);
+
   return (
-    <Card>
+    <Card sx={{ maxWidth: 400, p: 2, borderRadius: 2, boxShadow: 3 }}>
       <CardContent>
-        <Typography variant="h6">{menu.name}</Typography>
-        <Tooltip title="Удалить меню">
-          <IconButton onClick={() => onDelete(menu.id)} color="error">
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
+        <Typography variant="h6" align="center" sx={{ mb: 2 }}>
+          {menu.name}
+        </Typography>
+
+        {loading ? (
+          <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+            <CircularProgress size={30} />
+          </Box>
+        ) : (
+          dishTypes.map((category) => {
+            const categoryDishes = Object.values(dishes).filter((dish) => dish && dish.dishType === category.value);
+            console.log(`Filtered dishes for ${category.label}:`, categoryDishes);
+
+            if (categoryDishes.length === 0) return null;
+
+            return (
+              <Box key={category.value} sx={{ mt: 2 }}>
+                <Typography variant="subtitle1">{category.label}</Typography>
+                <List>
+                  {categoryDishes.map((dish) => (
+                    <ListItem key={dish.id} sx={{ display: "flex", alignItems: "center" }}>
+                      <Avatar
+                        src={dish.imageBase64}
+                        alt={dish.name}
+                        sx={{ width: 40, height: 40, mr: 2, borderRadius: "8px" }}
+                      />
+                      <ListItemText primary={dish.name} />
+                    </ListItem>
+                  ))}
+                </List>
+              </Box>
+            );
+          })
+        )}
       </CardContent>
     </Card>
   );

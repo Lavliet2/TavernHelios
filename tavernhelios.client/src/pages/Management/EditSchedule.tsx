@@ -1,7 +1,6 @@
 import { Container, Typography, Box, Button, Snackbar, Alert  } from "@mui/material";
 import monthNames from "../../constants/monthNames"
 import useSchedule from "../../hooks/Management/useSchedule";
-import useMenu from "../../hooks/Management/useMenu";
 import CalendarTable from "../../components/Management/CalendarTable";
 import MenuAddScheduleModal from "../../components/Management/MenuAddScheduleModal";
 
@@ -10,11 +9,11 @@ const EditSchedule: React.FC = () => {
   const {
     getMonthDays,
     scheduleData,
+    menuData,
     selectedDates,
     currentMonth,
     currentYear,
     setCurrentMonth,
-    toggleDateSelection,
     isModalOpen,
     setIsModalOpen,
     handleAddMenuToSchedule,
@@ -28,8 +27,6 @@ const EditSchedule: React.FC = () => {
     handleMouseEnter,
     handleMouseUp
   } = useSchedule();
-
-  const { menuData } = useMenu();
 
   return (
     <Container sx={{ mt: 4 }} onMouseUp={handleMouseUp}>
@@ -50,8 +47,8 @@ const EditSchedule: React.FC = () => {
       </Box>
       <CalendarTable
         days={getMonthDays()}
+        scheduleData={scheduleData}
         selectedDates={selectedDates}
-        toggleDateSelection={toggleDateSelection}
         handleMouseDown={handleMouseDown}
         handleMouseEnter={handleMouseEnter}
       />

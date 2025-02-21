@@ -1,10 +1,12 @@
 import { useEffect, useState, useCallback } from "react";
 import debounce from "lodash/debounce";
 import { fetchScheduleData, addSchedule, deleteSchedule } from "../../services/scheduleService";
-import { Schedule } from "../../types/Management";
+import { fetchMenus } from "../../services/menuService";
+import { Schedule, Menu } from "../../types/Management";
 
 const useSchedule = () => {
   const [scheduleData, setScheduleData] = useState<Schedule[]>([]);
+  const [menuData, setMenuData] = useState<Menu[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedDates, setSelectedDates] = useState<string[]>([]);
@@ -51,10 +53,14 @@ const useSchedule = () => {
   const loadSchedule = async () => {
     try {
       setLoading(true);
-      const data = await fetchScheduleData();
-      setScheduleData(data);
+      const [schedule, menus] = await Promise.all([
+        fetchScheduleData(),
+        fetchMenus(),
+      ]);
+      setScheduleData(schedule);
+      setMenuData(menus);
     } catch (error) {
-      setError("Ошибка загрузки расписания");
+      setError("Ошибка загрузки данных расписания");
     } finally {
       setLoading(false);
     }
@@ -128,6 +134,7 @@ const useSchedule = () => {
   return {
     getMonthDays,
     scheduleData,
+    menuData,
     loading,
     error,
     selectedDates,
