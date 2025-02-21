@@ -31,12 +31,14 @@ kind: Service
 metadata:
   name: mongo
 spec:
+  type: NodePort
   selector:
     app: mongo
   ports:
     - protocol: TCP
       port: 27017
       targetPort: 27017
+      nodePort: 32045
 
 ---
 apiVersion: v1
