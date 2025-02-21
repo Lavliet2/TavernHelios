@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import { Container, Typography, Box, Button, Snackbar, Alert  } from "@mui/material";
 import monthNames from "../../constants/monthNames"
 import useSchedule from "../../hooks/Management/useSchedule";
@@ -24,54 +23,14 @@ const EditSchedule: React.FC = () => {
     setSelectedMenu,
     snackbarMessage,
     snackbarOpen,
-    setSnackbarOpen
+    setSnackbarOpen,
+    handleMouseDown,
+    handleMouseEnter,
+    handleMouseUp
   } = useSchedule();
 
   const { menuData } = useMenu();
-  const [isMouseDown, setIsMouseDown] = useState(false);
 
-  const handleMouseDown = (date: string) => {
-    setIsMouseDown(true);
-    toggleDateSelection(date);
-  };
-
-  const handleMouseEnter = (date: string) => {
-    if (isMouseDown) {
-      toggleDateSelection(date);
-    }
-  };
-
-  const handleMouseUp = () => {
-    setIsMouseDown(false);
-  };
-
-  // const getMonthDays = () => {
-  //   const firstDayIndex = new Date(currentYear, currentMonth, 1).getDay();
-  //   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-  
-  //   const days = [];
-  //   const offset = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
-  
-  //   for (let i = 0; i < offset; i++) {
-  //     days.push(null);
-  //   }
-  
-  //   for (let i = 1; i <= daysInMonth; i++) {
-  //     const dateObj = new Date(currentYear, currentMonth, i);
-  //     const localDate = dateObj.toLocaleDateString("sv-SE"); 
-  
-  //     days.push({
-  //       day: i,
-  //       date: localDate,
-  //       isWeekend: dateObj.getDay() === 0 || dateObj.getDay() === 6,
-  //       isToday: new Date().toLocaleDateString("sv-SE") === localDate,
-  //       hasSchedule: scheduleData.some((s) => s.dateTime.startsWith(localDate)),
-  //     });
-  //   }
-  
-  //   return days;
-  // };
-  
   return (
     <Container sx={{ mt: 4 }} onMouseUp={handleMouseUp}>
       <Typography variant="h4" color="primary" align="center" sx={{ mb: 4 }}>
@@ -136,8 +95,8 @@ const EditSchedule: React.FC = () => {
         onClose={() => setSnackbarOpen(false)}
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
-        <Alert severity={snackbarMessage?.includes("Ошибка") ? "error" : "success"} onClose={() => setSnackbarOpen(false)}>
-          {snackbarMessage}
+        <Alert severity={snackbarMessage?.type || "success"} onClose={() => setSnackbarOpen(false)}>
+          {snackbarMessage?.text}
         </Alert>
       </Snackbar>
     </Container>

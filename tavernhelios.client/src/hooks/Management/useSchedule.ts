@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
+import debounce from "lodash/debounce";
 import { fetchScheduleData, addSchedule, deleteSchedule } from "../../services/scheduleService";
 import { Schedule } from "../../types/Management";
 
@@ -11,8 +12,9 @@ const useSchedule = () => {
   const [currentYear, setCurrentYear] = useState<number>(new Date().getFullYear());
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedMenu, setSelectedMenu] = useState<string | null>(null);
-  const [snackbarMessage, setSnackbarMessage] = useState<string | null>(null);
+  const [snackbarMessage, setSnackbarMessage] = useState<{ text: string; type: "success" | "error" | "warning" | "info" } | null>(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [isMouseDown, setIsMouseDown] = useState(false);
 
   const getMonthDays = () => {
     const firstDayIndex = new Date(currentYear, currentMonth, 1).getDay();
@@ -41,9 +43,8 @@ const useSchedule = () => {
     return days;
   };
   
-
-  const showSnackbar = useCallback((message: string) => {
-    setSnackbarMessage(message);
+  const showSnackbar = useCallback((message: string, type: "success" | "error" | "warning" | "info" = "success") => {
+    setSnackbarMessage({ text: message, type }); 
     setSnackbarOpen(true);
   }, []);
 
@@ -61,38 +62,40 @@ const useSchedule = () => {
 
   useEffect(() => {
     loadSchedule();
-  }, []);
+  }, [currentMonth, currentYear]);
 
-  const toggleDateSelection = (date: string) => {
+  const toggleDateSelection = useCallback((date: string) => {
     setSelectedDates((prev) =>
       prev.includes(date) ? prev.filter((d) => d !== date) : [...prev, date]
     );
-  };
+  }, []);
 
-  const handleAddMenuToSchedule = async () => {
-    if (!selectedMenu) return;
-
+  const handleAddMenuToSchedule = useCallback(async () => {
+    if (!selectedMenu) {
+      showSnackbar("Выберите меню перед добавлением!", "warning");
+      return;
+    }
+  
     try {
       await Promise.all(selectedDates.map((date) => addSchedule(date, selectedMenu)));
-
+  
       await loadSchedule();
       setSelectedDates([]);
       setIsModalOpen(false);
-
-      showSnackbar("Меню успешно добавлено!");
+      showSnackbar("Меню успешно добавлено!", "success");
     } catch (error) {
       showSnackbar("Ошибка при добавлении меню");
     }
-  };
+  }, [selectedMenu, selectedDates, loadSchedule, showSnackbar]);
 
-  const handleDeleteSchedule = async () => {
+  const handleDeleteSchedule = useCallback(async () => {
     try {
       const idsToDelete = selectedDates
         .map(date => scheduleData.find(s => s.dateTime.startsWith(date))?.id)
         .filter((id): id is string => Boolean(id));
 
       if (idsToDelete.length === 0) {
-        showSnackbar("Нет записей для удаления");
+        showSnackbar("Нет записей для удаления", "error");
         return;
       }
 
@@ -104,7 +107,23 @@ const useSchedule = () => {
     } catch (error) {
       showSnackbar("Ошибка при удалении расписания");
     }
-  };
+  }, [selectedDates, scheduleData, loadSchedule, showSnackbar]);
+
+  const handleMouseDown = useCallback((date: string) => {
+    setIsMouseDown(true);
+    toggleDateSelection(date);
+  }, [toggleDateSelection]);
+  
+
+  const handleMouseEnter = useCallback(debounce((date: string) => {
+    if (isMouseDown) {
+      toggleDateSelection(date);
+    }
+  }, 50), [isMouseDown, toggleDateSelection]);
+  
+  const handleMouseUp = useCallback(() => {
+    setIsMouseDown(false);
+  }, []);  
 
   return {
     getMonthDays,
@@ -127,6 +146,10 @@ const useSchedule = () => {
     setSnackbarMessage,
     snackbarOpen,
     setSnackbarOpen,
+    showSnackbar,
+    handleMouseDown,
+    handleMouseEnter, 
+    handleMouseUp,
   };
 };
 
