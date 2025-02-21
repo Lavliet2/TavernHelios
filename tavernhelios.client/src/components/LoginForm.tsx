@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { TextField, Button, Box, Typography, Paper } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import Logo from "../assets/logo_login_bg.png";
+import Logo from "../assets/logo_login_bg.webp";
 import { ThemeProvider } from "@mui/material/styles";
 import Theme from "../styles/theme";
 import { API_BASE_URL } from "../config";

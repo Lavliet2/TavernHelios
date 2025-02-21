@@ -11,3 +11,9 @@ export interface Menu {
     name: string;
     dishes: string[];
 }
+
+export interface Schedule {
+    id: string;
+    Menu: Menu;
+    dateTime: string;
+}
