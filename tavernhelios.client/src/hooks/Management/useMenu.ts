@@ -118,3 +118,5 @@ export const useMenu = () => {
     setAvailableDishes 
   };
 };
+
+export default useMenu;
