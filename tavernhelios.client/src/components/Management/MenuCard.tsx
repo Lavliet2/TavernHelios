@@ -11,7 +11,7 @@ interface MenuCardProps {
 const MenuCard: React.FC<MenuCardProps> = ({ menu }) => {
   const [dishes, setDishes] = useState<{ [key: string]: Dish }>({});
   const [loading, setLoading] = useState(true);
-  console.log('mav', menu)
+
   useEffect(() => {
     const loadDishes = async () => {
       setLoading(true);

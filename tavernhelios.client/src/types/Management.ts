@@ -14,6 +14,6 @@ export interface Menu {
 
 export interface Schedule {
     id: string;
-    Menu: Menu;
+    menu: Menu;
     dateTime: string;
 }

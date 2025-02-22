@@ -1,182 +1,35 @@
-import React, { useEffect, useState, useRef } from 'react';
-import {
-  Container,
-  Typography,
-  Card,
-  CardMedia,
-  CardContent,
-  CircularProgress,
-  FormControl,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
-  Box,
-  Button
+import React from 'react';
+import { Container, Typography, Card, CardMedia, CardContent,
+  CircularProgress, FormControl, RadioGroup, FormControlLabel,
+  Radio, Box, Button
 } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import { useNavigate } from "react-router-dom"; //MAV delete
-import { API_BASE_URL } from "../config";
+
+import { useMenuDisplay } from "../hooks/Menu/useMenuDisplay";
 
 import ReservationList from "../components/Menu/ReservationList";
-import dishTypes from "../constants//dishTypes";
-// import { API_BASE_URL } from "../../vite.config";
-
-interface Menu {
-  id: string;
-  name: string;
-  dishes: string[];
-}
-
-interface Dish {
-  id: string;
-  name: string;
-  description: string;
-  dishType: number;
-  imageBase64: string;
-}
+import dishTypes from "../constants/dishTypes";
 
 
 const MenuDisplay: React.FC = () => {
-  const [menu, setMenu] = useState<Menu | null>(null);
-  const [dishes, setDishes] = useState<Dish[]>([]);
-  const [loadingMenu, setLoadingMenu] = useState<boolean>(true);
-  const [loadingDishes, setLoadingDishes] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-  const [selectedDishes, setSelectedDishes] = useState<Record<number, string>>({});
-  const [maxCardHeight, setMaxCardHeight] = useState<number | null>(null);
-  const [username] = useState<string>(() => localStorage.getItem("username") || ""); //setUsername
-  const [selectedTime, setSelectedTime] = useState<string>("12:00");
-  const [refreshKey, setRefreshKey] = useState<number>(0);
+  const {
+    menu,
+    groupedDishes,
+    loadingMenu,
+    loadingDishes,
+    error,
+    selectedDishes,
+    maxCardHeight,
+    selectedTime,
+    refreshKey,
+    handleReservation,
+    handleSelectionChange,
+    setSelectedTime,
+    addToCardRefs,
+  } = useMenuDisplay();
+
   const navigate = useNavigate(); //MAV delete
-  console.log(`User - ${username}`)
-  console.log(`API - ${API_BASE_URL}`)
-
-  const handleReservation = async () => {
-    if (!username.trim()) {
-      alert("Введите имя перед бронированием!");
-      return;
-    }
-  
-    const selectedDishIds = Object.values(selectedDishes);
-    if (selectedDishIds.length === 0) {
-      alert("Выберите хотя бы одно блюдо!");
-      return;
-    }
-  
-    const today = new Date();
-    const [hours, minutes] = selectedTime.split(":").map(Number);
-    today.setHours(hours, minutes, 0, 0);
-
-    const reservationData = {
-      personId: username, 
-      date: today.toISOString(),
-      dishIds: selectedDishIds
-    };
-
-    console.log("Отправляем бронь:", reservationData);
-  
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/Reservation`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(reservationData),
-      });
-  
-      if (!response.ok) {
-        throw new Error("Ошибка при создании брони");
-      }
-  
-      alert("Бронь успешно создана!");
-      setRefreshKey((prev) => prev + 1);
-    } catch (error) {
-      alert(`Ошибка: ${(error as Error).message}`);
-    }
-  };
-
-  // Массив для хранения ref карточек
-  const cardRefs = useRef<HTMLDivElement[]>([]);
-
-  // Функция для добавления ref в массив
-  const addToCardRefs = (el: HTMLDivElement | null) => {
-    if (el && !cardRefs.current.includes(el)) {
-      cardRefs.current.push(el);
-    }
-  };
-
-  useEffect(() => {
-    const fetchMenu = async () => {
-      try {
-        // const response = await fetch('https://localhost:32789/api/Menu');
-        const response = await fetch(`${API_BASE_URL}/api/Menu`);
-        console.log(`fetchMenu: ${API_BASE_URL}`, response)
-        if (!response.ok) {
-          throw new Error('Ошибка при загрузке меню');
-        }
-        const data: Menu[] = await response.json();
-        if (data && data.length > 0) {
-          setMenu(data[0]);
-          console.log(`fetchMenu data: - ${API_BASE_URL}`, data)
-        } else {
-          setError('Меню не найдено');
-        }
-      } catch (err) {
-        setError((err as Error).message);
-      } finally {
-        setLoadingMenu(false);
-      }
-    };
-    fetchMenu();
-  }, []);
-
-  useEffect(() => {
-    const fetchDishes = async () => {
-      if (menu) {
-        try {
-          const dishDetails: Dish[] = await Promise.all(
-            menu.dishes.map(async (dishId) => {
-              // const res = await fetch(`https://localhost:32789/api/Dish/${dishId}`);
-              const res = await fetch(`${API_BASE_URL}/api/Dish/${dishId}`);
-              console.log(`fetchDish: ${dishId} - ${API_BASE_URL}`, res)
-              // await fetch(`${API_BASE_URL}`);
-              if (!res.ok) {                
-                // TODO MAV если мы из блюд удаляем сущность и 
-                // если она была забронирована пользователем то ошибка вылетает. 
-                // Возможно на бэке надо и у пользователя удалять из списка это блюдо
-                // throw new Error(`Ошибка при загрузке блюда с id ${dishId}`);
-              }
-              return res.json();
-            })
-          );
-          setDishes(dishDetails);
-        } catch (err) {
-          console.error(err);
-          setError((err as Error).message);
-        } finally {
-          setLoadingDishes(false);
-        }
-      }
-    };
-    fetchDishes();
-  }, [menu]);
-
-  // После завершения загрузки блюд вычисляем максимальную высоту карточек
-  useEffect(() => {
-    if (!loadingDishes && cardRefs.current.length > 0) {
-      const heights = cardRefs.current.map(el => el.offsetHeight);
-      const maxHeight = Math.max(...heights);
-      setMaxCardHeight(maxHeight);
-    }
-  }, [loadingDishes, dishes]);
-
-  const handleSelectionChange = (dishType: number, dishId: string) => {
-    setSelectedDishes(prev => {
-      const updatedSelection = { ...prev, [dishType]: dishId };
-      console.log("Выбранные блюда:", updatedSelection);
-      return updatedSelection;
-    });
-  };
 
   if (loadingMenu) {
     return (
@@ -190,20 +43,10 @@ const MenuDisplay: React.FC = () => {
   if (error) {
     return (
       <Container sx={{ mt: 4, textAlign: 'center' }}>
-        <Typography variant="body1" color="error">
-          {error}
-        </Typography>
+        <Typography variant="body1" color="error"> {error}</Typography>
       </Container>
     );
   }
-
-  const groupedDishes: Record<number, Dish[]> = {};
-  dishes.forEach(dish => {
-    if (!groupedDishes[dish.dishType]) {
-      groupedDishes[dish.dishType] = [];
-    }
-    groupedDishes[dish.dishType].push(dish);
-  });
 
   return (
     <Container maxWidth="xl" sx={{ mt: 4 }}>

@@ -29,7 +29,7 @@ import { useAuth } from './contexts/AuthContext'; // Импортируем ко
 import MainLayout from './layouts/MainLayout';
 import LoginForm from './components/LoginForm';
 import Home from './pages/Home';
-import Menu from './pages/Menu';
+import Menu from './pages/MenuDisplay';
 import WeatherForecast from './pages/WeatherForecast';
 import About from './pages/About';
 import Management from './pages/Management/Management';
