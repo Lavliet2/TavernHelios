@@ -1,37 +1,21 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import { Container, Typography, CircularProgress, TextField } from "@mui/material";
 import ReservationGroup from "./ReservationGroup";
-import { useReservations } from "../../hooks/Management/useReservations";
-import { API_BASE_URL } from "../../config";
+import { useReservations } from "../../hooks/Menu/useReservations";
 
-interface Dish {
-  id: string;
-  name: string;
-  description: string;
-  dishType: number;
-}
+const getUTCDateString = (date: Date) => {
+  return date.toISOString().split("T")[0];
+};
 
 const ReservationList: React.FC = () => {
-  const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split("T")[0]);
-  const { reservations12, reservations13, loading, error } = useReservations(selectedDate);
-  const [dishes, setDishes] = useState<Dish[]>([]);
-  
-  useEffect(() => {
-    const fetchDishes = async () => {
-      try {
-        const response = await fetch(`${API_BASE_URL}/api/Dish`);
-        if (!response.ok) {
-          throw new Error("Ошибка при загрузке блюд");
-        }
-        const data: Dish[] = await response.json();
-        setDishes(data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
+  const [selectedDate, setSelectedDate] = useState<string>(getUTCDateString(new Date()));
+  const { reservations12, reservations13, dishes, loading, error } = useReservations(selectedDate);
 
-    fetchDishes();
-  }, []);
+  // Оптимизированный обработчик изменения даты
+  const handleDateChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => setSelectedDate(e.target.value),
+    []
+  );
 
   return (
     <Container maxWidth="md" sx={{ mt: 4 }}>
@@ -44,7 +28,7 @@ const ReservationList: React.FC = () => {
         label="Выберите дату"
         type="date"
         value={selectedDate}
-        onChange={(e) => setSelectedDate(e.target.value)}
+        onChange={handleDateChange} 
         fullWidth
         sx={{ mb: 3 }}
         InputLabelProps={{ shrink: true }}
