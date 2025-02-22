@@ -41,6 +41,8 @@ const MenuAddScheduleModal: React.FC<MenuAddScheduleModalProps> = ({
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
+          maxHeight: "90vh",
+          overflowY: "auto",
         }}
       >
         <Typography variant="h6" align="center" sx={{ mb: 2 }}>
@@ -76,7 +78,9 @@ const MenuAddScheduleModal: React.FC<MenuAddScheduleModalProps> = ({
 
         {/* Блок с карточкой блюд, который отображается под кнопками */}
         {expandedMenu && (
-          <Box sx={{ mt: 3, width: "100%", border: "1px solid #ddd", borderRadius: 2, p: 2, bgcolor: "#f9f9f9" }}>
+          <Box sx={{ mt: 3, width: "100%", border: "1px solid #ddd", borderRadius: 2, p: 2, bgcolor: "#f9f9f9",
+            maxHeight: "300px", overflowY: "auto", 
+           }}>
             <MenuCard menu={expandedMenu} />
           </Box>
         )}
