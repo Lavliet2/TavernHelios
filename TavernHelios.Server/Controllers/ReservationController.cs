@@ -114,12 +114,23 @@ namespace TavernHelios.Server.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Экспортировать брони
+        /// </summary>
+        /// <returns>PDF</returns>
         [HttpGet("export")]
         [Produces("application/octet-stream")]
         public async Task<IActionResult> ExportReservations([FromQuery] string date, [FromQuery] string format = "pdf")
         {
-            var beginDate = Google.Protobuf.WellKnownTypes.Timestamp.FromDateTime(DateTime.Parse(date).ToUniversalTime());
-            var endDate = Google.Protobuf.WellKnownTypes.Timestamp.FromDateTime(DateTime.Parse(date).AddHours(23).AddMinutes(59).AddSeconds(59).ToUniversalTime());
+            DateTime parsedDate;
+
+            if (!DateTime.TryParse(date, out parsedDate))
+            {
+                return BadRequest("Некорректный формат даты.");
+            }
+
+            var beginDate = Google.Protobuf.WellKnownTypes.Timestamp.FromDateTime(parsedDate.ToUniversalTime());
+            var endDate = Google.Protobuf.WellKnownTypes.Timestamp.FromDateTime(parsedDate.AddHours(23).AddMinutes(59).AddSeconds(59).ToUniversalTime());
 
             var reservationsReply = await _grpcClient.GetReservationsAsync(new ReservationQueryRequest
             {
@@ -133,33 +144,42 @@ namespace TavernHelios.Server.Controllers
 
             var dishData = await FetchDishesForReservations(reservations);
 
+            var reservationsAt12 = reservations.Where(r => r.Date.Hour == 12).ToList();
+            var reservationsAt13 = reservations.Where(r => r.Date.Hour == 13).ToList();
+
             var headers = new List<string> { "Сотрудник", "Суп", "Горячее", "Салаты", "Напитки" };
 
-            var tableData = reservations.Select(res =>
-            {
-                return new List<string>
-        {
+            List<List<string>> tableData12 = reservationsAt12.Select(res =>
+                new List<string>
+                {
             res.PersonId,
             GetDishByType(dishData, res.DishIds, DishType.Soup),
             GetDishByType(dishData, res.DishIds, DishType.HotDish),
             GetDishByType(dishData, res.DishIds, DishType.Salad),
             GetDishByType(dishData, res.DishIds, DishType.Drink)
-        };
-            }).ToList();
+                }).ToList();
 
-            Console.WriteLine("🚀 Заголовки таблицы: " + string.Join(", ", headers));
-            Console.WriteLine("🚀 Первая строка таблицы: " + string.Join(" | ", tableData.FirstOrDefault() ?? new List<string>()));
+            List<List<string>> tableData13 = reservationsAt13.Select(res =>
+                new List<string>
+                {
+            res.PersonId,
+            GetDishByType(dishData, res.DishIds, DishType.Soup),
+            GetDishByType(dishData, res.DishIds, DishType.HotDish),
+            GetDishByType(dishData, res.DishIds, DishType.Salad),
+            GetDishByType(dishData, res.DishIds, DishType.Drink)
+                }).ToList();
 
-            var reportGenerator = ReportFactory.CreateReportGenerator(format, $"Брони на {date}", headers);
+            var reportGenerator = ReportFactory.CreateReportGenerator(format, $"Брони на {parsedDate:yyyy-MM-dd}", headers);
 
-            var fileStream = reportGenerator.GenerateReport(tableData);
-            return File(fileStream, reportGenerator.GetMimeType(), $"Reservations_{date}.{reportGenerator.GetFileExtension()}");
+            var fileStream = reportGenerator.GenerateMultiTableReport(
+                new List<(string, List<List<string>>)>
+                {
+            ("Брони на 12:00", tableData12),
+            ("Брони на 13:00", tableData13)
+                });
+
+            return File(fileStream, reportGenerator.GetMimeType(), $"Reservations_{parsedDate:yyyy-MM-dd}.{reportGenerator.GetFileExtension()}");
         }
-
-
-
-
-
 
         /// <summary>
         /// Возвращает название блюда определенного типа
@@ -174,11 +194,6 @@ namespace TavernHelios.Server.Controllers
             return selectedDishes.Any() ? string.Join(", ", selectedDishes) : "—";
         }
 
-
-
-
-
-        // ✅ Теперь мы вызываем DishController через HTTP
         private async Task<Dictionary<string, DishValue>> FetchDishesForReservations(IEnumerable<ReservationValue> reservations)
         {
             var dishDict = new Dictionary<string, DishValue>();

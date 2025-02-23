@@ -19,13 +19,11 @@ namespace TavernHelios.Utils.Reports
             _title = title;
             _headers = headers;
 
-            // ✅ Загружаем шрифт из локальной папки
             _baseFont = LoadFont();
         }
 
         private BaseFont LoadFont()
         {
-            // 🔥 Ищем шрифт рядом с PdfReportGenerator
             string assemblyLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? "";
             string fontPath = Path.Combine(AppContext.BaseDirectory, "Reports", "fonts", "arial.ttf");
 
@@ -52,15 +50,12 @@ namespace TavernHelios.Utils.Reports
                     var headerFont = new Font(_baseFont, 12, Font.BOLD);
                     var dataFont = new Font(_baseFont, 10);
 
-                    // ✅ Добавляем заголовок
                     doc.Add(new Paragraph(_title, titleFont) { Alignment = Element.ALIGN_CENTER });
                     doc.Add(new Paragraph("\n"));
 
-                    // ✅ Создаём таблицу
                     var table = new PdfPTable(_headers.Count) { WidthPercentage = 100 };
                     table.SetWidths(new float[] { 2, 2, 2, 2, 2 });
 
-                    // ✅ Добавляем заголовки
                     foreach (var header in _headers)
                     {
                         var headerCell = new PdfPCell(new Phrase(header, headerFont))
@@ -71,7 +66,6 @@ namespace TavernHelios.Utils.Reports
                         table.AddCell(headerCell);
                     }
 
-                    // ✅ Добавляем строки данных
                     foreach (var row in data)
                     {
                         foreach (var cellValue in row)
@@ -92,6 +86,61 @@ namespace TavernHelios.Utils.Reports
             stream.Position = 0;
             return stream;
         }
+
+        public MemoryStream GenerateMultiTableReport(List<(string Title, List<List<string>> Data)> tables)
+        {
+            var stream = new MemoryStream();
+            using (var doc = new Document(PageSize.A4, 10, 10, 10, 10))
+            {
+                using (var writer = PdfWriter.GetInstance(doc, stream))
+                {
+                    writer.CloseStream = false;
+                    doc.Open();
+
+                    var titleFont = new Font(_baseFont, 14, Font.BOLD);
+                    var headerFont = new Font(_baseFont, 12, Font.BOLD);
+                    var dataFont = new Font(_baseFont, 10);
+
+                    foreach (var (tableTitle, data) in tables)
+                    {
+                        doc.Add(new Paragraph(tableTitle, titleFont) { Alignment = Element.ALIGN_CENTER });
+                        doc.Add(new Paragraph("\n"));
+
+                        var table = new PdfPTable(_headers.Count) { WidthPercentage = 100 };
+                        table.SetWidths(new float[] { 2, 2, 2, 2, 2 });
+
+                        foreach (var header in _headers)
+                        {
+                            var headerCell = new PdfPCell(new Phrase(header, headerFont))
+                            {
+                                HorizontalAlignment = Element.ALIGN_CENTER,
+                                BackgroundColor = new BaseColor(211, 211, 211)
+                            };
+                            table.AddCell(headerCell);
+                        }
+
+                        foreach (var row in data)
+                        {
+                            foreach (var cell in row)
+                            {
+                                var pdfCell = new PdfPCell(new Phrase(cell ?? "—", dataFont))
+                                {
+                                    HorizontalAlignment = Element.ALIGN_CENTER
+                                };
+                                table.AddCell(pdfCell);
+                            }
+                        }
+
+                        doc.Add(table);
+                        doc.Add(new Paragraph("\n\n"));
+                    }
+                }
+            }
+
+            stream.Position = 0;
+            return stream;
+        }
+
 
         public string GetFileExtension() => "pdf";
         public string GetMimeType() => "application/pdf";
