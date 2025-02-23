@@ -7,6 +7,12 @@ using TavernHelios.ReservationService.ApiCore.Extensions;
 using GrpcContract.ReservationService;
 using TavernHelios.ReservationService.APICore.DTOValues;
 
+using TavernHelios.Utils.Reports;
+using System.Net.Http;
+using System.Text.Json;
+using TavernHelios.MenuService.Common.DTOValues.Menu;
+using TavernHelios.MenuService.Common.Enums;
+
 namespace TavernHelios.Server.Controllers
 {
     [ApiController]
@@ -15,6 +21,7 @@ namespace TavernHelios.Server.Controllers
     {
         private readonly ILogger<ReservationController> _logger;
         ReservationServiceClient _grpcClient;
+        private readonly HttpClient _httpClient;
 
         public ReservationController(
             ILogger<ReservationController> logger,
@@ -23,7 +30,11 @@ namespace TavernHelios.Server.Controllers
         {
             _logger = logger;
             _grpcClient = grpcClient;
-
+            var httpClientHandler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+            };
+            _httpClient = new HttpClient(httpClientHandler);
         }
 
         /// <summary>
@@ -101,6 +112,91 @@ namespace TavernHelios.Server.Controllers
                 return BadRequest(ReservationResult.Messages);
 
             return NoContent();
+        }
+
+        [HttpGet("export")]
+        [Produces("application/octet-stream")]
+        public async Task<IActionResult> ExportReservations([FromQuery] string date, [FromQuery] string format = "pdf")
+        {
+            var beginDate = Google.Protobuf.WellKnownTypes.Timestamp.FromDateTime(DateTime.Parse(date).ToUniversalTime());
+            var endDate = Google.Protobuf.WellKnownTypes.Timestamp.FromDateTime(DateTime.Parse(date).AddHours(23).AddMinutes(59).AddSeconds(59).ToUniversalTime());
+
+            var reservationsReply = await _grpcClient.GetReservationsAsync(new ReservationQueryRequest
+            {
+                BeginDate = beginDate,
+                EndDate = endDate
+            });
+
+            var reservations = reservationsReply.Reservations.Select(x => x.ToDto()).ToList();
+            if (!reservations.Any())
+                return NotFound("Нет бронирований на эту дату.");
+
+            var dishData = await FetchDishesForReservations(reservations);
+
+            var headers = new List<string> { "Сотрудник", "Суп", "Горячее", "Салаты", "Напитки" };
+
+            var tableData = reservations.Select(res =>
+            {
+                return new List<string>
+        {
+            res.PersonId,
+            GetDishByType(dishData, res.DishIds, DishType.Soup),
+            GetDishByType(dishData, res.DishIds, DishType.HotDish),
+            GetDishByType(dishData, res.DishIds, DishType.Salad),
+            GetDishByType(dishData, res.DishIds, DishType.Drink)
+        };
+            }).ToList();
+
+            Console.WriteLine("🚀 Заголовки таблицы: " + string.Join(", ", headers));
+            Console.WriteLine("🚀 Первая строка таблицы: " + string.Join(" | ", tableData.FirstOrDefault() ?? new List<string>()));
+
+            var reportGenerator = ReportFactory.CreateReportGenerator(format, $"Брони на {date}", headers);
+
+            var fileStream = reportGenerator.GenerateReport(tableData);
+            return File(fileStream, reportGenerator.GetMimeType(), $"Reservations_{date}.{reportGenerator.GetFileExtension()}");
+        }
+
+
+
+
+
+
+        /// <summary>
+        /// Возвращает название блюда определенного типа
+        /// </summary>
+        private string GetDishByType(Dictionary<string, DishValue> dishes, List<string> dishIds, DishType type)
+        {
+            var selectedDishes = dishIds
+                .Where(dishId => dishes.ContainsKey(dishId) && dishes[dishId].DishType == type)
+                .Select(dishId => dishes[dishId].Name)
+                .ToList();
+
+            return selectedDishes.Any() ? string.Join(", ", selectedDishes) : "—";
+        }
+
+
+
+
+
+        // ✅ Теперь мы вызываем DishController через HTTP
+        private async Task<Dictionary<string, DishValue>> FetchDishesForReservations(IEnumerable<ReservationValue> reservations)
+        {
+            var dishDict = new Dictionary<string, DishValue>();
+            var dishIds = reservations.SelectMany(r => r.DishIds).Distinct().ToList();
+
+            foreach (var dishId in dishIds)
+            {
+                var response = await _httpClient.GetAsync($"https://localhost:5555/api/dish/{dishId}"); // ✅ HTTP-запрос
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = await response.Content.ReadAsStringAsync();
+                    var dish = JsonSerializer.Deserialize<DishValue>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    if (dish != null)
+                        dishDict[dish.Id] = dish;
+                }
+            }
+
+            return dishDict;
         }
     }
 }

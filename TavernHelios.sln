@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TavernHelios.ReservationSer
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TavernHelios.Common", "Common\TavernHelios.Common\TavernHelios.Common.csproj", "{68FA263C-23FD-41D3-BA19-2C73F412F8FA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TavernHelios.Utils", "Common\TavernHelios.Utils\TavernHelios.Utils.csproj", "{078FF554-884A-41B1-87AA-D5C9E3C6948E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,10 @@ Global
 		{68FA263C-23FD-41D3-BA19-2C73F412F8FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{68FA263C-23FD-41D3-BA19-2C73F412F8FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{68FA263C-23FD-41D3-BA19-2C73F412F8FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{078FF554-884A-41B1-87AA-D5C9E3C6948E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{078FF554-884A-41B1-87AA-D5C9E3C6948E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{078FF554-884A-41B1-87AA-D5C9E3C6948E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{078FF554-884A-41B1-87AA-D5C9E3C6948E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -97,5 +103,6 @@ Global
 		{3637A6B8-226C-45AD-AA23-D9C6773E964F} = {913F18FF-8206-408E-ABE6-9EEDC401DD8D}
 		{DAFE9A8F-5319-4CD7-AA57-C022F92BBCFF} = {913F18FF-8206-408E-ABE6-9EEDC401DD8D}
 		{68FA263C-23FD-41D3-BA19-2C73F412F8FA} = {7F7D360D-8EBF-490F-BB53-ECDD72CF44C9}
+		{078FF554-884A-41B1-87AA-D5C9E3C6948E} = {7F7D360D-8EBF-490F-BB53-ECDD72CF44C9}
 	EndGlobalSection
 EndGlobal

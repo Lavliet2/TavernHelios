@@ -7,6 +7,9 @@ namespace TavernHelios.Server
     {
         public static void Main(string[] args)
         {
+            // Добавляем поддержку кодировок, включая windows-1252 для iTextSharp
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+
             var builder = WebApplication.CreateBuilder(args);
 
             // ��������� CORS
