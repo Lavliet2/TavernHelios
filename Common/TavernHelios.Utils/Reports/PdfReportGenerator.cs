@@ -18,7 +18,6 @@ namespace TavernHelios.Utils.Reports
         {
             _title = title;
             _headers = headers;
-
             _baseFont = LoadFont();
         }
 
