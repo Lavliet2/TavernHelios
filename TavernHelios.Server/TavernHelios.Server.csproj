@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Common\TavernHelios.GrpcCommon\TavernHelios.GrpcCommon.csproj" />
+    <ProjectReference Include="..\Common\TavernHelios.Utils\TavernHelios.Utils.csproj" />
     <ProjectReference Include="..\MenuService\APICore\TavernHelios.MenuService.APICore.csproj" />
     <ProjectReference Include="..\ReservationService\TavernHelios.ReservationService.APICore\TavernHelios.ReservationService.APICore.csproj" />
     <!--<ProjectReference Include="..\tavernhelios.client\tavernhelios.client.esproj">

@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { Container, Typography, CircularProgress, TextField } from "@mui/material";
+import { Container, Typography, CircularProgress, TextField, Button, Box } from "@mui/material";
 import ReservationGroup from "./ReservationGroup";
 import { useReservations } from "../../hooks/Menu/useReservations";
 
@@ -9,7 +9,7 @@ const getUTCDateString = (date: Date) => {
 
 const ReservationList: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<string>(getUTCDateString(new Date()));
-  const { reservations12, reservations13, dishes, loading, error } = useReservations(selectedDate);
+  const { reservations12, reservations13, dishes, loading, exportReservations, error } = useReservations(selectedDate);
 
   // Оптимизированный обработчик изменения даты
   const handleDateChange = useCallback(
@@ -48,6 +48,17 @@ const ReservationList: React.FC = () => {
           <ReservationGroup title="Брони на 13:00" reservations={reservations13} dishes={dishes} />
         </>
       )}
+      <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
+        <Button 
+          variant="contained" 
+          color="primary"
+          onClick={exportReservations}
+          size="small"
+          sx={{ px: 2, py: 1 }} 
+        >
+          📄 Скачать отчет
+        </Button>
+      </Box>
     </Container>
   );
 };

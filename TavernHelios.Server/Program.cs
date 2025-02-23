@@ -1,5 +1,5 @@
-using System.Net.Http;
 using MenuServiceServer.Extensions;
+using TavernHelios.Server.Services;
 
 namespace TavernHelios.Server
 {
@@ -7,6 +7,9 @@ namespace TavernHelios.Server
     {
         public static void Main(string[] args)
         {
+            // Добавляем поддержку кодировок, включая windows-1252 для iTextSharp
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+
             var builder = WebApplication.CreateBuilder(args);
 
             // ��������� CORS
@@ -28,6 +31,7 @@ namespace TavernHelios.Server
             builder.Services.AddSwaggerGen();
 
             builder.Services.ConfigureServices(builder.Configuration);
+            builder.Services.AddScoped<ReservationExportService>();
 
             var app = builder.Build();
 

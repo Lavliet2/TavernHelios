@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { fetchReservations } from "../../services/reservationService"; 
+import { fetchReservations, exportReservationsFile } from "../../services/reservationService"; 
 import { fetchDishData } from "../../services/dishService"; 
 import { Reservation } from "../../types/Reservation";
 import { Dish } from "../../types/Management";
@@ -54,5 +54,13 @@ export const useReservations = (date: string) => {
     return resDate.getUTCHours() === 13;
   });
 
-  return { reservations12, reservations13, dishes, loading, error };
+  const exportReservations = async () => {
+    try {
+      await exportReservationsFile(date);
+    } catch (err) {
+      console.error("Ошибка экспорта бронирований:", err);
+    }
+  };
+
+  return { reservations12, reservations13, dishes, loading, exportReservations, error };
 };

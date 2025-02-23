@@ -6,6 +6,7 @@ using static GrpcContract.ReservationService.ReservationService;
 using TavernHelios.ReservationService.ApiCore.Extensions;
 using GrpcContract.ReservationService;
 using TavernHelios.ReservationService.APICore.DTOValues;
+using TavernHelios.Server.Services;
 
 namespace TavernHelios.Server.Controllers
 {
@@ -15,15 +16,17 @@ namespace TavernHelios.Server.Controllers
     {
         private readonly ILogger<ReservationController> _logger;
         ReservationServiceClient _grpcClient;
+        private readonly ReservationExportService _reservationExportService;
 
         public ReservationController(
             ILogger<ReservationController> logger,
-            ReservationServiceClient grpcClient // TODO прокинуть сюда не GRPC клиент, а объект бизнес-логики, который будет общаться с этим клиентом
+            ReservationServiceClient grpcClient, // TODO прокинуть сюда не GRPC клиент, а объект бизнес-логики, который будет общаться с этим клиентом
+            ReservationExportService reservationExportService
             )
         {
             _logger = logger;
             _grpcClient = grpcClient;
-
+            _reservationExportService = reservationExportService;
         }
 
         /// <summary>
@@ -101,6 +104,57 @@ namespace TavernHelios.Server.Controllers
                 return BadRequest(ReservationResult.Messages);
 
             return NoContent();
+        }
+
+        [HttpGet("by-date")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [SwaggerOperation("Получить бронирования по дате")]
+        public async Task<IActionResult> GetReservationsByDate([FromQuery] string date)
+        {
+            if (!DateTime.TryParse(date, out var parsedDate))
+            {
+                return BadRequest("Некорректный формат даты.");
+            }
+
+            var beginDate = Google.Protobuf.WellKnownTypes.Timestamp.FromDateTime(parsedDate.ToUniversalTime());
+            var endDate = Google.Protobuf.WellKnownTypes.Timestamp.FromDateTime(parsedDate.AddHours(23).AddMinutes(59).AddSeconds(59).ToUniversalTime());
+
+            var replyReservation = await _grpcClient.GetReservationsAsync(new ReservationQueryRequest
+            {
+                BeginDate = beginDate,
+                EndDate = endDate
+            });
+
+            var reservations = replyReservation.Reservations.Select(x => x.ToDto()).ToList();
+
+            if (!reservations.Any())
+                return NotFound("Нет бронирований на эту дату.");
+
+            return Ok(reservations);
+        }
+
+        /// <summary>
+        /// Экспортировать брони
+        /// </summary>
+        /// <returns>PDF</returns>
+        [HttpGet("export")]
+        [Produces("application/octet-stream")]
+        public async Task<IActionResult> ExportReservations([FromQuery] string date, [FromQuery] string format = "pdf")
+        {
+            if (!DateTime.TryParse(date, out var parsedDate))
+            {
+                return BadRequest("Некорректный формат даты.");
+            }
+
+            try
+            {
+                var fileStream = await _reservationExportService.ExportReservationsAsync(parsedDate, format);
+                return File(fileStream, "application/pdf", $"Reservations_{parsedDate:yyyy-MM-dd}.{format}");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

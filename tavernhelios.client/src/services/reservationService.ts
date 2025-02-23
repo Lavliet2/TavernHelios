@@ -31,3 +31,23 @@ export const fetchReservations = async (date: string): Promise<Reservation[]> =>
     throw error;
   }
 };
+
+export const exportReservationsFile = async (date: string) => {
+    const url = `${API_BASE_URL}/api/reservation/export?date=${date}&format=pdf`;
+  
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error("Ошибка при загрузке отчета");
+  
+      const blob = await response.blob();
+      const link = document.createElement("a");
+      link.href = window.URL.createObjectURL(blob);
+      link.download = `Reservations_${date}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error("Ошибка экспорта бронирований:", error);
+      throw error;
+    }
+  };
