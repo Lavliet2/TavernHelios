@@ -1,5 +1,5 @@
-using System.Net.Http;
 using MenuServiceServer.Extensions;
+using TavernHelios.Server.Services;
 
 namespace TavernHelios.Server
 {
@@ -31,6 +31,7 @@ namespace TavernHelios.Server
             builder.Services.AddSwaggerGen();
 
             builder.Services.ConfigureServices(builder.Configuration);
+            builder.Services.AddScoped<ReservationExportService>();
 
             var app = builder.Build();
 

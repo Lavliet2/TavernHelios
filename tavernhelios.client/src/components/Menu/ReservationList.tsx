@@ -55,7 +55,6 @@ const ReservationList: React.FC = () => {
           onClick={exportReservations}
           size="small"
           sx={{ px: 2, py: 1 }} 
-          // sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}
         >
           📄 Скачать отчет
         </Button>
