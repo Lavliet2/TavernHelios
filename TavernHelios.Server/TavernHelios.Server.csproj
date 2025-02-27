@@ -17,11 +17,15 @@
       <Version>8.*-*</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
+    <PackageReference Include="Serilog.Sinks.RabbitMQ" Version="8.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
     <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="7.2.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AdministrationService\TavernHelios.AdministrationService.APICore\TavernHelios.AdministrationService.APICore.csproj" />
     <ProjectReference Include="..\Common\TavernHelios.GrpcCommon\TavernHelios.GrpcCommon.csproj" />
     <ProjectReference Include="..\Common\TavernHelios.Utils\TavernHelios.Utils.csproj" />
     <ProjectReference Include="..\MenuService\APICore\TavernHelios.MenuService.APICore.csproj" />

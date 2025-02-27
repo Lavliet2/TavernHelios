@@ -12,7 +12,7 @@ namespace TavernHelios.AdministrationService.ClickHouse
     {
         private readonly string _connectionString;
 
-        public LogRepository(IOptions<ClickHouseSettings> options, string connectionString)
+        public LogRepository(IOptions<ClickHouseSettings> options)
         {
             _connectionString = ConnectionHelper.GetClickHouseConnectionString(options.Value);
             InitializeDatabase();

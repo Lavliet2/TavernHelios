@@ -1,4 +1,7 @@
 using MenuServiceServer.Extensions;
+using Serilog;
+using TavernHelios.Server.Extensions;
+using TavernHelios.Server.Middleware;
 using TavernHelios.Server.Services;
 
 namespace TavernHelios.Server
@@ -33,6 +36,12 @@ namespace TavernHelios.Server
             builder.Services.ConfigureServices(builder.Configuration);
             builder.Services.AddScoped<ReservationExportService>();
 
+            Log.Logger = new LoggerConfiguration()
+                .Configure(builder.Configuration)
+                .CreateLogger();
+
+            builder.Host.UseSerilog();
+
             var app = builder.Build();
 
             app.UseDefaultFiles();
@@ -40,7 +49,17 @@ namespace TavernHelios.Server
 
             if (app.Environment.IsDevelopment())
             {
+                //app.UseSwagger();
+                //app.UseSwaggerUI();
+
+                app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+                app.UseHsts();
+            }
+
                 app.UseSwagger();
                 app.UseSwaggerUI();
 
@@ -48,6 +67,7 @@ namespace TavernHelios.Server
             app.UseCors("AllowFrontend");
             app.UseAuthorization();
             app.MapControllers();
+            app.UseMiddleware<LoggingMiddleware>();
             app.MapFallbackToFile("/index.html");
 
             app.Run();
