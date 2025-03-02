@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TavernHelios.Server", "TavernHelios.Server.csproj", "{391B023C-EDD4-C9BC-7EB1-42315D432D1A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{391B023C-EDD4-C9BC-7EB1-42315D432D1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{391B023C-EDD4-C9BC-7EB1-42315D432D1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{391B023C-EDD4-C9BC-7EB1-42315D432D1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{391B023C-EDD4-C9BC-7EB1-42315D432D1A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {96562A15-6F54-4671-9C5A-1FE75EF32221}
+	EndGlobalSection
+EndGlobal
