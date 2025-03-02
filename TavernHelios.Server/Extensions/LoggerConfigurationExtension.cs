@@ -1,9 +1,7 @@
-﻿using Microsoft.Extensions.Options;
-using Serilog;
+﻿using Serilog;
 using Serilog.Formatting.Json;
 using Serilog.Sinks.RabbitMQ;
 using System.Reflection;
-using TavernHelios.AdministrationService.APICore.Settings;
 using TavernHelios.Server.Formatters;
 
 namespace TavernHelios.Server.Extensions
@@ -12,7 +10,6 @@ namespace TavernHelios.Server.Extensions
     {
         public static LoggerConfiguration Configure(
             this LoggerConfiguration logger,
-             //IOptions<RabbitMqSettings> options)
              IConfiguration configuration)
         {
             var assemblyName = Assembly.GetEntryAssembly()?.GetName().Name ?? "Unknown";

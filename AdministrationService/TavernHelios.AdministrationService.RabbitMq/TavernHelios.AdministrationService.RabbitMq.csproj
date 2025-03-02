@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\TavernHelios.RabbitMq\TavernHelios.RabbitMq.csproj" />
     <ProjectReference Include="..\TavernHelios.AdministrationService.APICore\TavernHelios.AdministrationService.APICore.csproj" />
     <ProjectReference Include="..\TavernHelios.AdministrationService.ClickHouse\TavernHelios.AdministrationService.ClickHouse.csproj" />
   </ItemGroup>

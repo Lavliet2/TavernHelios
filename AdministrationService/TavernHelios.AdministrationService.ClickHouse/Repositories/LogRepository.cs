@@ -2,9 +2,9 @@
 using Dapper;
 using Microsoft.Extensions.Options;
 using TavernHelios.AdministrationService.APICore.Entities;
-using TavernHelios.AdministrationService.APICore.Helpers;
 using TavernHelios.AdministrationService.APICore.Interfaces;
-using TavernHelios.AdministrationService.APICore.Settings;
+using TavernHelios.ClickHouse.Helpers;
+using TavernHelios.ClickHouse.Settings;
 
 namespace TavernHelios.AdministrationService.ClickHouse
 {
@@ -47,8 +47,13 @@ namespace TavernHelios.AdministrationService.ClickHouse
             connection.Execute(createTableQuery);
         }
 
-        public async Task<LogEntity?> CreateAsync(LogEntity log)
+        public async Task<LogEntity?> CreateAsync(LogEntity? log)
         {
+            if (log == null)
+            {
+                return null;
+            }
+
             using var connection = new ClickHouseConnection(_connectionString);
             await connection.OpenAsync();
 

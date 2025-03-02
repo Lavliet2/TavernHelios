@@ -1,4 +1,4 @@
-﻿namespace TavernHelios.AdministrationService.APICore.Settings
+﻿namespace TavernHelios.RabbitMq.Settings
 {
     public class RabbitMqSettings
     {

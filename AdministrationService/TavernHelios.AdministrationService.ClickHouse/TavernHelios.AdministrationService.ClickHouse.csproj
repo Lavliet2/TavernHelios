@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Common\TavernHelios.ClickHouse\TavernHelios.ClickHouse.csproj" />
     <ProjectReference Include="..\TavernHelios.AdministrationService.APICore\TavernHelios.AdministrationService.APICore.csproj" />
   </ItemGroup>
 

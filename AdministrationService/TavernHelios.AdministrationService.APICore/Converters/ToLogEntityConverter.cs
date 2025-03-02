@@ -1,11 +1,18 @@
-﻿using System.Text.Json;
+﻿using System.Text;
+using System.Text.Json;
 using TavernHelios.AdministrationService.APICore.Entities;
 
 namespace TavernHelios.AdministrationService.APICore.Converters
 {
-    public static class JsonConverter
+    public static class ToLogEntityConverter
     {
-        public static LogEntity FromJsonToLogEntity(string json)
+        public static LogEntity? ToLogEntity(byte[] arr)
+        {
+            var message = Encoding.UTF8.GetString(arr);
+            return ToLogEntity(message);
+        }
+
+        public static LogEntity? ToLogEntity(string json)
         {
             var logEntity = new LogEntity();
 

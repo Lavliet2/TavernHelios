@@ -43,6 +43,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TavernHelios.Administration
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TavernHelios.AdministrationService.AdministrationServiceServer", "AdministrationService\TavernHelios.AdministrationService.AdministrationServiceServer\TavernHelios.AdministrationService.AdministrationServiceServer.csproj", "{D85241CB-25F2-48B5-B65B-98A1B2BEB405}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TavernHelios.MessagePack", "Common\TavernHelios.MessagePack\TavernHelios.MessagePack.csproj", "{593A1A81-7B76-4C85-880D-09952717A1BB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TavernHelios.RabbitMq", "TavernHelios.RabbitMq\TavernHelios.RabbitMq.csproj", "{16F1CA27-9D6E-4FA8-9686-B301585CA38A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TavernHelios.ClickHouse", "Common\TavernHelios.ClickHouse\TavernHelios.ClickHouse.csproj", "{58CFE433-032E-45AF-898C-947FBC2B86FF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -115,6 +121,18 @@ Global
 		{D85241CB-25F2-48B5-B65B-98A1B2BEB405}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D85241CB-25F2-48B5-B65B-98A1B2BEB405}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D85241CB-25F2-48B5-B65B-98A1B2BEB405}.Release|Any CPU.Build.0 = Release|Any CPU
+		{593A1A81-7B76-4C85-880D-09952717A1BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{593A1A81-7B76-4C85-880D-09952717A1BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{593A1A81-7B76-4C85-880D-09952717A1BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{593A1A81-7B76-4C85-880D-09952717A1BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16F1CA27-9D6E-4FA8-9686-B301585CA38A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16F1CA27-9D6E-4FA8-9686-B301585CA38A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16F1CA27-9D6E-4FA8-9686-B301585CA38A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16F1CA27-9D6E-4FA8-9686-B301585CA38A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58CFE433-032E-45AF-898C-947FBC2B86FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58CFE433-032E-45AF-898C-947FBC2B86FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58CFE433-032E-45AF-898C-947FBC2B86FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58CFE433-032E-45AF-898C-947FBC2B86FF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -134,5 +152,8 @@ Global
 		{15FAEC65-6EE6-4DF3-AE18-C31ADE01854A} = {BB5E2AE7-04AE-4517-9B24-69E971A69E6F}
 		{C9ADBA36-6F7C-4794-98D7-A993E3F1EE1C} = {BB5E2AE7-04AE-4517-9B24-69E971A69E6F}
 		{D85241CB-25F2-48B5-B65B-98A1B2BEB405} = {BB5E2AE7-04AE-4517-9B24-69E971A69E6F}
+		{593A1A81-7B76-4C85-880D-09952717A1BB} = {7F7D360D-8EBF-490F-BB53-ECDD72CF44C9}
+		{16F1CA27-9D6E-4FA8-9686-B301585CA38A} = {7F7D360D-8EBF-490F-BB53-ECDD72CF44C9}
+		{58CFE433-032E-45AF-898C-947FBC2B86FF} = {7F7D360D-8EBF-490F-BB53-ECDD72CF44C9}
 	EndGlobalSection
 EndGlobal

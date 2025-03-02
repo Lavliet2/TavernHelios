@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.Options;
-using ClickHouse.Client.ADO;
+﻿using ClickHouse.Client.ADO;
 using Microsoft.Extensions.Logging;
-using TavernHelios.AdministrationService.APICore.Settings;
+using Microsoft.Extensions.Options;
+using TavernHelios.ClickHouse.Settings;
 
 namespace WebAdmin.BackgroundServices
 {
