@@ -35,15 +35,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TavernHelios.Utils", "Commo
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AdminService", "AdminService", "{BB5E2AE7-04AE-4517-9B24-69E971A69E6F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TavernHelios.AdministrationService.APICore", "AdministrationService\TavernHelios.AdministrationService.APICore\TavernHelios.AdministrationService.APICore.csproj", "{4A6721B7-5E4E-4680-9000-51BDD078FB7E}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TavernHelios.AdministrationService.RabbitMq", "AdministrationService\TavernHelios.AdministrationService.RabbitMq\TavernHelios.AdministrationService.RabbitMq.csproj", "{15FAEC65-6EE6-4DF3-AE18-C31ADE01854A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TavernHelios.AdministrationService.ClickHouse", "AdministrationService\TavernHelios.AdministrationService.ClickHouse\TavernHelios.AdministrationService.ClickHouse.csproj", "{C9ADBA36-6F7C-4794-98D7-A993E3F1EE1C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TavernHelios.AdministrationService.AdministrationServiceServer", "AdministrationService\TavernHelios.AdministrationService.AdministrationServiceServer\TavernHelios.AdministrationService.AdministrationServiceServer.csproj", "{D85241CB-25F2-48B5-B65B-98A1B2BEB405}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TavernHelios.MessagePack", "Common\TavernHelios.MessagePack\TavernHelios.MessagePack.csproj", "{593A1A81-7B76-4C85-880D-09952717A1BB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TavernHelios.RabbitMq", "TavernHelios.RabbitMq\TavernHelios.RabbitMq.csproj", "{16F1CA27-9D6E-4FA8-9686-B301585CA38A}"
 EndProject
@@ -105,10 +101,6 @@ Global
 		{078FF554-884A-41B1-87AA-D5C9E3C6948E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{078FF554-884A-41B1-87AA-D5C9E3C6948E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{078FF554-884A-41B1-87AA-D5C9E3C6948E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4A6721B7-5E4E-4680-9000-51BDD078FB7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4A6721B7-5E4E-4680-9000-51BDD078FB7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4A6721B7-5E4E-4680-9000-51BDD078FB7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4A6721B7-5E4E-4680-9000-51BDD078FB7E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{15FAEC65-6EE6-4DF3-AE18-C31ADE01854A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{15FAEC65-6EE6-4DF3-AE18-C31ADE01854A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{15FAEC65-6EE6-4DF3-AE18-C31ADE01854A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -121,10 +113,6 @@ Global
 		{D85241CB-25F2-48B5-B65B-98A1B2BEB405}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D85241CB-25F2-48B5-B65B-98A1B2BEB405}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D85241CB-25F2-48B5-B65B-98A1B2BEB405}.Release|Any CPU.Build.0 = Release|Any CPU
-		{593A1A81-7B76-4C85-880D-09952717A1BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{593A1A81-7B76-4C85-880D-09952717A1BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{593A1A81-7B76-4C85-880D-09952717A1BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{593A1A81-7B76-4C85-880D-09952717A1BB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{16F1CA27-9D6E-4FA8-9686-B301585CA38A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{16F1CA27-9D6E-4FA8-9686-B301585CA38A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{16F1CA27-9D6E-4FA8-9686-B301585CA38A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -148,11 +136,9 @@ Global
 		{DAFE9A8F-5319-4CD7-AA57-C022F92BBCFF} = {913F18FF-8206-408E-ABE6-9EEDC401DD8D}
 		{68FA263C-23FD-41D3-BA19-2C73F412F8FA} = {7F7D360D-8EBF-490F-BB53-ECDD72CF44C9}
 		{078FF554-884A-41B1-87AA-D5C9E3C6948E} = {7F7D360D-8EBF-490F-BB53-ECDD72CF44C9}
-		{4A6721B7-5E4E-4680-9000-51BDD078FB7E} = {BB5E2AE7-04AE-4517-9B24-69E971A69E6F}
 		{15FAEC65-6EE6-4DF3-AE18-C31ADE01854A} = {BB5E2AE7-04AE-4517-9B24-69E971A69E6F}
 		{C9ADBA36-6F7C-4794-98D7-A993E3F1EE1C} = {BB5E2AE7-04AE-4517-9B24-69E971A69E6F}
 		{D85241CB-25F2-48B5-B65B-98A1B2BEB405} = {BB5E2AE7-04AE-4517-9B24-69E971A69E6F}
-		{593A1A81-7B76-4C85-880D-09952717A1BB} = {7F7D360D-8EBF-490F-BB53-ECDD72CF44C9}
 		{16F1CA27-9D6E-4FA8-9686-B301585CA38A} = {7F7D360D-8EBF-490F-BB53-ECDD72CF44C9}
 		{58CFE433-032E-45AF-898C-947FBC2B86FF} = {7F7D360D-8EBF-490F-BB53-ECDD72CF44C9}
 	EndGlobalSection

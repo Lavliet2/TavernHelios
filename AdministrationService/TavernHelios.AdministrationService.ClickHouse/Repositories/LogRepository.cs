@@ -1,8 +1,8 @@
 ﻿using ClickHouse.Client.ADO;
 using Dapper;
 using Microsoft.Extensions.Options;
-using TavernHelios.AdministrationService.APICore.Entities;
-using TavernHelios.AdministrationService.APICore.Interfaces;
+using TavernHelios.AdministrationService.ClickHouse.Entities;
+using TavernHelios.AdministrationService.ClickHouse.Interfaces;
 using TavernHelios.ClickHouse.Helpers;
 using TavernHelios.ClickHouse.Settings;
 

@@ -1,4 +1,4 @@
-﻿namespace TavernHelios.AdministrationService.APICore.Interfaces
+﻿namespace TavernHelios.AdministrationService.ClickHouse.Interfaces
 {
     public interface IRepository<T> where T : IEntity
     {

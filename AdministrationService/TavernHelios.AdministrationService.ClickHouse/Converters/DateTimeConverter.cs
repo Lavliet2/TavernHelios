@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace TavernHelios.AdministrationService.APICore.Converters
+namespace TavernHelios.AdministrationService.ClickHouse.Converters
 {
     // Кастомный конвертер для DateTime
     public class DateTimeConverter : JsonConverter<DateTime>

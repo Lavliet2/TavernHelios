@@ -1,8 +1,8 @@
 ﻿using System.Text;
 using System.Text.Json;
-using TavernHelios.AdministrationService.APICore.Entities;
+using TavernHelios.AdministrationService.ClickHouse.Entities;
 
-namespace TavernHelios.AdministrationService.APICore.Converters
+namespace TavernHelios.AdministrationService.ClickHouse.Converters
 {
     public static class ToLogEntityConverter
     {

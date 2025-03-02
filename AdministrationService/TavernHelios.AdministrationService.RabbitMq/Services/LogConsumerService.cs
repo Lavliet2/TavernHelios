@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
-using TavernHelios.AdministrationService.APICore.Converters;
-using TavernHelios.AdministrationService.APICore.Entities;
 using TavernHelios.AdministrationService.ClickHouse;
+using TavernHelios.AdministrationService.ClickHouse.Converters;
+using TavernHelios.AdministrationService.ClickHouse.Entities;
 using TavernHelios.RabbitMq.Services;
 using TavernHelios.RabbitMq.Settings;
 
@@ -22,37 +22,7 @@ namespace TavernHelios.AdministrationService.RabbitMqConsumer.Services
             DoAsync += _logRepository.CreateAsync;
         }
 
-        //public async Task ExecuteAsync(CancellationToken stoppingToken)
-        //{
-        //    // Создаем consumer для обработки сообщений
-        //    var consumer = new AsyncEventingBasicConsumer(_channel);
-        //    consumer.ReceivedAsync += async (model, ea) =>
-        //    {
-        //        var body = ea.Body.ToArray();
-        //        var message = Encoding.UTF8.GetString(body);
-        //        var log = JsonConverter.ToLogEntity(message);
-
-        //        // Сохраняем лог в ClickHouse
-        //        if (log != null)
-        //        {
-        //            await _logRepository.CreateAsync(log);
-        //        }
-        //    };
-
-        //    // Начинаем слушать очередь
-        //    await _channel.BasicConsumeAsync(
-        //        queue: "logs",
-        //        autoAck: true,
-        //        consumer: consumer);
-
-        //    // Ожидаем завершения работы сервиса
-        //    while (!stoppingToken.IsCancellationRequested)
-        //    {
-        //        await Task.Delay(1000, stoppingToken);
-        //    }
-        //}
-
-        public void Dispose()
+        public override void Dispose()
         {
             base.Dispose();
 

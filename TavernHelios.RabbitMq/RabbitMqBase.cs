@@ -73,7 +73,7 @@ namespace TavernHelios.RabbitMq.Services
             }
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             _channel.CloseAsync();
             _connection.CloseAsync();
