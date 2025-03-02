@@ -108,8 +108,9 @@ services:
     networks:
       - app_network
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./nginx/conf.d:/etc/nginx/conf.d
+      # - ./nginx/nginx.conf:/etc/nginx/nginx.conf 
+      # - ./nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/nginx.conf.dev:/etc/nginx/nginx.conf
       - ./nginx/ssl:/etc/nginx/ssl
       
 # networks:

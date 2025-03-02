@@ -18,15 +18,15 @@ spec:
           service:
             name: tavernhelios-server-service
             port:
-              number: 8080
-      - path: /menu
+              number: 5555
+      - path: /menuservice
         pathType: Prefix
         backend:
           service:
             name: menuservice
             port:
               number: 5064
-      - path: /reservation
+      - path: /reservationservice
         pathType: Prefix
         backend:
           service:
@@ -37,9 +37,9 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: tavernhelios-server-service
+            name: tavernhelios-client-service
             port:
-              number: 8080
+              number: 80
 
       - path: /.well-known/acme-challenge
         pathType: ImplementationSpecific
