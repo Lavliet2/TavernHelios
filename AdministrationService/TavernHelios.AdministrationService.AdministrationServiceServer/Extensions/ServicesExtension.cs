@@ -1,7 +1,8 @@
 ﻿using TavernHelios.AdministrationService.AdministrationServiceServer.BackgroundServices;
-using TavernHelios.AdministrationService.APICore.Settings;
 using TavernHelios.AdministrationService.ClickHouse;
 using TavernHelios.AdministrationService.RabbitMqConsumer.Services;
+using TavernHelios.ClickHouse.Settings;
+using TavernHelios.RabbitMq.Settings;
 
 namespace TavernHelios.AdministrationService.AdministrationServiceServer.Extensions
 {
