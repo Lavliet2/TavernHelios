@@ -19,14 +19,14 @@ spec:
             name: tavernhelios-server-service
             port:
               number: 5555
-      - path: /menu
+      - path: /menuservice
         pathType: Prefix
         backend:
           service:
             name: menuservice
             port:
               number: 5064
-      - path: /reservation
+      - path: /reservationservice
         pathType: Prefix
         backend:
           service:
