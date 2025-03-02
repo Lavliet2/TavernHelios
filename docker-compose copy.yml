@@ -1,32 +1,70 @@
-version: '3.8'
-
 services:
-  frontend:
-    build:
-      context: ./heliostavern.client 
-      dockerfile: Dockerfile
+  mongoMenuService:
+    image: mongo
+    container_name: mongoMenuService
     ports:
-      - "63049:80"
-    environment:
-      - VITE_API_URL=https://backend:7132 
-    depends_on:
-      - backend
-    networks:
-      - heliostavern-network
-
-  backend:
-    build:
-      context: ./heliostavern.server  
-      dockerfile: Dockerfile
-    ports:
-      - "7132:80"  
-    networks:
-      - heliostavern-network
-    environment:
-      - ASPNETCORE_URLS=https://+:80
+      - '27017:27017'
     volumes:
-      - ./heliostavern.server:/app
+      - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: 'mongoMenuService'
+    networks:
+      - app_network
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    restart: always
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: reservationdb
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: helios
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app_network
+
+  menuService:
+    container_name: menuService
+    image: tavernhelios/menuservice 
+    build:
+      context: .
+      dockerfile: ./MenuService/MenuServiceServer/Dockerfile
+    ports:
+      - '5064:5064'
+    depends_on:
+      - mongoMenuService
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_URLS: "http://+:5064"  
+    command: ["dotnet", "MenuServiceServer.dll"]
+    networks:
+      - app_network
+
+  ReservationService:
+    container_name: ReservationService
+    image: tavernhelios/reservationservice 
+    build:
+      context: .
+      dockerfile: ./ReservationService\TavernHelios.ReservationServiceServer/Dockerfile
+    ports:
+      - '5065:5065'
+    depends_on:
+      - postgres
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_URLS: "http://+:5065"  
+    command: ["dotnet", "TavernHelios.ReservationServiceServer.dll"]
+    networks:
+      - app_network
+      
 
 networks:
-  heliostavern-network:
-    driver: bridge
+  app_network:
+    driver: bridge     
+
+volumes:
+  mongo_data:
+  postgres_data:
