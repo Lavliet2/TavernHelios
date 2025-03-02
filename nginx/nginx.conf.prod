@@ -21,5 +21,18 @@ http {
     sendfile        on;
     keepalive_timeout  65;
 
-    include /etc/nginx/conf.d/*.conf;
+    # === Это сервер в K8s, слушаем HTTP (80). 
+    #     SSL «снаружи» делает Ingress Controller ===
+    server {
+        listen 80;
+        server_name _;
+
+        root /usr/share/nginx/html;
+        index index.html;
+
+        # Включаем fallback для SPA
+        location / {
+            try_files $uri $uri/ /index.html;
+        }
+    }
 }
