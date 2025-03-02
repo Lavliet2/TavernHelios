@@ -19,6 +19,8 @@ spec:
           ports:
             - containerPort: 5555  
           env:
+            - name: ASPNETCORE_URLS
+              value: "http://+:5555"
             - name: MENU_SERVICE_URL
               value: "http://menuservice:5064"
             - name: RESERVATION_SERVICE_URL
