@@ -59,15 +59,21 @@ const MenuDisplay: React.FC = () => {
           <Typography variant="body1">Загрузка блюд...</Typography>
         </Box>
       ) : (
-        <Grid container spacing={2} sx={{ alignItems: 'stretch', width: '100%' }}>
+        <Grid container spacing={10} sx={{ alignItems: 'stretch', width: '100%' }}>
           {dishTypes.map(type => (
-            <Grid key={type.value} size={{ xs: 12, sm: 6 }}>
+            <Grid key={type.value} size={{ xs: 12, sm: 12, md: 6 }}>
               <Typography 
                 variant="h5" 
                 gutterBottom
                 sx={{
-                  borderBottom: 1.5,
-                }}>
+                  borderBottom: '3px solid',
+                  borderColor: 'primary.main',
+                  display: 'inline-block',
+                  paddingBottom: '4px',
+                  fontWeight: 'bold',
+                  width: '100%'
+                }}
+              >
                 {type.label}
               </Typography>
               <FormControl fullWidth component="fieldset">
@@ -77,9 +83,9 @@ const MenuDisplay: React.FC = () => {
                   onChange={(e) => handleSelectionChange(type.value, e.target.value)}
                 >
                   <Box sx={{ width: '100%' }}>
-                    <Grid container spacing={2} sx={{ width: '100%' }}>
+                    <Grid container spacing={2} sx={{ width: '100%', justifyContent: 'center'}}>
                       {groupedDishes[type.value]?.map(dish => (
-                        <Grid key={dish.id} size={{ xs: 12, sm: 6 }} sx={{ display: 'flex' }}>
+                        <Grid key={dish.id} size={{ xs: 12, sm: 6, md: 6}} sx={{ display: 'flex' }}>
                           <Card
                             ref={addToCardRefs}
                             onClick={() => handleSelectionChange(type.value, dish.id)}
