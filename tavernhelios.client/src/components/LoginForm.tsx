@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { TextField, Button, Box, Typography, Paper } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-// import { useAuth } from "../contexts/AuthContext";
-import { useAuth } from "../hooks/useAuth";
 import Logo from "../assets/logo_login_bg.webp";
 import { ThemeProvider } from "@mui/material/styles";
 import Theme from "../styles/theme";
 import { API_BASE_URL } from "../config";
+import axios from "axios";
+import { useUser } from "../contexts/UserContext";
 
 const LoginForm: React.FC = () => {
   const { t } = useTranslation();
@@ -15,9 +15,9 @@ const LoginForm: React.FC = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const { login } = useAuth();
-  console.log(`Login form redirect_uri: ${API_BASE_URL}/yandexAuth/login/` )
-
+  const [isLoading, setIsLoading] = useState(false);
+  const userContext = useUser();
+  
   useEffect(() => {
     // @ts-ignore
     window.YaAuthSuggest.init(
@@ -42,38 +42,15 @@ const LoginForm: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Заглушка для авторизации
-    if (username === "test" && password === "test") {
-      localStorage.setItem("username", username);
-      login(); // Устанавливаем состояние аутентификации
-      navigate("/"); // Переход на главную страницу
-    } else {
-      setError("Неверные данные");
-    }
+    setIsLoading(true);
+    axios.post(`${API_BASE_URL}/api/auth/login`, {login: username, password: password})
+      .then((response) => {
+        userContext?.login(response.data);
+        navigate("/");
+      })
+      .catch(e => setError(e.response.data.message))
+      .finally(() => setIsLoading(false));
   };
-
-  //Когда будет API
-//   const handleSubmit = async (e: React.FormEvent) => {
-//     e.preventDefault();
-  
-//     try {
-//       const response = await fetch("/api/login", {
-//         method: "POST",
-//         headers: { "Content-Type": "application/json" },
-//         body: JSON.stringify({ username, password }),
-//       });
-  
-//       if (response.ok) {
-//         login();
-//         navigate("/");
-//       } else {
-//         setError("Неверные данные");
-//       }
-//     } catch (err) {
-//       setError("Ошибка сервера. Попробуйте позже.");
-//     }
-//   };
 
   return (
     <ThemeProvider theme={Theme}>
@@ -224,8 +201,18 @@ const LoginForm: React.FC = () => {
               color="primary"
               fullWidth
               sx={{ marginTop: 2 }}
+              loading={isLoading}
             >
               {t("signIn")}
+            </Button>
+            <Button
+              variant="contained"
+              color="secondary"
+              fullWidth
+              sx={{ marginTop: 2 }}
+              onClick={() => navigate("/register")}
+            >
+              Зарегистрироваться
             </Button>
 
             <div style={{marginTop: "10px"}} id='yandexAuth'></div>

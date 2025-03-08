@@ -7,9 +7,12 @@ using static GrpcContract.MenuService.MenuService;
 using TavernHelios.MenuService.Common.Extensions;
 using GrpcContract.MenuService;
 using TavernHelios.MenuService.APICore.DTOValues.Menu;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace TavernHelios.Server.Controllers
 {
+    [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
     [ApiController]
     [Route("api/[controller]")]
     public class MenuScheduleController : ControllerBase
