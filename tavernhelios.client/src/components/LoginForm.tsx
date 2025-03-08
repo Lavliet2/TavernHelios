@@ -227,6 +227,15 @@ const LoginForm: React.FC = () => {
             >
               {t("signIn")}
             </Button>
+            <Button
+              variant="contained"
+              color="secondary"
+              fullWidth
+              sx={{ marginTop: 2 }}
+              onClick={() => navigate("/register")}
+            >
+              Зарегистрироваться
+            </Button>
 
             <div style={{marginTop: "10px"}} id='yandexAuth'></div>
           </form>

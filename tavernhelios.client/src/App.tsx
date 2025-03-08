@@ -12,6 +12,7 @@ import EditDishes from "./pages/Management/EditDishes";
 import EditMenu from "./pages/Management/EditMenu";
 import EditSchedule from "./pages/Management/EditSchedule";
 import Reservations from "./pages/Management/Reservations";
+import RegisterForm from "./components/RegisterForm";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           {/* Страницы, доступные без авторизации */}
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<LoginForm />} />
+          <Route path="/register" element={<RegisterForm />} />
           <Route path="/about" element={<About />} />
           <Route path="/forecast" element={<WeatherForecast />} />
 

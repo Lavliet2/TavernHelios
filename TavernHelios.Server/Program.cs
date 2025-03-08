@@ -32,6 +32,10 @@ namespace TavernHelios.Server
 
             builder.Services.ConfigureServices(builder.Configuration);
             builder.Services.AddScoped<ReservationExportService>();
+            builder.Services.AddHttpClient<IAuthAPIService, AuthAPIService>(client =>
+            {
+                client.BaseAddress = new Uri(builder.Configuration["AuthServiceUrl"]);
+            });
 
             var app = builder.Build();
 
