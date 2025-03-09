@@ -9,7 +9,7 @@ namespace TavernHelios.LayoutService.APICore.DTOValues.Layout
     public class SeatValue
     {
         public int Number { get; set; } = 0;
-        public string Desctiption { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
 
         public PointValue Center { get; set; } = new PointValue();
         public PointValue Alignment { get; set; } = new PointValue();

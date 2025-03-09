@@ -14,7 +14,7 @@ namespace TavernHelios.LayoutService.APICore.Extensions
         {
             var result = new SeatValue();
             result.Number = entity.Number;
-            result.Desctiption = entity.Description;
+            result.Description = entity.Description;
             result.Center = entity.Center.ToDto();
             result.Alignment = entity.Alignment.ToDto();
             return result;
@@ -34,7 +34,7 @@ namespace TavernHelios.LayoutService.APICore.Extensions
         {
             var result = new GrpcContract.LayoutService.Seat();
             result.Number = seatValue.Number;
-            result.Description = seatValue.Desctiption;
+            result.Description = seatValue.Description;
             result.Alignment = seatValue.Alignment.ToGrpc();
             result.Center = seatValue.Center.ToGrpc();
             
