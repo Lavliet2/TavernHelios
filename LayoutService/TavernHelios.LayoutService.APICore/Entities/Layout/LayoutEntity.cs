@@ -16,6 +16,9 @@ namespace TavernHelios.LayoutService.APICore.Entities.Layout
 
         public double Width { get; set; } = 0;
         public double Height { get; set; } = 0;
+
+        public string? ImageStr { get; set; } = null;
+
         public List<TableEntity> Tables { get; set; } = new List<TableEntity>();
         public List<SeatEntity> Seats { get; set; } = new List<SeatEntity>();
     }

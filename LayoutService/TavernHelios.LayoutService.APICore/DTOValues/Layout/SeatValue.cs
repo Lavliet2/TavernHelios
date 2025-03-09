@@ -12,6 +12,6 @@ namespace TavernHelios.LayoutService.APICore.DTOValues.Layout
         public string Description { get; set; } = string.Empty;
 
         public PointValue Center { get; set; } = new PointValue();
-        public PointValue Alignment { get; set; } = new PointValue();
+        public double Radius { get; set; } = 0;
     }
 }

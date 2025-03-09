@@ -16,7 +16,7 @@ namespace TavernHelios.LayoutService.APICore.Extensions
             result.Number = entity.Number;
             result.Description = entity.Description;
             result.Center = entity.Center.ToDto();
-            result.Alignment = entity.Alignment.ToDto();
+            result.Radius = entity.Radius;
             return result;
         }
 
@@ -25,7 +25,7 @@ namespace TavernHelios.LayoutService.APICore.Extensions
             var result = new SeatEntity();
             result.Number = seatValue.Number;
             result.Desctiption = seatValue.Description;
-            result.Alignment = seatValue.Alignment.ToEntity();
+            result.Radius = seatValue.Radius;
             result.Center = seatValue.Center.ToEntity();
             return result;
         }
@@ -35,7 +35,7 @@ namespace TavernHelios.LayoutService.APICore.Extensions
             var result = new GrpcContract.LayoutService.Seat();
             result.Number = seatValue.Number;
             result.Description = seatValue.Description;
-            result.Alignment = seatValue.Alignment.ToGrpc();
+            result.Radius = seatValue.Radius;
             result.Center = seatValue.Center.ToGrpc();
             
             return result;
@@ -47,7 +47,7 @@ namespace TavernHelios.LayoutService.APICore.Extensions
             result.Number = seatValue.Number;
             result.Description = seatValue.Desctiption;
             result.Center = seatValue.Center.ToGrpc();
-            result.Alignment = seatValue.Center.ToGrpc();
+            result.Radius = seatValue.Radius;
             return result;
         }
     }

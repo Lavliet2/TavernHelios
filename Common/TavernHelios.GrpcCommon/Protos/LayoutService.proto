@@ -31,10 +31,10 @@ message Table{
 }
 
 message Seat{
-	int32 Number = 3;
-	string Description = 4;
-	Point Center = 1;
-	Point Alignment = 2;
+	int32 Number = 1;
+	string Description = 2;
+	Point Center = 3;
+	double Radius = 4;
 }
 
 message Layout{
@@ -42,17 +42,19 @@ message Layout{
 	string RestaurantId = 2;
 	double Width = 3;
 	double Height = 4;
-	repeated Table Tables = 5;
-	repeated Seat Seats = 6;
-	bool IsDeleted = 7;
+	string ImageStr = 5;
+	repeated Table Tables = 6;
+	repeated Seat Seats = 7;
+	bool IsDeleted = 8;
 }
 
 message AddLayoutRequest{
 	string RestaurantId = 1;
 	double Width = 2;
 	double Height = 3;
-	repeated Table Tables = 4;
-	repeated Seat Seats = 5;
+	string ImageStr = 4;
+	repeated Table Tables = 5;
+	repeated Seat Seats = 6;
 }
 
 message LayoutsReply{

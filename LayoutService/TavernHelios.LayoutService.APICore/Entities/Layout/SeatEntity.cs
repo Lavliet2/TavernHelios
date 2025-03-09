@@ -12,6 +12,6 @@ namespace TavernHelios.LayoutService.APICore.Entities.Layout
         public string Desctiption { get; set; } = string.Empty;
 
         public PointEntity Center { get; set; } = new PointEntity();
-        public PointEntity Alignment { get; set; } = new PointEntity();
+        public double Radius { get; set; } = 0;
     }
 }
