@@ -20,6 +20,7 @@ message Reservation{
 	string PersonId = 2;
 	google.protobuf.Timestamp Date = 3;
 	repeated string DishIds = 4;
+	bool IsDeleted = 5;
 }
 
 message ReservationsReply{
@@ -33,8 +34,9 @@ message ReservationQueryRequest
 {
 	optional int64 ReservationId = 1;
 	optional string PersonId = 2;
-	optional string DishId = 5;
-	optional google.protobuf.Timestamp BeginDate = 3;
-	optional google.protobuf.Timestamp EndDate = 4;
+	optional string DishId = 3;
+	optional google.protobuf.Timestamp BeginDate = 4;
+	optional google.protobuf.Timestamp EndDate = 5;
+	optional bool IsDeleted = 6;
 }
 

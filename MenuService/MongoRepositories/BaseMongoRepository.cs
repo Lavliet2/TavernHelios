@@ -85,10 +85,16 @@ namespace TavernHelios.MenuService.MongoRepositories
 
         public virtual async Task<string> DeleteAsync(string entityId)
         {
-            var entity = await (await GetCollectionAsync(_dbCollectionName)).FindOneAndDeleteAsync(p => p.Id == entityId);
-            // если не найден, отправляем пустой Id
-            return entity?.Id ?? string.Empty;
+            var entity = await this.GetByIdAsync(entityId);
+            if (entity == null)
+                return string.Empty;
+
+            entity.IsDeleted = true;
+            var deletedEntity = await this.UpdateAsync(entity);
+            return deletedEntity?.Id ?? string.Empty;
+
         }
+
         public virtual async Task<IEnumerable<T>> GetAllAsync()
         {
             var allEntities = await (await GetCollectionAsync(_dbCollectionName)).Find("{}").ToListAsync();

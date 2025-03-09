@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Dish } from "../../types/Management";
-import { fetchDishData, addDish, deleteDish, updateDish } from "../../services/dishService";
+import { fetchDish, addDish, deleteDish, updateDish } from "../../services/dishService";
 import dishTypes from "../../constants/dishTypes";
 
 const useDishes = () => {
@@ -24,7 +24,7 @@ const useDishes = () => {
     const loadDish = async () => {
       try {
         setLoading(true);
-        const data = await fetchDishData();
+        const data = await fetchDish();
         setDishData(data);
       } catch (error) {
         setError("Ошибка загрузки меню");

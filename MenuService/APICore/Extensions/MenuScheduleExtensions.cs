@@ -16,6 +16,7 @@ namespace TavernHelios.MenuService.Common.Extensions
             result.Id = grpc.Id;
             result.Menu = grpc.Menu.ToDto();
             result.DateTime = grpc.DateTime.ToDateTime().ToUniversalTime();
+            result.IsDeleted = grpc.IsDeleted;
             return result;
         }
 
@@ -43,6 +44,7 @@ namespace TavernHelios.MenuService.Common.Extensions
             result.Id = entity.Id;
             result.Menu = menuEntity?.ToGrpc() ?? throw new ArgumentNullException($@"Не найдено меню [{entity.MenuId}] для расписания [{entity.Id}]");
             result.DateTime = entity.DateTime.ToUniversalTime().ToTimestamp();
+            result.IsDeleted = entity.IsDeleted;
             return result;
         }
 
@@ -63,6 +65,7 @@ namespace TavernHelios.MenuService.Common.Extensions
             if (value.MenuId != null) result.MenuId = value.MenuId;
             if (value.BeginDate != null) result.BeginDate = value.BeginDate.Value.ToUniversalTime().ToTimestamp();
             if (value.EndDate != null) result.EndDate = value.EndDate.Value.ToUniversalTime().ToTimestamp();
+            if (value.IsDeleted != null) result.IsDeleted = value.IsDeleted.Value;
 
             return result;
         }
@@ -81,6 +84,11 @@ namespace TavernHelios.MenuService.Common.Extensions
             if (value.HasMenuId)
             {
                 result = result.AndAlso(x => x.MenuId == value.MenuId);
+            }
+
+            if (value.HasIsDeleted)
+            {
+                result = result.AndAlso(x => x.IsDeleted == value.IsDeleted);
             }
 
             if (value.BeginDate != null)

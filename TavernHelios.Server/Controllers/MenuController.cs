@@ -6,6 +6,7 @@ using TavernHelios.MenuService.Common.DTOValues.Menu;
 using static GrpcContract.MenuService.MenuService;
 using TavernHelios.MenuService.Common.Extensions;
 using GrpcContract.MenuService;
+using TavernHelios.MenuService.APICore.DTOValues.Menu;
 
 namespace TavernHelios.Server.Controllers
 {
@@ -26,16 +27,21 @@ namespace TavernHelios.Server.Controllers
 
         }
 
+        /// <summary>
+        /// Получить одно или несколько меню по условию
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [SwaggerOperation("Получить все меню")]
-        public async Task<ActionResult<IEnumerable<MenuValue>>> GetAllMenusAsync()
+        [ProducesResponseType<IEnumerable<MenuValue>>(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [SwaggerOperation("Получить одно или несколько меню, удовлетворяющих условию")]
+        public async Task<IActionResult> GetByConditionAsync([FromQuery] MenuQueryRequestValue queryRequest)
         {
-            var reply = await _grpcClient.GetAllMenusAsync(new GrpcContract.EmptyRequest());
+            var replyMenu = await _grpcClient.GetMenusAsync(queryRequest.ToGrpc());
 
-            var values = reply.Menus.Select(x => x.ToDto());
+            var menus = replyMenu.Menus.Select(x => x.ToDto());
 
-            return Ok(values);
+            return Ok(menus);
         }
 
         /// <summary>
@@ -45,14 +51,15 @@ namespace TavernHelios.Server.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType<MenuValue>(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [SwaggerOperation("Получить меню по Id")]
+        [SwaggerOperation("Получить меню по Id (включая все блюда)")]
         public async Task<IActionResult> GetMenuByIdAsync(string id)
         {
-            var replyMenu = await _grpcClient.GetMenuAsync(new GrpcContract.IdRequest() { Id = id });
+            var query = new MenuQueryRequestValue() { MenuId = id };
+            var replyMenu = await _grpcClient.GetMenusAsync(query.ToGrpc());
 
             var menu = replyMenu.Menus.FirstOrDefault();
 
-            if (menu == null || replyMenu.State != GrpcContract.ReplyState.Ok )
+            if (menu == null || replyMenu.State != GrpcContract.ReplyState.Ok)
                 return NotFound(replyMenu.Messages);
 
             var dishesForMenuReply = await _grpcClient.GetAllDishesForMenuAsync(new GrpcContract.IdRequest() { Id = id });
@@ -61,13 +68,14 @@ namespace TavernHelios.Server.Controllers
                 return NotFound(dishesForMenuReply.Messages);
 
             var dishesForMenu = dishesForMenuReply.Dishes.Select(x => x.ToDto()).ToList();
-            
+
             var menuModel = new MenuValueFull()
             {
                 Id = id,
                 Name = menu.Name,
                 Dishes = menu.Dishes.ToList(),
-                DishesFull = dishesForMenu
+                DishesFull = dishesForMenu,
+                IsDeleted = menu.IsDeleted
             };
 
             return Ok(menuModel);

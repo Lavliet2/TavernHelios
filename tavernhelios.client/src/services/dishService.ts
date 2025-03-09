@@ -1,11 +1,12 @@
 import { API_BASE_URL } from "../config";
 import { Dish } from "../types/Management";
 
-export const fetchDishData = async (): Promise<Dish[]> => {
+
+export const fetchDish = async (isDeleted = false): Promise<Dish[]> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/dish`);
+    const response = await fetch(`${API_BASE_URL}/api/dish?isDeleted=${isDeleted}`);
     if (!response.ok) {
-      throw new Error("Ошибка при загрузке данных");
+      throw new Error("Ошибка при получении меню");
     }
     return response.json();
   } catch (error) {

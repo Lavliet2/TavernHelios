@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 
 import { fetchTodaySchedule } from "../../services/scheduleService"; 
-import { fetchDishById } from "../../services/dishService";
+import { fetchDish } from "../../services/dishService";
 import { createReservation } from "../../services/reservationService";
 import { Menu, Dish } from "../../types/Management";
 
@@ -40,24 +40,20 @@ export const useMenuDisplay = () => {
   }, []);
   
 
-  // 📥 Загрузка блюд
+  // Загрузка блюд
   useEffect(() => {
     const fetchDishes = async () => {
-      if (!menu?.dishes.length) return;
+      if (!menu?.dishes.length) {
+        setDishes([]);
+        setLoadingDishes(false);
+        return;
+      }
+  
       setLoadingDishes(true);
-      setDishes([]);
       try {
-        const dishDetails = await Promise.all(
-            menu.dishes.map(async (dishId) => {
-              try {
-                return await fetchDishById(dishId); 
-              } catch (error) {
-                console.error(`Ошибка загрузки блюда ${dishId}:`, error);
-                return null; 
-              }
-            })
-          );
-        setDishes(dishDetails.filter((d) => d !== null));
+        const dishDetails = await fetchDish(false); 
+        const filteredDishes = dishDetails.filter(dish => menu.dishes.includes(dish.id));
+        setDishes(filteredDishes);
       } catch (err) {
         console.error("Ошибка загрузки блюд:", err);
         setError((err as Error).message);
@@ -66,8 +62,10 @@ export const useMenuDisplay = () => {
         setLoadingDishes(false);
       }
     };
+  
     fetchDishes();
   }, [menu]);
+  
 
   // Рассчитываем максимальную высоту карточек
   useEffect(() => {

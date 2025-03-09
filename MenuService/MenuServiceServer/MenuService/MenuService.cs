@@ -155,27 +155,6 @@ namespace MenuServiceServer.MenuService
             }
         }
 
-        public override async Task<DishesReply> GetAllDishes(EmptyRequest request, ServerCallContext context)
-        {
-            try
-            {
-                var addResult = await _dishRepository.GetAllAsync();
-
-                if (addResult == null)
-                {
-                    return CreateErrorDishesReply("Ошибка при получении блюд из БД");
-                }
-
-                var result = new DishesReply() { State = ReplyState.Ok };
-                result.Dishes.AddRange(addResult.Select(x => x.ToGrpc()));
-                return result;
-            }
-            catch (Exception ex)
-            {
-                return CreateErrorDishesReply(ex.Message);
-            }
-        }
-
         public override async Task<DishesReply> GetAllDishesForMenu(IdRequest request, ServerCallContext context)
         {
             try
@@ -203,19 +182,14 @@ namespace MenuServiceServer.MenuService
             }
         }
 
-        public override async Task<MenusReply> GetAllMenus(EmptyRequest request, ServerCallContext context)
+        public override async Task<MenusReply> GetMenus(MenuQueryRequest request, ServerCallContext context)
         {
             try
             {
-                var addResult = await _menuRepository.GetAllAsync();
-
-                if (addResult == null)
-                {
-                    return CreateErrorMenusReply("Ошибка при получении меню из БД");
-                }
-
-                var result = new MenusReply() { State = ReplyState.Ok };
-                result.Menus.AddRange(addResult.Select(x => x.ToGrpc()));
+                var condition = request.ToQuery().Compile();
+                var getResult = await _menuRepository.GetByConditionAsync(condition);
+                var result = new MenusReply() { State= ReplyState.Ok };
+                result.Menus.AddRange(getResult.Select(x => x.ToGrpc()));
                 return result;
             }
             catch (Exception ex)
@@ -224,45 +198,19 @@ namespace MenuServiceServer.MenuService
             }
         }
 
-        public override async Task<DishesReply> GetDish(IdRequest request, ServerCallContext context)
+        public override async Task<DishesReply> GetDishes(DishQueryRequest request, ServerCallContext context)
         {
             try
             {
-                var addResult = await _dishRepository.GetByIdAsync(request.Id);
-
-                if (addResult == null)
-                {
-                    return CreateErrorDishesReply("Ошибка при получении блюда из БД");
-                }
-
+                var condition = request.ToQuery().Compile();
+                var getResult = await _dishRepository.GetByConditionAsync(condition);
                 var result = new DishesReply() { State = ReplyState.Ok };
-                result.Dishes.Add(addResult.ToGrpc());
+                result.Dishes.AddRange(getResult.Select(x => x.ToGrpc()));
                 return result;
             }
             catch (Exception ex)
             {
                 return CreateErrorDishesReply(ex.Message);
-            }
-        }
-
-        public override async Task<MenusReply> GetMenu(IdRequest request, ServerCallContext context)
-        {
-            try
-            {
-                var addResult = await _menuRepository.GetByIdAsync(request.Id);
-
-                if (addResult == null)
-                {
-                    return CreateErrorMenusReply("Ошибка при получении меню из БД");
-                }
-
-                var result = new MenusReply() { State = ReplyState.Ok };
-                result.Menus.Add(addResult.ToGrpc());
-                return result;
-            }
-            catch (Exception ex)
-            {
-                return CreateErrorMenusReply(ex.Message);
             }
         }
 

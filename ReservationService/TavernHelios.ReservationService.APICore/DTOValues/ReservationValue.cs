@@ -9,6 +9,8 @@
         public DateTime Date { get; set; } = DateTime.MinValue;
 
         public List<string> DishIds { get; set; } = new List<string>();
+
+        public bool IsDeleted { get; set; } = false;
     }
 
     public class ReservationCreateValue
