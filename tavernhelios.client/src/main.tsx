@@ -10,8 +10,10 @@ import i18n from './i18n';
 
 import { Provider } from "react-redux";
 import { store } from "./store";
+import axios from 'axios';
 
 i18n.init(); 
+axios.defaults.withCredentials = true;
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

@@ -14,21 +14,26 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddDbContext<EfDbContext>(options => options.UseNpgsql(connection));
 
 
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+builder.Services
+    .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        options.ExpireTimeSpan = TimeSpan.FromDays(7);
-        options.LoginPath = "/api/auth/login"; // Путь для перенаправления на страницу входа
+        //options.LoginPath = "/api/auth/login"; // Путь для перенаправления на страницу входа
+        options.Cookie.Name = "auth_cookie";
+        options.Cookie.Domain = "localhost";
         //options.AccessDeniedPath = "/api/auth/accessdenied"; // Путь для перенаправления при отказе в доступе
+        options.Cookie.SameSite = SameSiteMode.None;
+        options.ExpireTimeSpan = TimeSpan.FromDays(7);
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        options.Cookie.HttpOnly = false;
     });
-
-var app = builder.Build();
+    var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
 app.UseHttpsRedirection();
 
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

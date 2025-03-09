@@ -8,6 +8,7 @@ namespace TavernHelios.Auth.Services
     public interface IAuthService
     {
         void RegisterUser(RegisterDTO registerDTO);
+        UserDTO LoginUser(LoginDTO loginDTO);
     }
 
     public class AuthService : IAuthService
@@ -29,15 +30,26 @@ namespace TavernHelios.Auth.Services
                 FullName = registerDTO.FullName,
                 Login = registerDTO.Login
             };
-            newUser.PasswordHash = HashPassword(newUser, registerDTO.Password);
+            newUser.PasswordHash = _passwordHasher.HashPassword(newUser, registerDTO.Password);
             _context.Users.Add(newUser);
             _context.SaveChanges();
         }
 
-
-        private string HashPassword(User user, string password)
+        public UserDTO LoginUser(LoginDTO loginDTO)
         {
-            return _passwordHasher.HashPassword(user, password);
+            var existingUser = _context.Users.FirstOrDefault(x => x.Login == loginDTO.Login) 
+                ?? throw new Exception("Не найден пользователь с указанным логином");
+
+            var passwordHash = _passwordHasher.HashPassword(existingUser, loginDTO.Password);
+            var verificationResult = _passwordHasher.VerifyHashedPassword(existingUser, existingUser.PasswordHash, loginDTO.Password);
+            if (verificationResult != PasswordVerificationResult.Success) throw new Exception("Указан неверный пароль");
+
+            return new UserDTO
+            {
+                Id = existingUser.Id,
+                FullName = existingUser.FullName,
+                Login = existingUser.Login
+            };
         }
     }
 }

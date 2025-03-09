@@ -1,6 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using TavernHelios.Common.Auth.DTO;
 using TavernHelios.Server.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TavernHelios.Server.Controllers
 {
@@ -22,10 +26,35 @@ namespace TavernHelios.Server.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login()
+        public async Task<IActionResult> Login(LoginDTO loginDTO)
         {
-            // TODO
+            var user = await _authService.LoginAsync(loginDTO);
+
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.GivenName, user.FullName),
+                new Claim(ClaimTypes.Name, user.Login),
+            };
+
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(claimsIdentity));
+
             return Ok();
         }
+
+
+        [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+        [HttpGet("userInfo")]
+        public async Task<IActionResult> GetUserInfo()
+        {
+            var name = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.GivenName);
+            var login = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name);
+
+            return Ok();
+        }
+
     }
 }

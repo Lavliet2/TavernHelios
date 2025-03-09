@@ -8,6 +8,7 @@ import Logo from "../assets/logo_login_bg.webp";
 import { ThemeProvider } from "@mui/material/styles";
 import Theme from "../styles/theme";
 import { API_BASE_URL } from "../config";
+import axios from "axios";
 
 const LoginForm: React.FC = () => {
   const { t } = useTranslation();
@@ -16,7 +17,6 @@ const LoginForm: React.FC = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const { login } = useAuth();
-  console.log(`Login form redirect_uri: ${API_BASE_URL}/yandexAuth/login/` )
 
   useEffect(() => {
     // @ts-ignore
@@ -42,15 +42,16 @@ const LoginForm: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
+    axios.post(`${API_BASE_URL}/api/auth/login`, {login: username, password: password})
+      .then(() => {console.log("OK LOGIN");navigate("/");})
     // Заглушка для авторизации
-    if (username === "test" && password === "test") {
-      localStorage.setItem("username", username);
-      login(); // Устанавливаем состояние аутентификации
-      navigate("/"); // Переход на главную страницу
-    } else {
-      setError("Неверные данные");
-    }
+    // if (username === "test" && password === "test") {
+    //   localStorage.setItem("username", username);
+    //   login(); // Устанавливаем состояние аутентификации
+    //   navigate("/"); // Переход на главную страницу
+    // } else {
+    //   setError("Неверные данные");
+    // }
   };
 
   //Когда будет API

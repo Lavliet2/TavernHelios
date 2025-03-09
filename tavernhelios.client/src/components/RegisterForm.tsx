@@ -4,6 +4,7 @@ import Theme from "../styles/theme";
 import { ThemeProvider } from "@mui/material/styles";
 import axios from "axios";
 import { API_BASE_URL } from "../config";
+import { useNavigate } from "react-router-dom";
 
 const RegisterForm: React.FC = () => {
     const [fullName, setFullName] = useState("");
@@ -11,12 +12,13 @@ const RegisterForm: React.FC = () => {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState("");
+    const navigate = useNavigate();
 
     const handleSubmit = () => {
         const formIsValid = validateForm();
         if (formIsValid) {
             axios.post(`${API_BASE_URL}/api/auth/register`, { fullName, login, password, confirmPassword })
-                .then(() => console.log("OK"));
+                .then(() => navigate("/login"));
         }
     };
 

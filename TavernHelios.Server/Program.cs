@@ -1,4 +1,5 @@
 using MenuServiceServer.Extensions;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using TavernHelios.Server.Services;
 
 namespace TavernHelios.Server
@@ -18,11 +19,11 @@ namespace TavernHelios.Server
                 options.AddPolicy("AllowFrontend",
                     builder =>
                     {
-                        builder.WithOrigins("https://localhost:63049", "https://localhost:5555", "https://localhost:8888", "http://178.72.83.217:32040", "https://tavernhelios.duckdns.org") // ��������� ��������� ����������
+                        builder.WithOrigins("https://localhost:63049", "https://localhost:5555", "http://localhost:8889", "http://178.72.83.217:32040", "https://tavernhelios.duckdns.org", "https://localhost:7190") // ��������� ��������� ����������
                                .AllowAnyMethod()
                                .AllowAnyHeader()
-                               .AllowAnyOrigin();
-                               //.AllowCredentials();
+                               //.AllowAnyOrigin()
+                               .AllowCredentials();
                     });
             });
 
@@ -36,6 +37,28 @@ namespace TavernHelios.Server
             {
                 client.BaseAddress = new Uri(builder.Configuration["AuthServiceUrl"]);
             });
+            builder.Services
+                .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    //options.LoginPath = "/api/auth/login"; // Путь для перенаправления на страницу входа
+                    options.Cookie.Name = "auth_cookie";
+                    //options.AccessDeniedPath = "/api/auth/accessdenied"; // Путь для перенаправления при отказе в доступе
+                    options.Cookie.SameSite = SameSiteMode.None;
+                    options.ExpireTimeSpan = TimeSpan.FromDays(7);
+                    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                    options.Cookie.HttpOnly = false;
+
+                    options.Events = new CookieAuthenticationEvents
+                    {
+                        OnRedirectToLogin = context =>
+                        {
+                            // Отменяем редирект и возвращаем 401
+                            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                            return Task.CompletedTask;
+                        }
+                    };
+                });
 
             var app = builder.Build();
 
@@ -50,6 +73,7 @@ namespace TavernHelios.Server
 
             app.UseHttpsRedirection();
             app.UseCors("AllowFrontend");
+            app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();
             app.MapFallbackToFile("/index.html");

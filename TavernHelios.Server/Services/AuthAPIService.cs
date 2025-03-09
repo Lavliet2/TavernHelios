@@ -1,10 +1,11 @@
-﻿using TavernHelios.Common.Auth.DTO;
+﻿using System.Text.Json;
+using TavernHelios.Common.Auth.DTO;
 
 namespace TavernHelios.Server.Services
 {
     public interface IAuthAPIService
     {
-        Task<bool> AuthenticateAsync(string username, string password);
+        Task<UserDTO> LoginAsync(LoginDTO loginDTO);
         Task<bool> RegisterAsync(RegisterDTO registerDTO);
     }
 
@@ -17,12 +18,17 @@ namespace TavernHelios.Server.Services
             _httpClient = httpClient;
         }
 
-        public async Task<bool> AuthenticateAsync(string username, string password)
+        public async Task<UserDTO> LoginAsync(LoginDTO loginDTO)
         {
-            var loginModel = new { Username = username, Password = password };
-            var response = await _httpClient.PostAsJsonAsync("api/auth/login", loginModel);
-
-            return response.IsSuccessStatusCode;
+            var response = await _httpClient.PostAsJsonAsync("api/auth/login", loginDTO);
+            
+            if (!response.IsSuccessStatusCode) throw new Exception("Ошибка аутентификации");
+            var json = await response.Content.ReadAsStringAsync();
+            var user = JsonSerializer.Deserialize<UserDTO>(json, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+            return user;
         }
 
         public async Task<bool> RegisterAsync(RegisterDTO registerDTO)

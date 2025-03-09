@@ -1,6 +1,13 @@
 import { Typography, Box, Grid2, Container } from '@mui/material';
+import axios from 'axios';
+import { useEffect } from 'react';
+import { API_BASE_URL } from '../config';
 
 function Home() {
+    useEffect(() => {
+        axios.get(`${API_BASE_URL}/api/auth/userInfo`)
+    }, []) 
+
   return (
     <Box sx={{ padding: 2 }}>
         <Container maxWidth="lg" sx={{ marginTop: 4 }}>
