@@ -46,14 +46,18 @@ namespace TavernHelios.Server.Controllers
         }
 
 
-        [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Authorize]
         [HttpGet("userInfo")]
         public async Task<IActionResult> GetUserInfo()
         {
-            var name = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.GivenName);
-            var login = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name);
+            var fullName = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.GivenName).Value;
+            var login = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name).Value;
 
-            return Ok();
+            return Ok(new UserDTO
+            {
+                FullName = fullName,
+                Login = login
+            });
         }
 
     }
