@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TavernHelios.GrpcCommon.Settings
 {
-    public class GrpcMenuServiceSettings : GrpcSettingsBase
+    public class GrpcLayoutServiceSettings : GrpcSettingsBase
     {
     }
 }

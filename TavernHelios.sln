@@ -33,6 +33,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TavernHelios.Common", "Comm
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TavernHelios.Utils", "Common\TavernHelios.Utils\TavernHelios.Utils.csproj", "{078FF554-884A-41B1-87AA-D5C9E3C6948E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LayoutService", "LayoutService", "{5D137E25-0FDD-4F0E-8F3B-B3F9693B4252}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TavernHelios.LayoutService.LayoutServiceServer", "LayoutService\TavernHelios.LayoutService.LayoutServiceServer\TavernHelios.LayoutService.LayoutServiceServer.csproj", "{06A7073B-1404-48AD-BEF5-905FB16B14CB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TavernHelios.LayoutService.MongoRepositories", "LayoutService\TavernHelios.LayoutService.MongoRepositories\TavernHelios.LayoutService.MongoRepositories.csproj", "{2A8F957C-D220-4CF8-88CC-D19E33AA9D52}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TavernHelios.LayoutService.APICore", "LayoutService\TavernHelios.LayoutService.APICore\TavernHelios.LayoutService.APICore.csproj", "{802FA832-4C5C-4EF7-983B-154141EB18B3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -89,6 +97,18 @@ Global
 		{078FF554-884A-41B1-87AA-D5C9E3C6948E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{078FF554-884A-41B1-87AA-D5C9E3C6948E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{078FF554-884A-41B1-87AA-D5C9E3C6948E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06A7073B-1404-48AD-BEF5-905FB16B14CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06A7073B-1404-48AD-BEF5-905FB16B14CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06A7073B-1404-48AD-BEF5-905FB16B14CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06A7073B-1404-48AD-BEF5-905FB16B14CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A8F957C-D220-4CF8-88CC-D19E33AA9D52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A8F957C-D220-4CF8-88CC-D19E33AA9D52}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A8F957C-D220-4CF8-88CC-D19E33AA9D52}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A8F957C-D220-4CF8-88CC-D19E33AA9D52}.Release|Any CPU.Build.0 = Release|Any CPU
+		{802FA832-4C5C-4EF7-983B-154141EB18B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{802FA832-4C5C-4EF7-983B-154141EB18B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{802FA832-4C5C-4EF7-983B-154141EB18B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{802FA832-4C5C-4EF7-983B-154141EB18B3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -104,5 +124,8 @@ Global
 		{DAFE9A8F-5319-4CD7-AA57-C022F92BBCFF} = {913F18FF-8206-408E-ABE6-9EEDC401DD8D}
 		{68FA263C-23FD-41D3-BA19-2C73F412F8FA} = {7F7D360D-8EBF-490F-BB53-ECDD72CF44C9}
 		{078FF554-884A-41B1-87AA-D5C9E3C6948E} = {7F7D360D-8EBF-490F-BB53-ECDD72CF44C9}
+		{06A7073B-1404-48AD-BEF5-905FB16B14CB} = {5D137E25-0FDD-4F0E-8F3B-B3F9693B4252}
+		{2A8F957C-D220-4CF8-88CC-D19E33AA9D52} = {5D137E25-0FDD-4F0E-8F3B-B3F9693B4252}
+		{802FA832-4C5C-4EF7-983B-154141EB18B3} = {5D137E25-0FDD-4F0E-8F3B-B3F9693B4252}
 	EndGlobalSection
 EndGlobal

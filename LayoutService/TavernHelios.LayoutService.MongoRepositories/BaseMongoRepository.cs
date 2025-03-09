@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using System;
 using System.Reflection.Metadata.Ecma335;
-using TavernHelios.MenuService.Common.Entities;
-using TavernHelios.MenuService.Common.Interfaces;
-using TavernHelios.MenuService.Common.Settings;
+using TavernHelios.LayoutService.Common.Entities;
+using TavernHelios.LayoutService.Common.Interfaces;
+using TavernHelios.LayoutService.Common.Settings;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
@@ -12,10 +12,10 @@ using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 
-namespace TavernHelios.MenuService.MongoRepositories
+namespace TavernHelios.LayoutService.MongoRepositories
 {
     //Перед запуском - запустить MongoDB.
-    //Например в докере: docker run --name myMongoTestDb -p 27018:27018 -d mongo
+    //Например в докере: docker run --name myMongoTestDb -p 27017:27017 -d mongo
 
     public abstract class BaseMongoRepository<T> : IRepository<T> where T: class, IEntity
     {
@@ -29,7 +29,7 @@ namespace TavernHelios.MenuService.MongoRepositories
         //TODO: обработка ошибок. Пока что просто отдаем пустое значение, если ничего не нашли в БД по id
 
         public BaseMongoRepository(
-            IOptions<MenuMongoConnectionSettings> mongoSettings
+            IOptions<LayoutMongoConnectionSettings> mongoSettings
             )
         {
             //Обозначаем Id в качестве идентифицирующей проперти в БД
