@@ -25,21 +25,21 @@ namespace DishServiceServer.Controllers
             _grpcClient = grpcClient;
         }
 
+        /// <summary>
+        /// Получить одно или несколько блюд по условию
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [SwaggerOperation("Получить все блюда")]
-        public async Task<ActionResult<IEnumerable<DishValue>>> GetAllDishesAsync()
+        [ProducesResponseType<IEnumerable<DishValue>>(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [SwaggerOperation("Получить одно или несколько блюд, удовлетворяющих условию")]
+        public async Task<IActionResult> GetByConditionAsync([FromQuery] DishQueryRequestValue queryRequest)
         {
-            var allDishes = await _grpcClient.GetAllDishesAsync(new GrpcContract.EmptyRequest());
+            var replyMenu = await _grpcClient.GetDishesAsync(queryRequest.ToGrpc());
 
-            if (allDishes.State != GrpcContract.ReplyState.Ok)
-            {
-                return BadRequest(allDishes.Messages);
-            }
+            var menus = replyMenu.Dishes.Select(x => x.ToDto());
 
-            var values = allDishes?.Dishes.Select(x => x.ToDto());
-
-            return Ok(values);
+            return Ok(menus);
         }
 
         /// <summary>
@@ -52,7 +52,9 @@ namespace DishServiceServer.Controllers
         [SwaggerOperation("Получить блюдо по Id")]
         public async Task<IActionResult> GetDishByIdAsync(string id)
         {
-            var dishReply = await _grpcClient.GetDishAsync(new GrpcContract.IdRequest() { Id = id });
+            var query = new DishQueryRequestValue() { DishId = id };
+            var dishReply = await _grpcClient.GetDishesAsync(query.ToGrpc());
+
             var dish = dishReply.Dishes.FirstOrDefault();
 
             if (dish == null ||dishReply.State != GrpcContract.ReplyState.Ok)

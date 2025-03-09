@@ -9,5 +9,10 @@ namespace TavernHelios.MenuService.Common.DTOValues
     public class BaseDtoValue
     {
         public string Id { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Флаг "Объект удален"
+        /// </summary>
+        public bool IsDeleted { get; set; } = false;
     }
 }

@@ -28,6 +28,7 @@ namespace TavernHelios.MenuService.APICore.DTOValues.Menu
 
         public DateTime? BeginDate { get; set; } = null;
         public DateTime? EndDate { get; set; } = null;
+        public bool? IsDeleted { get; set; } = null;
     }
 
     public class MenuScheduleCreateValue

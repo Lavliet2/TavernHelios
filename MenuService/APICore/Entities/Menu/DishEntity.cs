@@ -39,5 +39,10 @@ namespace TavernHelios.MenuService.Common.Entities
         /// Иллюстрация
         /// </summary>
         public string ImageBase64 { get; set; } = String.Empty;
+
+        /// <summary>
+        /// Флаг "Объект удален"
+        /// </summary>
+        public bool IsDeleted { get; set; } = false;
     }
 }
