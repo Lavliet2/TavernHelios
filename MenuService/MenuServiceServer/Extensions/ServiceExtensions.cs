@@ -74,7 +74,7 @@ namespace MenuServiceServer.Extensions
             this IServiceCollection services,
             IConfiguration configuration)
         {
-            services.Configure<MongoConnectionSettings>(configuration.GetSection(nameof(MongoConnectionSettings)));
+            services.Configure<MenuMongoConnectionSettings>(configuration.GetSection(nameof(MenuMongoConnectionSettings)));
             services.Configure<GrpcMenuServiceSettings>(configuration.GetSection(nameof(GrpcMenuServiceSettings)));
         }
     }

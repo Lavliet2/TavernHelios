@@ -10,6 +10,18 @@ services:
       MONGO_INITDB_DATABASE: 'mongoMenu'
     networks:
       - app_network
+      
+  mongoLayout:
+    image: mongo
+    container_name: mongoLayout
+    ports:
+      - '27018:27017'
+    volumes:
+      - mongoLayout_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: 'mongoLayout'
+    networks:
+      - app_network
 
   postgresReservation:
     image: postgres:latest
@@ -47,6 +59,23 @@ services:
       ASPNETCORE_ENVIRONMENT: "Development"
       ASPNETCORE_URLS: "http://+:5064"
     command: ["dotnet", "MenuServiceServer.dll"]
+    networks:
+      - app_network
+      
+  layoutService:
+    container_name: layoutService
+    image: tavernhelios/layoutservice 
+    build:
+      context: .
+      dockerfile: ./LayoutService/TavernHelios.LayoutService.LayoutServiceServer/Dockerfile
+    ports:
+      - '5066:5066'
+    depends_on:
+      - mongoLayout
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_URLS: "http://+:5066"
+    command: ["dotnet", "LayoutServiceServer.dll"]
     networks:
       - app_network
 
@@ -119,4 +148,5 @@ services:
 
 volumes:
   mongo_data:
+  mongoLayout_data:
   postgresReservation_data:

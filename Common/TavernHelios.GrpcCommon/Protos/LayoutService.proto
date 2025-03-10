@@ -1,0 +1,71 @@
+syntax = "proto3";
+package TavernHelios.GrpcContract;
+option csharp_namespace = "GrpcContract.LayoutService";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/wrappers.proto";
+
+import "CommonMessages.proto";
+
+service LayoutService {
+  rpc GetLayouts(LayoutQueryRequest) returns (LayoutsReply);
+  rpc AddLayout(AddLayoutRequest) returns (LayoutsReply);
+  rpc UpdateLayout(Layout) returns (LayoutsReply);
+  rpc DeleteLayout(IdRequest) returns (IdReply);
+}
+
+message Point
+{
+	double X=1;
+	double Y=2;
+}
+
+message Table{
+	string Name = 1;
+	string Description = 2;
+	Point P1=3;
+	Point P2=4;
+	Point P3=5;
+	Point P4=6;
+}
+
+message Seat{
+	int32 Number = 1;
+	string Description = 2;
+	Point Center = 3;
+	double Radius = 4;
+}
+
+message Layout{
+	string Id = 1;
+	string RestaurantId = 2;
+	double Width = 3;
+	double Height = 4;
+	string ImageStr = 5;
+	repeated Table Tables = 6;
+	repeated Seat Seats = 7;
+	bool IsDeleted = 8;
+}
+
+message AddLayoutRequest{
+	string RestaurantId = 1;
+	double Width = 2;
+	double Height = 3;
+	string ImageStr = 4;
+	repeated Table Tables = 5;
+	repeated Seat Seats = 6;
+}
+
+message LayoutsReply{
+	repeated Layout Layouts = 1;
+	ReplyState State = 2;
+	repeated string Messages = 3;
+}
+
+message LayoutQueryRequest{
+	optional string LayoutId = 1;
+	optional string RestaurantId = 2;
+	optional bool IsDeleted = 3;
+}
+

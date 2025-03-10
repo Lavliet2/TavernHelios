@@ -17,6 +17,10 @@
   </ItemGroup>
 
 	<ItemGroup>
+		<Protobuf Include="Protos\LayoutService.proto">
+		  <ProtoRoot>Protos\</ProtoRoot>
+		  <GrpcServices>Server;Client</GrpcServices>
+		</Protobuf>
 		<Protobuf Include="Protos\ReservationService.proto" GrpcServices="Server;Client">
 		  <ProtoRoot>Protos\</ProtoRoot>
 		</Protobuf>
