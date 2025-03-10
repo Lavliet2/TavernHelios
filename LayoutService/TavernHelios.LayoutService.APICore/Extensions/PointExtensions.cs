@@ -34,7 +34,7 @@ namespace TavernHelios.LayoutService.APICore.Extensions
         {
             var result = new GrpcContract.LayoutService.Point();
             result.X = PointValue.X;
-            result.X = PointValue.X;
+            result.Y = PointValue.Y;
             return result;
         }
     }
