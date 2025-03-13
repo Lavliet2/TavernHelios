@@ -63,6 +63,16 @@ jobs:
             ghcr.io/lavliet2/heliostavern-backend:${{ env.BRANCH }}-${{ github.ref_name }}
             ghcr.io/lavliet2/heliostavern-backend:latest 
           
+      # **Сборка и публикация контейнера с фронтендом**
+      - name: Build and push frontend image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./tavernhelios.client/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/lavliet2/heliostavern-frontend:${{ env.BRANCH }}-${{ github.ref_name }}
+            ghcr.io/lavliet2/heliostavern-frontend:latest
 
       # **Сборка и публикация контейнера с MenuService**
       - name: Build and push MenuService image
@@ -75,18 +85,6 @@ jobs:
             ghcr.io/lavliet2/menuservice:${{ env.BRANCH }}-${{ github.ref_name }}
             ghcr.io/lavliet2/menuservice:latest
 
-      # **Сборка и публикация контейнера с фронтендом**
-      - name: Build and push frontend image
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          file: ./tavernhelios.client/Dockerfile
-          push: true
-          tags: |
-            ghcr.io/lavliet2/heliostavern-frontend:${{ env.BRANCH }}-${{ github.ref_name }}
-            ghcr.io/lavliet2/heliostavern-frontend:latest
-
-
       # **Сборка и публикация контейнера с ReservationService**
       - name: Build and push ReservationService image
         uses: docker/build-push-action@v4
@@ -96,7 +94,19 @@ jobs:
           push: true
           tags: |
             ghcr.io/lavliet2/reservationservice:${{ env.BRANCH }}-${{ github.ref_name }}
-            ghcr.io/lavliet2/reservationservice:latest            
+            ghcr.io/lavliet2/reservationservice:latest
+            
+      # **Сборка и публикация контейнера с layoutservice**
+      - name: Build and push layoutservice image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./LayoutService/TavernHelios.LayoutService.LayoutServiceServer/Dockerfile
+          
+          push: true
+          tags: |
+            ghcr.io/lavliet2/layoutservice:${{ env.BRANCH }}-${{ github.ref_name }}
+            ghcr.io/lavliet2/layoutservice:latest                
 
       - name: Add SSH key
         uses: webfactory/ssh-agent@v0.5.3
@@ -133,6 +143,7 @@ jobs:
           kubectl apply -f .k8s/menuService-deployment.yaml || exit 1
           kubectl apply -f .k8s/postgresReservation-deployment.yaml || exit 1
           kubectl apply -f .k8s/reservationService-deployment.yaml || exit 1
+          kubectl apply -f .k8s/layoutService-deployment.yaml || exit 1
           kubectl apply -f .k8s/tavernhelios-server-deployment.yaml || exit 1
           kubectl apply -f .k8s/tavernhelios-client-deployment.yaml || exit 1
       
@@ -142,6 +153,7 @@ jobs:
           kubectl rollout restart deployment tavernhelios-client || exit 1
           kubectl rollout restart deployment menuservice || exit 1
           kubectl rollout restart deployment reservationservice || exit 1
+          kubectl rollout restart deployment layoutservice || exit 1
       
           echo "✅ Деплой успешно завершён!"
           EOF
