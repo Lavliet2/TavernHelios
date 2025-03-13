@@ -15,7 +15,7 @@ using MongoDB.Driver.Linq;
 namespace TavernHelios.MenuService.MongoRepositories
 {
     //Перед запуском - запустить MongoDB.
-    //Например в докере: docker run --name myMongoTestDb -p 27017:27017 -d mongo
+    //Например в докере: docker run --name myMongoTestDb -p 27018:27018 -d mongo
 
     public abstract class BaseMongoRepository<T> : IRepository<T> where T: class, IEntity
     {
@@ -29,7 +29,7 @@ namespace TavernHelios.MenuService.MongoRepositories
         //TODO: обработка ошибок. Пока что просто отдаем пустое значение, если ничего не нашли в БД по id
 
         public BaseMongoRepository(
-            IOptions<MongoConnectionSettings> mongoSettings
+            IOptions<MenuMongoConnectionSettings> mongoSettings
             )
         {
             //Обозначаем Id в качестве идентифицирующей проперти в БД

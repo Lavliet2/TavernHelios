@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: menuservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: menuservice
+  template:
+    metadata:
+      labels:
+        app: menuservice
+    spec:
+      containers:
+        - name: menuservice
+          image: ghcr.io/lavliet2/menuservice:latest
+          imagePullPolicy: Always
+          ports: 
+            - containerPort: 5064
+          env:
+            - name: MONGO_URI
+              value: "mongodb://mongo-menuservice:27017"
+      imagePullSecrets:
+        - name: ghcr-secret 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: menuservice
+spec:
+  type: NodePort 
+  selector:
+    app: menuservice
+  ports:
+    - protocol: TCP
+      port: 5064
+      targetPort: 5064
+      nodePort: 32041 

@@ -11,7 +11,7 @@ namespace TavernHelios.MenuService.MongoRepositories.Repositories
 
         //TODO: валидация существования блюда в базе
         public MenuRepository(
-            IOptions<MongoConnectionSettings> mongoSettings,
+            IOptions<MenuMongoConnectionSettings> mongoSettings,
             IRepository<DishEntity> dishRepository
             ) : base(mongoSettings)
         {

@@ -33,6 +33,13 @@ spec:
             name: reservationservice
             port:
               number: 5065
+      - path: /layoutservice   
+        pathType: Prefix
+        backend:
+          service:
+            name: layoutservice
+            port:
+              number: 5066              
       - path: /
         pathType: Prefix
         backend:

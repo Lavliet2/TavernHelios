@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mongo
+  name: mongo-layoutservice
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mongo
+      app: mongo-layoutservice
   template:
     metadata:
       labels:
-        app: mongo
+        app: mongo-layoutservice
     spec:
       containers:
         - name: mongo
@@ -19,35 +19,35 @@ spec:
             - containerPort: 27017
           volumeMounts:
             - mountPath: /data/db
-              name: mongo-data
+              name: mongo-layout-pv
       volumes:
-        - name: mongo-data
+        - name: mongo-layout-pv
           persistentVolumeClaim:
-            claimName: mongo-pvc
+            claimName: mongo-layoutservice-pvc
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: mongo
+  name: mongo-layoutservice
 spec:
   type: NodePort
   selector:
-    app: mongo
+    app: mongo-layoutservice
   ports:
     - protocol: TCP
       port: 27017
       targetPort: 27017
-      nodePort: 32045
+      nodePort: 32046
       
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: mongo-pvc
+  name: mongo-layoutservice-pvc
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 5Gi
+      storage: 1Gi

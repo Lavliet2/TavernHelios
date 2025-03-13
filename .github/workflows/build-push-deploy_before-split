@@ -116,7 +116,7 @@ jobs:
       
           # Деплой в Kubernetes
           kubectl apply -f .k8s/tavernhelios-ingress.yaml || exit 1
-          kubectl apply -f .k8s/mongo-deployment.yaml || exit 1
+          kubectl apply -f .k8s/mongoMenu-deployment.yaml || exit 1
           kubectl apply -f .k8s/menuservice-deployment.yaml || exit 1
           kubectl apply -f .k8s/postgresReservatione-deployment.yaml || exit 1
           kubectl apply -f .k8s/reservationService-deployment.yaml || exit 1

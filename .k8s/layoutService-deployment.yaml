@@ -1,39 +1,39 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: menuservice
+  name: layoutservice
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: menuservice
+      app: layoutservice
   template:
     metadata:
       labels:
-        app: menuservice
+        app: layoutservice
     spec:
       containers:
-        - name: menuservice
-          image: ghcr.io/lavliet2/menuservice:latest
+        - name: layoutservice
+          image: ghcr.io/lavliet2/layoutservice:latest
           imagePullPolicy: Always
           ports: 
-            - containerPort: 5064
+            - containerPort: 5066
           env:
             - name: MONGO_URI
-              value: "mongodb://mongo:27017"
+              value: "mongodb://mongo-layoutservice:27017"
       imagePullSecrets:
         - name: ghcr-secret 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: menuservice
+  name: layoutservice
 spec:
   type: NodePort 
   selector:
-    app: menuservice
+    app: layoutservice
   ports:
     - protocol: TCP
-      port: 5064
-      targetPort: 5064
-      nodePort: 32041 
+      port: 5066
+      targetPort: 5066
+      nodePort: 32047

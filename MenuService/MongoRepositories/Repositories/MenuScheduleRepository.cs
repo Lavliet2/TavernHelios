@@ -10,7 +10,7 @@ namespace TavernHelios.MenuService.MongoRepositories.Repositories
     {
         private readonly IRepository<MenuEntity> _menuRepository;
         public MenuScheduleRepository(
-            IOptions<MongoConnectionSettings> mongoSettings,
+            IOptions<MenuMongoConnectionSettings> mongoSettings,
             IRepository<MenuEntity> menuRepository
             ) : base(mongoSettings)
         {
