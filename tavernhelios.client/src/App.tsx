@@ -12,6 +12,7 @@ import EditDishes from "./pages/Management/EditDishes";
 import EditMenu from "./pages/Management/EditMenu";
 import EditSchedule from "./pages/Management/EditSchedule";
 import Reservations from "./pages/Management/Reservations";
+import Layout from "./pages/Management/EditLayout";
 
 function App() {
   return (
@@ -25,13 +26,14 @@ function App() {
           <Route path="/forecast" element={<WeatherForecast />} />
 
           {/*Защищённые маршруты */}
-          <Route element={<ProtectedRoute />}>
+          <Route element={<ProtectedRoute />}>s
             <Route path="/menu" element={<Menu />} />
             <Route path="/management" element={<Management />} />
             <Route path="/management/dishes" element={<EditDishes />} />
             <Route path="/management/menu" element={<EditMenu />} />
             <Route path="/management/schedule" element={<EditSchedule />} />
             <Route path="/management/reservations" element={<Reservations />} />
+            <Route path="/management/layout" element={<Layout />} />
           </Route>
 
           {/* 404 Страница */}
