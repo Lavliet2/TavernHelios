@@ -18,10 +18,6 @@ builder.Services
     .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        //options.LoginPath = "/api/auth/login"; // Путь для перенаправления на страницу входа
-        options.Cookie.Name = "auth_cookie";
-        options.Cookie.Domain = "localhost";
-        //options.AccessDeniedPath = "/api/auth/accessdenied"; // Путь для перенаправления при отказе в доступе
         options.Cookie.SameSite = SameSiteMode.None;
         options.ExpireTimeSpan = TimeSpan.FromDays(7);
         options.Cookie.SecurePolicy = CookieSecurePolicy.Always;

@@ -1,4 +1,4 @@
-﻿namespace TavernHelios.Auth.Models
+﻿namespace TavernHelios.Auth.Data.Models
 {
     public class User
     {
@@ -6,5 +6,6 @@
         public string FullName { get; set; }
         public string Login { get; set; }
         public string PasswordHash { get; set; }
+        public List<UserRole> UserRoles { get; set; } = new();
     }
 }

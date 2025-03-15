@@ -9,6 +9,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import Theme from "../styles/theme";
 import { API_BASE_URL } from "../config";
 import axios from "axios";
+import { useUser } from "../contexts/UserContext";
 
 const LoginForm: React.FC = () => {
   const { t } = useTranslation();
@@ -16,8 +17,9 @@ const LoginForm: React.FC = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const { login } = useAuth();
-
+  const [isLoading, setIsLoading] = useState(false);
+  const userContext = useUser();
+  
   useEffect(() => {
     // @ts-ignore
     window.YaAuthSuggest.init(
@@ -42,39 +44,15 @@ const LoginForm: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
     axios.post(`${API_BASE_URL}/api/auth/login`, {login: username, password: password})
-      .then(() => {console.log("OK LOGIN");navigate("/");})
-    // Заглушка для авторизации
-    // if (username === "test" && password === "test") {
-    //   localStorage.setItem("username", username);
-    //   login(); // Устанавливаем состояние аутентификации
-    //   navigate("/"); // Переход на главную страницу
-    // } else {
-    //   setError("Неверные данные");
-    // }
+      .then((response) => {
+        userContext?.login(response.data);
+        navigate("/");
+      })
+      .catch(e => setError(e.response.data.message))
+      .finally(() => setIsLoading(false));
   };
-
-  //Когда будет API
-//   const handleSubmit = async (e: React.FormEvent) => {
-//     e.preventDefault();
-  
-//     try {
-//       const response = await fetch("/api/login", {
-//         method: "POST",
-//         headers: { "Content-Type": "application/json" },
-//         body: JSON.stringify({ username, password }),
-//       });
-  
-//       if (response.ok) {
-//         login();
-//         navigate("/");
-//       } else {
-//         setError("Неверные данные");
-//       }
-//     } catch (err) {
-//       setError("Ошибка сервера. Попробуйте позже.");
-//     }
-//   };
 
   return (
     <ThemeProvider theme={Theme}>
@@ -225,6 +203,7 @@ const LoginForm: React.FC = () => {
               color="primary"
               fullWidth
               sx={{ marginTop: 2 }}
+              loading={isLoading}
             >
               {t("signIn")}
             </Button>

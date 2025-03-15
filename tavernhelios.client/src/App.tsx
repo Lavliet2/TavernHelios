@@ -1,6 +1,6 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, useNavigate } from "react-router-dom";
 import { ProtectedRoute } from "./hoc/withAuth";
-import NotFound from "./pages/NotFound"; 
+import NotFound from "./pages/NotFound";
 import MainLayout from "./layouts/MainLayout";
 import LoginForm from "./components/LoginForm";
 import Home from "./pages/Home";

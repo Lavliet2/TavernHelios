@@ -10,6 +10,9 @@ import { LanguageContext } from '../contexts/LanguageContext';
 // import WorldFlag from 'react-world-flags';
 import ruFlag from "@/assets/flags/ru.svg";
 import usFlag from "@/assets/flags/us.svg";
+import axios from 'axios';
+import { API_BASE_URL } from '../config';
+import { useUser } from '../contexts/UserContext';
 
 
 const NavigationBar: React.FC = () => {
@@ -19,6 +22,7 @@ const NavigationBar: React.FC = () => {
   const { changeLanguage } = useContext(LanguageContext) || {}; 
   const navigate = useNavigate();
   const appVersion = import.meta.env.VITE_APP_VERSION || 'Unknown Version';
+  const userContext = useUser();
   console.log("App Version:", import.meta.env.VITE_APP_VERSION);
   const flags = {
     ru: ruFlag,
@@ -33,8 +37,8 @@ const NavigationBar: React.FC = () => {
 
   const handleMenuLogout = () => {
     setAnchorEl(null);
-    localStorage.setItem('isAuthenticated', 'false'); 
-    navigate('/login')    
+    axios.post(`${API_BASE_URL}/api/auth/logout`)
+      .then(() => navigate("/login"));
   };
 
   const handleMenuClose = () => {
@@ -103,6 +107,7 @@ const NavigationBar: React.FC = () => {
                   EN
               </MenuItem>
             </Menu>
+            <span style={{fontSize: "20px"}}>{userContext?.user?.fullName}</span>
 
             <IconButton
               size="large"

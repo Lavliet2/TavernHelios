@@ -1,5 +1,6 @@
 using MenuServiceServer.Extensions;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using TavernHelios.Server.Exceptions;
 using TavernHelios.Server.Services;
 
 namespace TavernHelios.Server
@@ -41,9 +42,6 @@ namespace TavernHelios.Server
                 .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
-                    //options.LoginPath = "/api/auth/login"; // Путь для перенаправления на страницу входа
-                    options.Cookie.Name = "auth_cookie";
-                    //options.AccessDeniedPath = "/api/auth/accessdenied"; // Путь для перенаправления при отказе в доступе
                     options.Cookie.SameSite = SameSiteMode.None;
                     options.ExpireTimeSpan = TimeSpan.FromDays(7);
                     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
@@ -53,7 +51,6 @@ namespace TavernHelios.Server
                     {
                         OnRedirectToLogin = context =>
                         {
-                            // Отменяем редирект и возвращаем 401
                             context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                             return Task.CompletedTask;
                         }
@@ -73,6 +70,10 @@ namespace TavernHelios.Server
 
             app.UseHttpsRedirection();
             app.UseCors("AllowFrontend");
+            app.UseExceptionHandler(options =>
+            {
+                ExceptionMiddleware.HandleError(options);
+            });
             app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();

@@ -2,10 +2,14 @@ import { Typography, Box, Grid2, Container } from '@mui/material';
 import axios from 'axios';
 import { useEffect } from 'react';
 import { API_BASE_URL } from '../config';
+import { useUser } from '../contexts/UserContext';
 
 function Home() {
+    const userContext = useUser();
+
     useEffect(() => {
         axios.get(`${API_BASE_URL}/api/auth/userInfo`)
+            .then(response => userContext?.login(response.data));
     }, []) 
 
   return (

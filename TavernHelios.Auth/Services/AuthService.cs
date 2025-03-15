@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using TavernHelios.Auth.Data;
-using TavernHelios.Auth.Models;
+using TavernHelios.Auth.Data.Models;
 using TavernHelios.Common.Auth.DTO;
 
 namespace TavernHelios.Auth.Services
@@ -37,7 +38,9 @@ namespace TavernHelios.Auth.Services
 
         public UserDTO LoginUser(LoginDTO loginDTO)
         {
-            var existingUser = _context.Users.FirstOrDefault(x => x.Login == loginDTO.Login) 
+            var existingUser = _context.Users
+                .Include(x => x.UserRoles)
+                .FirstOrDefault(x => x.Login == loginDTO.Login) 
                 ?? throw new Exception("Не найден пользователь с указанным логином");
 
             var passwordHash = _passwordHasher.HashPassword(existingUser, loginDTO.Password);

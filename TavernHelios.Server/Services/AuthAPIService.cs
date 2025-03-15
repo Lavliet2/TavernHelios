@@ -1,12 +1,13 @@
 ﻿using System.Text.Json;
 using TavernHelios.Common.Auth.DTO;
+using TavernHelios.Server.Exceptions;
 
 namespace TavernHelios.Server.Services
 {
     public interface IAuthAPIService
     {
         Task<UserDTO> LoginAsync(LoginDTO loginDTO);
-        Task<bool> RegisterAsync(RegisterDTO registerDTO);
+        Task RegisterAsync(RegisterDTO registerDTO);
     }
 
     public class AuthAPIService : IAuthAPIService
@@ -22,7 +23,7 @@ namespace TavernHelios.Server.Services
         {
             var response = await _httpClient.PostAsJsonAsync("api/auth/login", loginDTO);
             
-            if (!response.IsSuccessStatusCode) throw new Exception("Ошибка аутентификации");
+            if (!response.IsSuccessStatusCode) throw new CustomException("Неверный логин или пароль");
             var json = await response.Content.ReadAsStringAsync();
             var user = JsonSerializer.Deserialize<UserDTO>(json, new JsonSerializerOptions
             {
@@ -31,11 +32,11 @@ namespace TavernHelios.Server.Services
             return user;
         }
 
-        public async Task<bool> RegisterAsync(RegisterDTO registerDTO)
+        public async Task RegisterAsync(RegisterDTO registerDTO)
         {
             var response = await _httpClient.PostAsJsonAsync("api/auth/register", registerDTO);
-
-            return response.IsSuccessStatusCode;
+            if (!response.IsSuccessStatusCode) throw new CustomException("Произошла ошибка при регистрации");
+            return;
         }
     }
 }
