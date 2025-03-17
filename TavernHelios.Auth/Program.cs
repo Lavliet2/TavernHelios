@@ -28,7 +28,14 @@ builder.Services
         options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
         options.Cookie.HttpOnly = false;
     });
-    var app = builder.Build();
+
+var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<EfDbContext>();
+    context.Database.Migrate();
+}
 
 // Configure the HTTP request pipeline.
 
