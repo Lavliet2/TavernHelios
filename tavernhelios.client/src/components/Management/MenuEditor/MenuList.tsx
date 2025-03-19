@@ -5,8 +5,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-import { Menu, Dish } from "../../types/Management";
-import dishTypes from "../../constants/dishTypes";
+import { Menu, Dish } from "../../../types/Management";
+import dishTypes from "../../../constants/dishTypes";
 
 interface MenuListProps {
   menuData: Menu[];

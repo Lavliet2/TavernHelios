@@ -1,7 +1,7 @@
 import React from "react";
 import { ListItem, ListItemText, ListItemAvatar, Avatar, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { Dish } from "../../types/Management"
+import { Dish } from "../../../types/Management"
 
 interface DishListItemProps {
   dish: Dish;

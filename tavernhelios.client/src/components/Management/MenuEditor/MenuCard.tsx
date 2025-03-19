@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, Typography, Avatar, List, ListItem, ListItemText, Box, CircularProgress } from "@mui/material";
-import { Menu, Dish } from "../../types/Management";
-import dishTypes from "../../constants/dishTypes";
-import { fetchDishById } from "../../services/dishService"; // Подключаем сервис
+import { Menu, Dish } from "../../../types/Management";
+import dishTypes from "../../../constants/dishTypes";
+import { fetchDishById } from "../../../services/dishService"; // Подключаем сервис
 
 interface MenuCardProps {
   menu: Menu;

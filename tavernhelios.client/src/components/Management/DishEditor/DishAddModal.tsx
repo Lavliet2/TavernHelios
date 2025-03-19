@@ -1,8 +1,8 @@
 import React from "react";
 import { Modal, Box, Typography, TextField, Select, MenuItem, FormControl, InputLabel, IconButton, Tooltip, Button } from "@mui/material";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
-import { Dish } from "../../types/Management";
-import dishTypes from "../../constants/dishTypes";
+import { Dish } from "../../../types/Management";
+import dishTypes from "../../../constants/dishTypes";
 
 interface DishAddModalProps {
   dish: Dish;

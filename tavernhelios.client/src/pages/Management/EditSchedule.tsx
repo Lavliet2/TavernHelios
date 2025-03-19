@@ -1,8 +1,8 @@
 import { Container, Typography, Box, Button, Snackbar, Alert  } from "@mui/material";
 import monthNames from "../../constants/monthNames"
 import useSchedule from "../../hooks/Management/useSchedule";
-import CalendarTable from "../../components/Management/CalendarTable";
-import MenuAddScheduleModal from "../../components/Management/ScheduleAddMenuModal";
+import CalendarTable from "../../components/Management/ScheduleEditor/CalendarTable";
+import MenuAddScheduleModal from "../../components/Management/ScheduleEditor/ScheduleAddMenuModal";
 
 
 const EditSchedule: React.FC = () => {

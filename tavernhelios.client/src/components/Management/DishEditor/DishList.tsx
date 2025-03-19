@@ -4,8 +4,8 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-import { Dish } from "../../types/Management";
-import dishTypes from "../../constants/dishTypes";
+import { Dish } from "../../../types/Management";
+import dishTypes from "../../../constants/dishTypes";
 
 interface DishListProps {
   dishes: Dish[];
