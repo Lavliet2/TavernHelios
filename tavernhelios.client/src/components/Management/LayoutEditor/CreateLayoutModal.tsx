@@ -3,25 +3,17 @@ import React, { useState } from "react";
 import { Modal, Box, Typography, TextField, Button } from "@mui/material";
 import type { Layout } from "../../../types/Layout";
 
-/** Пропсы для CreateLayoutModal */
 interface CreateLayoutModalProps {
-  /** Флаг, открыт ли Modal */
   open: boolean;
-  /** Закрыть Modal */
   onClose: () => void;
-  /** Колбэк, когда пользователь нажимает "Сохранить" */
   onCreateLayout: (layoutData: Partial<Layout>) => Promise<void>;
 }
 
-/**
- * Модалка для создания новой схемы зала
- */
 const CreateLayoutModal: React.FC<CreateLayoutModalProps> = ({
   open,
   onClose,
   onCreateLayout,
 }) => {
-  // Локальный стейт для полей формы
   const [formData, setFormData] = useState<Partial<Layout>>({
     restaurantId: "",
     width: 800,
@@ -36,7 +28,6 @@ const CreateLayoutModal: React.FC<CreateLayoutModalProps> = ({
     }));
   };
 
-  // Чтение файла
   const handleFileChange = (file?: File) => {
     if (!file) return;
     const reader = new FileReader();
@@ -44,30 +35,27 @@ const CreateLayoutModal: React.FC<CreateLayoutModalProps> = ({
       if (typeof reader.result === "string") {
         setFormData((prev) => ({
           ...prev,
-          imageStr: reader.result,
+          imageStr: reader.result as string,
         }));
       }
     };
     reader.readAsDataURL(file);
   };
 
-  // Нажатие "Сохранить"
   const handleSave = async () => {
     if (!formData.restaurantId) {
       alert("Введите название зала!");
       return;
     }
-    // Вызываем переданный колбэк
     await onCreateLayout(formData);
-    // Закрываем модалку
-    onClose();
-    // Сбрасываем форму
+    // Сбрасываем и закрываем
     setFormData({
       restaurantId: "",
       width: 800,
       height: 600,
       imageStr: "",
     });
+    onClose();
   };
 
   return (
@@ -127,12 +115,7 @@ const CreateLayoutModal: React.FC<CreateLayoutModalProps> = ({
           />
         </Button>
 
-        <Button
-          variant="contained"
-          color="success"
-          fullWidth
-          onClick={handleSave}
-        >
+        <Button variant="contained" color="success" fullWidth onClick={handleSave}>
           Сохранить
         </Button>
       </Box>

@@ -2,6 +2,16 @@ export interface Point {
     x: number;
     y: number;
   }
+
+  export const ItemTypes = {
+    TABLE: "table",
+    CHAIR: "chair",
+  };
+
+  export interface TableItemProps {
+    tableWidth: number;
+    tableHeight: number;
+  }
   
   export interface Table {
     name: string;
