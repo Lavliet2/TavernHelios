@@ -13,6 +13,7 @@ interface TableItemProps {
   tableWidth?: number;
   /** Высота стола (по умолчанию 50) */
   tableHeight?: number;
+  name: string;
 }
 
 /** Компонент "Стол" – квадрат */

@@ -1,4 +1,3 @@
-// src/pages/Management/EditLayout/index.tsx
 import React, { useEffect, useState, useRef } from "react";
 import { Box } from "@mui/material";
 import { useDrop } from "react-dnd";
@@ -65,7 +64,7 @@ const LayoutEditor: React.FC = () => {
       img.src = layout.imageStr;
       img.onload = () => {
         backgroundImgRef.current = img;
-        drawCanvas(); // Отрисуем сразу после загрузки
+        drawCanvas(); 
       };
     } else {
       backgroundImgRef.current = null;
@@ -83,15 +82,13 @@ const LayoutEditor: React.FC = () => {
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-  
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-  
-    // Используем уже загруженную картинку
+
     if (backgroundImgRef.current) {
       ctx.drawImage(backgroundImgRef.current, 0, 0, canvas.width, canvas.height);
     }
-  
-    // Рисуем поверх картинки объекты
+
     objects.forEach((obj) => {
       if (obj.type === ItemTypes.TABLE) {
         ctx.fillStyle = "brown";
@@ -152,13 +149,52 @@ const LayoutEditor: React.FC = () => {
 
   return (
     <Box sx={{ display: "flex", height: "100vh" }}>
-      <Sidebar {...{ layouts, selectedLayoutId, isEditing, onSelectLayout: setSelectedLayoutId, onCreateClick: () => setIsModalOpen(true), onDeleteClick: deleteLayout, onToggleEdit: () => setIsEditing(!isEditing) }} />
-      <div ref={dropRef} style={{ flexGrow: 1, display: "flex", justifyContent: "center", alignItems: "center" }}>
-        <canvas ref={canvasRef} width={canvasSize.width} height={canvasSize.height} style={{ border: "2px solid black" }} onMouseDown={handleMouseDown} onMouseMove={handleMouseMove} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp} />
+      <Sidebar
+        {...{
+          layouts,
+          selectedLayoutId,
+          isEditing,
+          onSelectLayout: setSelectedLayoutId,
+          onCreateClick: () => setIsModalOpen(true),
+          onDeleteClick: deleteLayout,
+          onToggleEdit: () => setIsEditing(!isEditing),
+        }}
+      />
+      <div
+        ref={(node) => dropRef(node) as unknown as void} // ✅ фикс
+        style={{ flexGrow: 1 }}
+      >
+        <div
+          style={{
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <canvas
+            ref={canvasRef}
+            width={canvasSize.width}
+            height={canvasSize.height}
+            style={{ border: "2px solid black" }}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+          />
+        </div>
       </div>
-      <CreateLayoutModal open={isModalOpen} onClose={() => setIsModalOpen(false)} onCreateLayout={createLayout} />
+      <CreateLayoutModal
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onCreateLayout={async (layoutData) => {
+          await createLayout(layoutData);
+        }}
+      />
     </Box>
   );
-};
+  
+}  
 
 export default LayoutEditor;

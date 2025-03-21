@@ -36,7 +36,11 @@ const Sidebar: React.FC<SidebarProps> = ({
   // Размеры по умолчанию
   const [tableWidth, setTableWidth] = useState(50);
   const [tableHeight, setTableHeight] = useState(50);
-  const [chairRadius, setChairRadius] = useState(15);
+  const [tableName, setTableName] = useState("");
+  const [tableSeats, setTableSeats] = useState(4);
+
+  const [chairRadius, setChairRadius] = useState(10);
+  const [chairName, setChairName] = useState("");
 
   return (
     <Box
@@ -86,27 +90,56 @@ const Sidebar: React.FC<SidebarProps> = ({
         <Box sx={{ p: 2, bgcolor: "#ddd", borderRadius: 2 }}>
           <Typography variant="h6">Инструменты</Typography>
 
-          {/* Размеры для стола */}
           <TextField
-            label="Ширина стола"
-            type="number"
-            value={tableWidth}
-            onChange={(e) => setTableWidth(Number(e.target.value))}
+            label="Номер стола"
+            value={tableName}
+            onChange={(e) => setTableName(e.target.value)}
             sx={{ mb: 1 }}
             fullWidth
           />
+
+          <Box sx={{ display: "flex", gap: 1, mb: 1 }}>
+            <TextField
+              label="Ширина стола"
+              type="number"
+              value={tableWidth}
+              onChange={(e) => setTableWidth(Number(e.target.value))}
+              fullWidth
+            />
+
+            <TextField
+              label="Высота стола"
+              type="number"
+              value={tableHeight}
+              onChange={(e) => setTableHeight(Number(e.target.value))}
+              fullWidth
+            />
+          </Box>
+
           <TextField
-            label="Высота стола"
+            label="Количество мест"
             type="number"
-            value={tableHeight}
-            onChange={(e) => setTableHeight(Number(e.target.value))}
+            value={tableSeats}
+            onChange={(e) => setTableSeats(Number(e.target.value))}
             sx={{ mb: 2 }}
             fullWidth
           />
 
-          <TableItem tableWidth={tableWidth} tableHeight={tableHeight} />
+          <TableItem
+            tableWidth={tableWidth}
+            tableHeight={tableHeight}
+            name={tableName}
+            seats={tableSeats}
+          />
 
-          {/* Размеры для стула */}
+          <TextField
+            label="Номер стула"
+            value={chairName}
+            onChange={(e) => setChairName(e.target.value)}
+            sx={{ my: 2 }}
+            fullWidth
+          />
+
           <TextField
             label="Радиус стула"
             type="number"
@@ -116,7 +149,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             fullWidth
           />
 
-          <ChairItem chairRadius={chairRadius} />
+          <ChairItem chairRadius={chairRadius} name={chairName} />
         </Box>
       )}
     </Box>
