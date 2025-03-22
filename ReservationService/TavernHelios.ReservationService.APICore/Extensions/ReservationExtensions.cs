@@ -18,6 +18,8 @@ namespace TavernHelios.ReservationService.ApiCore.Extensions
             result.PersonId = entity.PersonId;
             result.DishIds = entity.DishIds.ToList();
             result.IsDeleted = entity.IsDeleted;
+            result.SeatNumber = entity.SeatNumber;
+            result.TableName = entity.TableName;
             return result;
         }
 
@@ -28,6 +30,8 @@ namespace TavernHelios.ReservationService.ApiCore.Extensions
             result.PersonId = value.PersonId;
             result.Date = value.Date.ToDateTime();
             result.IsDeleted = value.IsDeleted;
+            result.SeatNumber = value.SeatNumber;
+            result.TableName = value.TableName;
             foreach(var dishId in value.DishIds)
             {
                 result.DishReservations.Add(new DishReservationEntity() { DishId = dishId });
@@ -42,6 +46,8 @@ namespace TavernHelios.ReservationService.ApiCore.Extensions
             result.PersonId = value.PersonId;
             result.Date = value.Date.ToUniversalTime().ToTimestamp();
             result.DishIds.AddRange(value.DishIds);
+            result.SeatNumber = value.SeatNumber;
+            result.TableName = value.TableName;
             result.IsDeleted = value.IsDeleted;
             return result;
         }
@@ -53,6 +59,8 @@ namespace TavernHelios.ReservationService.ApiCore.Extensions
             result.PersonId = value.PersonId;
             result.Date = value.Date.ToUniversalTime().ToTimestamp();
             result.DishIds.AddRange(value.DishIds);
+            result.SeatNumber = value.SeatNumber;
+            result.TableName = value.TableName;
             result.IsDeleted = false;
             return result;
         }
@@ -64,6 +72,8 @@ namespace TavernHelios.ReservationService.ApiCore.Extensions
             result.PersonId = value.PersonId;
             result.Date = value.Date.ToUniversalTime().ToTimestamp();
             result.DishIds.AddRange(value.DishReservations.Select(x => x.DishId));
+            result.SeatNumber = value.SeatNumber;
+            result.TableName = value.TableName;
             result.IsDeleted = value.IsDeleted;
             return result;
         }

@@ -19,8 +19,10 @@ message Reservation{
 	string Id = 1;
 	string PersonId = 2;
 	google.protobuf.Timestamp Date = 3;
-	repeated string DishIds = 4;
-	bool IsDeleted = 5;
+	string TableName = 4;
+	int32 SeatNumber = 5;
+	repeated string DishIds = 6;
+	bool IsDeleted = 7;
 }
 
 message ReservationsReply{
