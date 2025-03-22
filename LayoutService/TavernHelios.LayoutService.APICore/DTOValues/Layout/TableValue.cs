@@ -11,6 +11,8 @@ namespace TavernHelios.LayoutService.APICore.DTOValues.Layout
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
 
+        public List<SeatValue> Seats { get; set; } = new();
+
         public PointValue P1 { get; set; } = new PointValue();
         public PointValue P2 { get; set; } = new PointValue();
         public PointValue P3 { get; set; } = new PointValue();

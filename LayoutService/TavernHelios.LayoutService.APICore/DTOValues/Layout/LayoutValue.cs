@@ -10,12 +10,11 @@ namespace TavernHelios.LayoutService.APICore.DTOValues.Layout
 {
     public class LayoutValue : BaseDtoValue
     {
-        public string RestaurantId { get; set; }
+        public string RestaurantId { get; set; } = string.Empty;
         public double Width { get; set; } = 0;
         public double Height { get; set; } = 0;
         public string ImageStr { get; set; } = string.Empty;
         public List<TableValue> Tables { get; set; } = new List<TableValue>();
-        public List<SeatValue> Seats { get; set; } = new List<SeatValue>();
     }
 
     public class AddLayoutRequestValue
@@ -26,7 +25,6 @@ namespace TavernHelios.LayoutService.APICore.DTOValues.Layout
 
         public string ImageStr { get; set; } = string.Empty;
         public List<TableValue> Tables { get; set; } = new List<TableValue>();
-        public List<SeatValue> Seats { get; set; } = new List<SeatValue>();
     }
 
     public class LayoutQueryRequestValue

@@ -10,6 +10,10 @@
 
         public List<string> DishIds { get; set; } = new List<string>();
 
+        public int SeatNumber { get; set; } = -1;
+
+        public string TableName { get; set; } = string.Empty;
+
         public bool IsDeleted { get; set; } = false;
     }
 
@@ -20,5 +24,9 @@
         public DateTime Date { get; set; } = DateTime.MinValue;
 
         public List<string> DishIds { get; set; } = new List<string>();
+
+        public int SeatNumber { get; set; } = -1;
+
+        public string TableName { get; set; } = string.Empty;
     }
 }

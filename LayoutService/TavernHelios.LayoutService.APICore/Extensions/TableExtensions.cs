@@ -19,6 +19,7 @@ namespace TavernHelios.LayoutService.APICore.Extensions
             result.P2 = entity.P2.ToDto();
             result.P3 = entity.P3.ToDto();
             result.P4 = entity.P4.ToDto();
+            result.Seats = new List<SeatValue>(entity.Seats.Select(x => x.ToDto()));
             return result;
         }
 
@@ -31,6 +32,7 @@ namespace TavernHelios.LayoutService.APICore.Extensions
             result.P2 = tableValue.P2.ToEntity();
             result.P3 = tableValue.P3.ToEntity();
             result.P4 = tableValue.P4.ToEntity();
+            result.Seats = new List<SeatEntity>(tableValue.Seats.Select(x => x.ToEntity()));
             return result;
         }
 
@@ -43,7 +45,7 @@ namespace TavernHelios.LayoutService.APICore.Extensions
             result.P2 = tableValue.P2.ToGrpc();
             result.P3 = tableValue.P3.ToGrpc();
             result.P4 = tableValue.P4.ToGrpc();
-
+            result.Seats.AddRange(tableValue.Seats.Select(x => x.ToGrpc()));
             return result;
         }
 
@@ -56,6 +58,7 @@ namespace TavernHelios.LayoutService.APICore.Extensions
             result.P2 = tableValue.P2.ToGrpc();
             result.P3 = tableValue.P3.ToGrpc();
             result.P4 = tableValue.P4.ToGrpc();
+            result.Seats.AddRange(tableValue.Seats.Select(x => x.ToGrpc()));
             return result;
         }
     }

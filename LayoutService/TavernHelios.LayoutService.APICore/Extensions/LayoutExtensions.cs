@@ -21,7 +21,6 @@ namespace TavernHelios.LayoutService.APICore.Extensions
             result.Width = entity.Width;
             result.Height = entity.Height;
             result.ImageStr = entity.ImageStr ?? string.Empty;
-            result.Seats = new List<SeatValue>(entity.Seats.Select(x => x.ToDto()));
             result.Tables = new List<TableValue>(entity.Tables.Select(x => x.ToDto()));
             return result;
         }
@@ -35,7 +34,6 @@ namespace TavernHelios.LayoutService.APICore.Extensions
             result.Width = layoutValue.Width;
             result.Height = layoutValue.Height;
             result.ImageStr = layoutValue.ImageStr;
-            result.Seats = new List<SeatEntity>(layoutValue.Seats.Select(x => x.ToEntity()));
             result.Tables = new List<TableEntity>(layoutValue.Tables.Select(x => x.ToEntity()));
             return result;
         }
@@ -49,7 +47,6 @@ namespace TavernHelios.LayoutService.APICore.Extensions
             result.Width = layoutValue.Width;
             result.Height = layoutValue.Height;
             result.ImageStr = layoutValue.ImageStr;
-            result.Seats.AddRange(layoutValue.Seats.Select(x => x.ToGrpc()));
             result.Tables.AddRange(layoutValue.Tables.Select(x => x.ToGrpc()));
 
             return result;
@@ -64,7 +61,6 @@ namespace TavernHelios.LayoutService.APICore.Extensions
             result.Width = layoutValue.Width;
             result.Height = layoutValue.Height;
             result.ImageStr = layoutValue.ImageStr;
-            result.Seats.AddRange(layoutValue.Seats.Select(x => x.ToGrpc()));
             result.Tables.AddRange(layoutValue.Tables.Select(x => x.ToGrpc()));
             return result;
         }
@@ -77,7 +73,6 @@ namespace TavernHelios.LayoutService.APICore.Extensions
             result.Width = layoutValue.Width;
             result.Height = layoutValue.Height;
             result.ImageStr = layoutValue.ImageStr;
-            result.Seats = new List<SeatEntity>(layoutValue.Seats.Select(x => x.ToEntity()));
             result.Tables = new List<TableEntity>(layoutValue.Tables.Select(x => x.ToEntity()));
             return result;
         }
@@ -89,7 +84,6 @@ namespace TavernHelios.LayoutService.APICore.Extensions
             result.Width = layoutValue.Width;
             result.Height = layoutValue.Height;
             result.ImageStr = layoutValue.ImageStr;
-            result.Seats.AddRange(layoutValue.Seats.Select(x => x.ToGrpc()));
             result.Tables.AddRange(layoutValue.Tables.Select(x => x.ToGrpc()));
             return result;
         }
