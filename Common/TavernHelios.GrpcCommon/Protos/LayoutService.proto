@@ -28,6 +28,7 @@ message Table{
 	Point P2=4;
 	Point P3=5;
 	Point P4=6;
+	repeated Seat Seats = 7;
 }
 
 message Seat{
@@ -44,8 +45,7 @@ message Layout{
 	double Height = 4;
 	string ImageStr = 5;
 	repeated Table Tables = 6;
-	repeated Seat Seats = 7;
-	bool IsDeleted = 8;
+	bool IsDeleted = 7;
 }
 
 message AddLayoutRequest{
@@ -54,7 +54,6 @@ message AddLayoutRequest{
 	double Height = 3;
 	string ImageStr = 4;
 	repeated Table Tables = 5;
-	repeated Seat Seats = 6;
 }
 
 message LayoutsReply{
