@@ -1,4 +1,46 @@
 services:
+
+  adminService:
+    image: tavernhelios/adminservice
+    container_name: adminService
+    build:
+      context: .
+      dockerfile: ./AdministrationService/TavernHelios.AdministrationService.AdministrationServiceServer/Dockerfile
+    depends_on:
+      - clickhouse
+      - rabbitmq
+      - prometheus
+      - grafana
+      - server    
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+    networks:
+      - app_network
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:23.8.4.69-alpine
+    container_name: clickhouse-monitoring
+    networks:
+      - app_network
+
+  rabbitmq:
+    image: rabbitmq:3.12.14-management-alpine
+    container_name: rabbitmq-monitoring
+    networks:
+      - app_network
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus-monitoring
+    networks:
+      - app_network
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana-monitoring
+    networks:
+      - app_network
+
   mongoMenu:
     image: mongo
     container_name: mongoMenu

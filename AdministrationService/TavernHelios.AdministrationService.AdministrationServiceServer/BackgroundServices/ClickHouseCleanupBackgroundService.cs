@@ -1,4 +1,4 @@
-﻿using WebAdmin.BackgroundServices;
+﻿using TavernHelios.AdministrationService.ClickHouse.Services;
 
 namespace TavernHelios.AdministrationService.AdministrationServiceServer.BackgroundServices
 {

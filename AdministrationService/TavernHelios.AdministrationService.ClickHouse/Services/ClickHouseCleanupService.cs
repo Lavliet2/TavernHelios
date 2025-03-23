@@ -1,9 +1,10 @@
 ﻿using ClickHouse.Client.ADO;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using TavernHelios.ClickHouse.Settings;
 
-namespace WebAdmin.BackgroundServices
+namespace TavernHelios.AdministrationService.ClickHouse.Services
 {
     public class ClickHouseCleanupService
     {
