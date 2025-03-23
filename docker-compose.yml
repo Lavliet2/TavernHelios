@@ -20,12 +20,16 @@ services:
   clickhouse:
     image: clickhouse/clickhouse-server:23.8.4.69-alpine
     container_name: clickhouse-monitoring
+    ports:
+      - '8123:8123'
     networks:
       - app_network
 
   rabbitmq:
     image: rabbitmq:3.12.14-management-alpine
     container_name: rabbitmq-monitoring
+    ports:
+      - '5672:5672'
     networks:
       - app_network
 
