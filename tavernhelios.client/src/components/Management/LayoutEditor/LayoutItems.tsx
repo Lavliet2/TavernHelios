@@ -9,17 +9,18 @@ export const ItemTypes = {
 };
 
 interface TableItemProps {
-  /** Ширина стола (по умолчанию 50) */
-  tableWidth?: number;
-  /** Высота стола (по умолчанию 50) */
-  tableHeight?: number;
-  name: string;
+    tableWidth?: number;
+    tableHeight?: number;
+    name: string;
+    seats: number;
 }
 
 /** Компонент "Стол" – квадрат */
 export const TableItem: React.FC<TableItemProps> = ({
     tableWidth = 50,
     tableHeight = 50,
+    name,
+    seats,
   }) => {
     const [{ isDragging }, dragRef] = useDrag(
       () => ({
@@ -28,19 +29,19 @@ export const TableItem: React.FC<TableItemProps> = ({
           type: ItemTypes.TABLE,
           tableWidth,
           tableHeight,
+          name,
+          seats,
         },
         collect: (monitor) => ({
           isDragging: !!monitor.isDragging(),
         }),
       }),
-      [tableWidth, tableHeight] // ✅ Вот здесь нужно добавить зависимости!
+      [tableWidth, tableHeight, name, seats]
     );
   
     return (
       <div
-        ref={(node) => {
-            if (node) dragRef(node);
-        }}
+        ref={dragRef}
         style={{
           width: tableWidth,
           height: tableHeight,
@@ -59,9 +60,14 @@ interface ChairItemProps {
   chairRadius?: number;
 }
 
-/** Компонент "Стул" – круг */
-export const ChairItem: React.FC<ChairItemProps> = ({
+interface ChairItemProps {
+    chairRadius?: number;
+    name: string;
+  }
+  
+  export const ChairItem: React.FC<ChairItemProps> = ({
     chairRadius = 15,
+    name,
   }) => {
     const [{ isDragging }, dragRef] = useDrag(
       () => ({
@@ -69,21 +75,20 @@ export const ChairItem: React.FC<ChairItemProps> = ({
         item: {
           type: ItemTypes.CHAIR,
           chairRadius,
+          name,
         },
         collect: (monitor) => ({
           isDragging: !!monitor.isDragging(),
         }),
       }),
-      [chairRadius] // ✅ И здесь тоже нужно добавить зависимости!
+      [chairRadius, name]
     );
   
     const diameter = chairRadius * 2;
   
     return (
       <div
-        ref={(node) => {
-            if (node) dragRef(node);
-        }}
+        ref={dragRef}
         style={{
           width: diameter,
           height: diameter,

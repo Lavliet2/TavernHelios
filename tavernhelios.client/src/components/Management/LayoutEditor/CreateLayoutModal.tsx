@@ -4,9 +4,9 @@ import { Modal, Box, Typography, TextField, Button } from "@mui/material";
 import type { Layout } from "../../../types/Layout";
 
 interface CreateLayoutModalProps {
-  open: boolean;
-  onClose: () => void;
-  onCreateLayout: (layoutData: Partial<Layout>) => Promise<void>;
+    open: boolean;
+    onClose: () => void;
+    onCreateLayout: (layoutData: Partial<Layout>) => Promise<Layout | void>;
 }
 
 const CreateLayoutModal: React.FC<CreateLayoutModalProps> = ({
