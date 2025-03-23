@@ -125,12 +125,12 @@ services:
       context: .
       dockerfile: ./TavernHelios.Auth/Dockerfile
     ports:
-      - '5066:5066'
+      - '5067:5067'
     depends_on:
       - postgresAuth
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
-      ASPNETCORE_URLS: "http://+:5066"  
+      ASPNETCORE_URLS: "http://+:5067"  
     command: ["dotnet", "TavernHelios.Auth.dll"]
     networks:
       - app_network      

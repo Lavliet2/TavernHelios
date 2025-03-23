@@ -4,7 +4,7 @@ import getLocalISODate from "../constants/localDate";
 
 export const fetchScheduleData = async (isDeleted = false): Promise<Schedule[]> => {
   try {
-    const response = await customFetch(`${API_BASE_URL}/api/MenuSchedule`);
+    const response = await customFetch(`${API_BASE_URL}/api/MenuSchedule?isDeleted=${isDeleted}`);
     if (!response.ok) throw new Error("Ошибка при загрузке расписания");
     return response.json();
   } catch (error) {
@@ -58,7 +58,7 @@ export const fetchTodaySchedule = async (isDeleted = false): Promise<Schedule | 
     const beginDate = encodeURIComponent(`${formattedDate}T00:00:00Z`);
     const endDate = encodeURIComponent(`${formattedDate}T23:59:59Z`);
 
-    const response = (await customFetch(`${API_BASE_URL}/api/MenuSchedule?BeginDate=${beginDate}&EndDate=${endDate}`));
+    const response = (await customFetch(`${API_BASE_URL}/api/MenuSchedule?BeginDate=${beginDate}&EndDate=${endDate}&IsDeleted=${isDeleted}`));
 
     if (!response.ok) throw new Error("Ошибка при загрузке расписания");
 
