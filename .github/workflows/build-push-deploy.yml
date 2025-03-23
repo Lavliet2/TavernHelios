@@ -141,10 +141,12 @@ jobs:
           kubectl apply -f .k8s/tavernhelios-ingress.yaml || exit 1
           kubectl apply -f .k8s/mongoMenuService-deployment.yaml || exit 1
           kubectl apply -f .k8s/mongoLayoutService-deployment.yaml || exit 1
-          kubectl apply -f .k8s/menuService-deployment.yaml || exit 1
           kubectl apply -f .k8s/postgresReservation-deployment.yaml || exit 1
+          kubectl apply -f .k8s/postgresAuth-deployment.yaml || exit 1
+          kubectl apply -f .k8s/menuService-deployment.yaml || exit 1
           kubectl apply -f .k8s/reservationService-deployment.yaml || exit 1
           kubectl apply -f .k8s/layoutService-deployment.yaml || exit 1
+          kubectl apply -f .k8s/authService-deployment.yaml || exit 1
           kubectl apply -f .k8s/tavernhelios-server-deployment.yaml || exit 1
           kubectl apply -f .k8s/tavernhelios-client-deployment.yaml || exit 1
       
@@ -155,6 +157,7 @@ jobs:
           kubectl rollout restart deployment menuservice || exit 1
           kubectl rollout restart deployment reservationservice || exit 1
           kubectl rollout restart deployment layoutservice || exit 1
+          kubectl rollout restart deployment authservice || exit 1
       
           echo "✅ Деплой успешно завершён!"
           EOF
