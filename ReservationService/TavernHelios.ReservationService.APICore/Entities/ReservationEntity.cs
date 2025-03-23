@@ -17,6 +17,10 @@ namespace TavernHelios.ReservationService.APICore.Entities
 
         public List<DishReservationEntity> DishReservations { get; set; } = new List<DishReservationEntity>();
 
+        public int SeatNumber { get; set; } = -1;
+
+        public string TableName { get; set; } = string.Empty;
+
         public bool IsDeleted { get; set; } = false;
     }
 }
