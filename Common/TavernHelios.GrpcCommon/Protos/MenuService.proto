@@ -9,8 +9,7 @@ import "google/protobuf/wrappers.proto";
 import "CommonMessages.proto";
 
 service MenuService {
-  rpc GetAllMenus (EmptyRequest) returns (MenusReply);
-  rpc GetMenu (IdRequest) returns (MenusReply);
+  rpc GetMenus(MenuQueryRequest) returns (MenusReply);
   rpc AddMenu (Menu) returns (MenusReply);
   rpc UpdateMenu (Menu) returns (MenusReply);
   rpc DeleteMenu (IdRequest) returns (IdReply);
@@ -18,9 +17,8 @@ service MenuService {
   rpc AddDishToMenu (DishMenuMessage) returns (MenusReply);
   rpc RemoveDishFromMenu (DishMenuMessage) returns (MenusReply);
 
-  rpc GetAllDishes (EmptyRequest) returns (DishesReply);
+  rpc GetDishes (DishQueryRequest) returns (DishesReply);
   rpc GetAllDishesForMenu (IdRequest) returns (DishesReply);
-  rpc GetDish (IdRequest) returns (DishesReply);
   rpc AddDish (Dish) returns (DishesReply);
   rpc UpdateDish (Dish) returns (DishesReply);
   rpc DeleteDish (IdRequest) returns (IdReply);
@@ -37,6 +35,7 @@ message Dish{
 	string Description = 3;
 	int32 DishType = 4;
 	string ImageBase64 = 5;
+	bool IsDeleted = 6;
 }
 
 message DishesReply{
@@ -45,16 +44,34 @@ message DishesReply{
 	repeated string Messages = 3;
 }
 
+message DishQueryRequest
+{
+	optional string DishId = 1;
+	optional string Name = 2;
+	optional string Description = 3;
+	optional int32 DishType = 4;
+	optional bool IsDeleted = 5;
+}
+
 message Menu{
 	string Id = 1;
 	string Name = 2;
 	repeated string Dishes = 3;
+	bool IsDeleted = 4;
 }
 
 message MenusReply{
 	repeated Menu Menus = 1;
 	ReplyState State = 2;
 	repeated string Messages = 3;
+}
+
+message MenuQueryRequest
+{
+	optional string MenuId = 1;
+	optional string DishId = 2;
+	optional string Name = 3;
+	optional bool IsDeleted = 4;
 }
 
 message DishMenuMessage{
@@ -72,6 +89,7 @@ message MenuScheduleFull{
 	string Id = 1;
 	Menu Menu = 2;
 	google.protobuf.Timestamp DateTime = 3;
+	bool IsDeleted = 4;
 }
 
 message MenuSchedulesReply{
@@ -86,5 +104,6 @@ message MenuScheduleQueryRequest
 	optional string MenuId = 2;
 	optional google.protobuf.Timestamp BeginDate = 3;
 	optional google.protobuf.Timestamp EndDate = 4;
+	optional bool IsDeleted = 5;
 }
 

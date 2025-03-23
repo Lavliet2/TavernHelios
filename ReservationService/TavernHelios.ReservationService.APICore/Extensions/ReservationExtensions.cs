@@ -17,6 +17,9 @@ namespace TavernHelios.ReservationService.ApiCore.Extensions
             result.Date = entity.Date.ToDateTime();
             result.PersonId = entity.PersonId;
             result.DishIds = entity.DishIds.ToList();
+            result.IsDeleted = entity.IsDeleted;
+            result.SeatNumber = entity.SeatNumber;
+            result.TableName = entity.TableName;
             return result;
         }
 
@@ -26,6 +29,9 @@ namespace TavernHelios.ReservationService.ApiCore.Extensions
             result.Id = long.Parse(value.Id);
             result.PersonId = value.PersonId;
             result.Date = value.Date.ToDateTime();
+            result.IsDeleted = value.IsDeleted;
+            result.SeatNumber = value.SeatNumber;
+            result.TableName = value.TableName;
             foreach(var dishId in value.DishIds)
             {
                 result.DishReservations.Add(new DishReservationEntity() { DishId = dishId });
@@ -40,6 +46,9 @@ namespace TavernHelios.ReservationService.ApiCore.Extensions
             result.PersonId = value.PersonId;
             result.Date = value.Date.ToUniversalTime().ToTimestamp();
             result.DishIds.AddRange(value.DishIds);
+            result.SeatNumber = value.SeatNumber;
+            result.TableName = value.TableName;
+            result.IsDeleted = value.IsDeleted;
             return result;
         }
 
@@ -50,6 +59,9 @@ namespace TavernHelios.ReservationService.ApiCore.Extensions
             result.PersonId = value.PersonId;
             result.Date = value.Date.ToUniversalTime().ToTimestamp();
             result.DishIds.AddRange(value.DishIds);
+            result.SeatNumber = value.SeatNumber;
+            result.TableName = value.TableName;
+            result.IsDeleted = false;
             return result;
         }
 
@@ -60,6 +72,9 @@ namespace TavernHelios.ReservationService.ApiCore.Extensions
             result.PersonId = value.PersonId;
             result.Date = value.Date.ToUniversalTime().ToTimestamp();
             result.DishIds.AddRange(value.DishReservations.Select(x => x.DishId));
+            result.SeatNumber = value.SeatNumber;
+            result.TableName = value.TableName;
+            result.IsDeleted = value.IsDeleted;
             return result;
         }
 
@@ -70,9 +85,10 @@ namespace TavernHelios.ReservationService.ApiCore.Extensions
             if (value.ReservationId != null) result.ReservationId = value.ReservationId.Value;
             if (value.PersonId != null) result.PersonId = value.PersonId;
             if (value.DishId != null) result.DishId = value.DishId;
+            if (value.IsDeleted != null) result.IsDeleted = value.IsDeleted.Value;
             if (value.BeginDate != null) result.BeginDate = value.BeginDate.Value.ToUniversalTime().ToTimestamp();
             if (value.EndDate != null) result.EndDate = value.EndDate.Value.ToUniversalTime().ToTimestamp();
-
+            
             return result;
         }
 
@@ -90,6 +106,11 @@ namespace TavernHelios.ReservationService.ApiCore.Extensions
             if (value.HasPersonId)
             {
                 result = result.AndAlso(x => x.PersonId == value.PersonId);
+            }
+
+            if (value.HasIsDeleted)
+            {
+                result = result.AndAlso(x => x.IsDeleted == value.IsDeleted);
             }
 
             if (value.HasDishId)

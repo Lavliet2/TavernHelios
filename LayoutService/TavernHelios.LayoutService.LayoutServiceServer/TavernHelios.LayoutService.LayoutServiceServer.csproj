@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>0b459624-7065-470c-a12d-9b9e8cbf5c6e</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>..\..\..</DockerfileContext>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Grpc.AspNetCore.Server.Reflection" Version="2.67.0" />
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
+		<PackageReference Include="Grpc.AspNetCore" Version="2.67.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Common\TavernHelios.GrpcCommon\TavernHelios.GrpcCommon.csproj" />
+		<ProjectReference Include="..\TavernHelios.LayoutService.APICore\TavernHelios.LayoutService.APICore.csproj" />
+		<ProjectReference Include="..\TavernHelios.LayoutService.MongoRepositories\TavernHelios.LayoutService.MongoRepositories.csproj" />
+	</ItemGroup>
+
+</Project>

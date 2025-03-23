@@ -34,4 +34,14 @@ namespace TavernHelios.MenuService.Common.DTOValues.Menu
         /// </summary>
         public string ImageBase64 { get; set; } = string.Empty;
     }
+
+    public class DishQueryRequestValue
+    {
+        public string? DishId { get; set; } = null;
+        public string? Name{ get; set; } = null;
+        public string? Description { get; set; } = null;
+
+        public DishType? DishType { get; set; } = null;
+        public bool? IsDeleted { get; set; } = null;
+    }
 }

@@ -16,6 +16,8 @@ namespace TavernHelios.ReservationService.APICore.DTOValues
         public string? PersonId { get; set; } = null;
         public string? DishId { get; set; } = null;
 
+        public bool? IsDeleted { get; set; } = null;
+
         /// <summary>
         /// Нижняя граница времени запроса
         /// </summary>

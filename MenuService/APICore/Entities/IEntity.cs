@@ -12,5 +12,10 @@ namespace TavernHelios.MenuService.Common.Entities
         /// Id сущности
         /// </summary>
         string Id { get; set; }
+
+        /// <summary>
+        /// Флаг "Объект удален"
+        /// </summary>
+        bool IsDeleted { get; set; }
     }
 }

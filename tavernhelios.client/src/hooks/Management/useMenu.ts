@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { fetchMenus, addMenu, updateMenu, deleteMenu } from "../../services/menuService";
-import { fetchDishData } from "../../services/dishService";
+import { fetchDish } from "../../services/dishService";
 import { Menu, Dish } from "../../types/Management";
 
 export const useMenu = () => {
@@ -25,7 +25,7 @@ export const useMenu = () => {
     const loadData = async () => {
       try {
         setLoading(true);
-        const [menus, dishes] = await Promise.all([fetchMenus(), fetchDishData()]);
+        const [menus, dishes] = await Promise.all([fetchMenus(), fetchDish()]);
         setMenuData(menus);
         setDishesData(Object.fromEntries(dishes.map((dish) => [dish.id, dish])));
       } catch (error) {

@@ -10,5 +10,10 @@ namespace TavernHelios.MenuService.APICore.Entities.Menu
         public string MenuId { get; set; } = string.Empty;
 
         public DateTime DateTime { get; set; } = DateTime.MinValue;
+
+        /// <summary>
+        /// Флаг "Объект удален"
+        /// </summary>
+        public bool IsDeleted { get; set; } = false;
     }
 }

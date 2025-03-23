@@ -45,7 +45,7 @@ namespace MenuServiceServer
             app.MapGrpcService<MenuServiceApi>().RequireHost($"*:{settings.Port}");
 
 
-            var mongoSettings = app.Services.GetRequiredService<IOptions<MongoConnectionSettings>>().Value;
+            var mongoSettings = app.Services.GetRequiredService<IOptions<MenuMongoConnectionSettings>>().Value;
             
             Task.WaitAll(app.FillMockDataAsync());
             

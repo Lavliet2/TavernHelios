@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tavernhelios-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tavernhelios-server
+  template:
+    metadata:
+      labels:
+        app: tavernhelios-server
+    spec:
+      containers:
+        - name: tavernhelios-server
+          image: ghcr.io/lavliet2/heliostavern-backend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080  
+            - containerPort: 8081 
+          env:
+            - name: MENU_SERVICE_URL
+              value: "http://menuservice:5064"
+            - name: RESERVATION_SERVICE_URL
+              value: "http://reservationservice:5065"
+            - name: VITE_API_URL
+              value: "http://178.72.83.217:32040"
+      imagePullSecrets:
+        - name: ghcr-secret 
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tavernhelios-server-service
+spec:
+  type: NodePort
+  selector:
+    app: tavernhelios-server
+  ports:
+    - protocol: TCP
+      port: 5040      
+      targetPort: 8080  
+      nodePort: 32040 

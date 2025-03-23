@@ -17,15 +17,14 @@ spec:
           image: ghcr.io/lavliet2/heliostavern-backend:latest
           imagePullPolicy: Always
           ports:
-            - containerPort: 8080  
-            - containerPort: 8081 
+            - containerPort: 5555  
           env:
+            - name: ASPNETCORE_URLS
+              value: "http://+:5555"
             - name: MENU_SERVICE_URL
               value: "http://menuservice:5064"
             - name: RESERVATION_SERVICE_URL
               value: "http://reservationservice:5065"
-            - name: VITE_API_URL
-              value: "http://178.72.83.217:32040"
       imagePullSecrets:
         - name: ghcr-secret 
 
@@ -40,6 +39,6 @@ spec:
     app: tavernhelios-server
   ports:
     - protocol: TCP
-      port: 5040      
-      targetPort: 8080  
-      nodePort: 32040 
+      port: 5555      
+      targetPort: 5555  
+      nodePort: 32050 

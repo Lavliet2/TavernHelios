@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { fetchReservations, exportReservationsFile } from "../../services/reservationService"; 
-import { fetchDishData } from "../../services/dishService"; 
+import { fetchDish } from "../../services/dishService"; 
 import { Reservation } from "../../types/Reservation";
 import { Dish } from "../../types/Management";
 
@@ -29,7 +29,7 @@ export const useReservations = (date: string) => {
 
   const loadDishes = useCallback(async () => {
     try {
-      const data = await fetchDishData();
+      const data = await fetchDish();
       setDishes(data);
     } catch (err) {
       console.error("Ошибка загрузки блюд:", err);

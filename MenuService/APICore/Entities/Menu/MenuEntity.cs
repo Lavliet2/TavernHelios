@@ -17,5 +17,10 @@ namespace TavernHelios.MenuService.Common.Entities
         public string Name { get; set; } = string.Empty;
 
         public List<string> Dishes { get; set; } = new List<string>();
+
+        /// <summary>
+        /// Флаг "Объект удален"
+        /// </summary>
+        public bool IsDeleted { get; set; } = false;
     }
 }

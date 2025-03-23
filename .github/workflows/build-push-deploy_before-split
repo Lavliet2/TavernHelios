@@ -1,0 +1,133 @@
+name: Build and Deploy HeliosTavern App
+
+on:
+  push:
+    tags:
+      - 'v*'  
+
+jobs:
+  build-push-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Загружаем ВСЮ историю с тегами и ветками
+
+      # 🔥 Получаем родительскую ветку тега
+      - name: Determine branch from tag
+        id: get-branch
+        run: |
+          TAG=${{ github.ref_name }}
+          echo "🔍 Looking for the source branch of tag: $TAG"
+
+          # Получаем коммит, к которому привязан тег
+          COMMIT_HASH=$(git rev-list -n 1 $TAG)
+          echo "🔹 Tag $TAG is at commit: $COMMIT_HASH"
+
+          # Получаем список всех веток, содержащих этот коммит
+          BRANCH=$(git branch -r --contains $COMMIT_HASH | grep -v 'HEAD' | awk -F'/' '{print $2}' | head -n1)
+
+          if [[ -z "$BRANCH" ]]; then
+            echo "⚠️  Не удалось определить ветку, используем main!"
+            BRANCH="main"
+          fi
+
+          echo "✅ Found branch: $BRANCH"
+          echo "BRANCH=$BRANCH" >> $GITHUB_ENV
+
+      - name: Debug GitHub Tag & Branch
+        run: |
+          echo "github.ref_name=${{ github.ref_name }}"
+          echo "Extracted branch: ${{ env.BRANCH }}"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_TOKEN }}
+
+      # **Сборка и публикация контейнера с бэкендом**
+      - name: Build and push backend image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            ghcr.io/lavliet2/heliostavern-backend:${{ env.BRANCH }}-${{ github.ref_name }}
+            ghcr.io/lavliet2/heliostavern-backend:latest 
+
+      # **Сборка и публикация контейнера с MenuService**
+      - name: Build and push MenuService image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./MenuService/MenuServiceServer/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/lavliet2/menuservice:${{ env.BRANCH }}-${{ github.ref_name }}
+            ghcr.io/lavliet2/menuservice:latest
+
+      # **Сборка и публикация контейнера с ReservationService**
+      - name: Build and push ReservationService image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./ReservationService/TavernHelios.ReservationServiceServer/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/lavliet2/reservationservice:${{ env.BRANCH }}-${{ github.ref_name }}
+            ghcr.io/lavliet2/reservationservice:latest            
+
+      - name: Add SSH key
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }} 
+
+      - name: Deploy to Kubernetes via SSH
+        env:
+          DEPLOY_BRANCH: ${{ env.BRANCH }} 
+        run: |
+          ssh -o StrictHostKeyChecking=no -p 2222 lavliet@178.72.83.217 << EOF          
+          set -e  # Остановить выполнение при ошибке
+
+          echo "🚀 Deploying from branch: $DEPLOY_BRANCH"
+
+          # Если BRANCH пустая, fallback на main
+          if [[ -z "$DEPLOY_BRANCH" ]]; then
+            echo "⚠️  Ветка не найдена, деплоим main!"
+            DEPLOY_BRANCH="main"
+          fi
+      
+          # Удаляем старую версию
+          rm -rf /home/lavliet/heliostavern-app
+          
+          echo "📥 Клонируем ветку: $DEPLOY_BRANCH"
+          git clone --branch "$DEPLOY_BRANCH" --depth 1 https://github.com/Lavliet2/TavernHelios.git /home/lavliet/heliostavern-app            
+          cd /home/lavliet/heliostavern-app || exit 1
+          
+          echo "✅ Репозиторий успешно клонирован. Запускаем деплой..."
+      
+          # Деплой в Kubernetes
+          kubectl apply -f .k8s/tavernhelios-ingress.yaml || exit 1
+          kubectl apply -f .k8s/mongoMenu-deployment.yaml || exit 1
+          kubectl apply -f .k8s/menuservice-deployment.yaml || exit 1
+          kubectl apply -f .k8s/postgresReservatione-deployment.yaml || exit 1
+          kubectl apply -f .k8s/reservationService-deployment.yaml || exit 1
+          kubectl apply -f .k8s/tavernhelios-server-deployment.yaml || exit 1
+      
+          # Принудительный рестарт подов
+          echo "🔄 Перезапускаем поды..."
+          kubectl rollout restart deployment tavernhelios-server || exit 1
+          kubectl rollout restart deployment menuservice || exit 1
+          kubectl rollout restart deployment reservationservice || exit 1
+      
+          echo "✅ Деплой успешно завершён!"
+          EOF
+  

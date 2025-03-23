@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TavernHelios.MenuService.Common.Settings
 {
-    public class MongoConnectionSettings
+    public class MenuMongoConnectionSettings
     {
         public string Ip { get; set; } = "";
         public int Port { get; set; }

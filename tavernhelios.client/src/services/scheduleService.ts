@@ -2,9 +2,9 @@ import { API_BASE_URL } from "../config";
 import { Schedule } from "../types/Management";
 import getLocalISODate from "../constants/localDate";
 
-export const fetchScheduleData = async (): Promise<Schedule[]> => {
+export const fetchScheduleData = async (isDeleted = false): Promise<Schedule[]> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/MenuSchedule`);
+    const response = await fetch(`${API_BASE_URL}/api/MenuSchedule?isDeleted=${isDeleted}`);
     if (!response.ok) throw new Error("Ошибка при загрузке расписания");
     return response.json();
   } catch (error) {
@@ -50,7 +50,7 @@ export const deleteSchedule = async (id: string): Promise<void> => {
   }
 };
 
-export const fetchTodaySchedule = async (): Promise<Schedule | null> => {
+export const fetchTodaySchedule = async (isDeleted = false): Promise<Schedule | null> => {
   try {
     const today = new Date();
     const formattedDate = today.toISOString().split("T")[0]; 
@@ -58,7 +58,7 @@ export const fetchTodaySchedule = async (): Promise<Schedule | null> => {
     const beginDate = encodeURIComponent(`${formattedDate}T00:00:00Z`);
     const endDate = encodeURIComponent(`${formattedDate}T23:59:59Z`);
 
-    const response = await fetch(`${API_BASE_URL}/api/MenuSchedule?BeginDate=${beginDate}&EndDate=${endDate}`);
+    const response = await fetch(`${API_BASE_URL}/api/MenuSchedule?BeginDate=${beginDate}&EndDate=${endDate}&IsDeleted=${isDeleted}`);
 
     if (!response.ok) throw new Error("Ошибка при загрузке расписания");
 

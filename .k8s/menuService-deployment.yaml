@@ -20,7 +20,7 @@ spec:
             - containerPort: 5064
           env:
             - name: MONGO_URI
-              value: "mongodb://mongo:27017"
+              value: "mongodb://mongo-menuservice:27017"
       imagePullSecrets:
         - name: ghcr-secret 
 ---

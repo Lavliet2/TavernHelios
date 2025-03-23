@@ -6,7 +6,7 @@ namespace TavernHelios.MenuService.MongoRepositories.Repositories
 {
     public class DishRepository : BaseMongoRepository<DishEntity>
     {
-        public DishRepository(IOptions<MongoConnectionSettings> mongoSettings) : base(mongoSettings)
+        public DishRepository(IOptions<MenuMongoConnectionSettings> mongoSettings) : base(mongoSettings)
         {
         }
     }

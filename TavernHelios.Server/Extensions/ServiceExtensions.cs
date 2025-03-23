@@ -2,6 +2,8 @@
 using Microsoft.OpenApi.Models;
 using TavernHelios.GrpcCommon.Settings;
 using TavernHelios.RabbitMq.Settings;
+using TavernHelios.Server;
+using static GrpcContract.LayoutService.LayoutService;
 using static GrpcContract.MenuService.MenuService;
 using static GrpcContract.ReservationService.ReservationService;
 
@@ -26,18 +28,21 @@ namespace MenuServiceServer.Extensions
 
         public static void AddGrpcClients(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddMenuServiceGrpcClient(configuration);
-            services.AddReservationServiceGrpcClient(configuration);
+            services.AddGrpcClient<MenuServiceClient, GrpcMenuServiceSettings>(configuration);
+            services.AddGrpcClient<ReservationServiceClient, GrpcReservationServiceSettings>(configuration);
+            services.AddGrpcClient<LayoutServiceClient, GrpcLayoutServiceSettings>(configuration);
         }
-        
-        private static void AddMenuServiceGrpcClient(this  IServiceCollection services, IConfiguration configuration)
+
+        private static void AddGrpcClient<TService, TSettings>(this IServiceCollection services, IConfiguration configuration)
+            where TSettings:  GrpcSettingsBase
+            where TService : class
         {
             //Добавляем GRPC клиента
-            var grpcSettings = configuration.GetSection(nameof(GrpcMenuServiceSettings)).Get<GrpcMenuServiceSettings>();
+            var grpcSettings = configuration.GetSection(typeof(TSettings).Name).Get<TSettings>();
 
             var channelCredentials = ChannelCredentials.Insecure;
             var address = new Uri($"http://{grpcSettings.Ip}:{grpcSettings.Port}");
-            services.AddGrpcClient<MenuServiceClient>(o =>
+            services.AddGrpcClient<TService>(o =>
             {
                 o.Address = address;
                 o.ChannelOptionsActions.Add((channelOption) =>
@@ -54,32 +59,6 @@ namespace MenuServiceServer.Extensions
                 });
             });
         }
-
-        private static void AddReservationServiceGrpcClient(this IServiceCollection services, IConfiguration configuration)
-        {
-            //Добавляем GRPC клиента
-            var grpcSettings = configuration.GetSection(nameof(GrpcReservationServiceSettings)).Get<GrpcReservationServiceSettings>();
-
-            var channelCredentials = ChannelCredentials.Insecure;
-            var address = new Uri($"http://{grpcSettings.Ip}:{grpcSettings.Port}");
-            services.AddGrpcClient<ReservationServiceClient>(o =>
-            {
-                o.Address = address;
-                o.ChannelOptionsActions.Add((channelOption) =>
-                {
-                    channelOption.Credentials = channelCredentials;
-                    channelOption.HttpHandler = new SocketsHttpHandler
-                    {
-                        PooledConnectionIdleTimeout = Timeout.InfiniteTimeSpan,
-                        KeepAlivePingDelay = TimeSpan.FromSeconds(20),
-                        KeepAlivePingTimeout = TimeSpan.FromSeconds(10),
-                        EnableMultipleHttp2Connections = true
-                    };
-                    channelOption.DisposeHttpClient = true;
-                });
-            });
-        }
-
 
         /// <summary>
         /// всё что не входит в отдельные категории или просто нет смысла выделять отдельный метод для этого
