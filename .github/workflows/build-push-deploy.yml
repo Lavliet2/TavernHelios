@@ -108,6 +108,18 @@ jobs:
             ghcr.io/lavliet2/layoutservice:${{ env.BRANCH }}-${{ github.ref_name }}
             ghcr.io/lavliet2/layoutservice:latest                
 
+      # **Сборка и публикация контейнера с authservice**
+      - name: Build and push authservice image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./TavernHelios.Auth/Dockerfile
+          
+          push: true
+          tags: |
+            ghcr.io/lavliet2/authservice:${{ env.BRANCH }}-${{ github.ref_name }}
+            ghcr.io/lavliet2/authservice:latest       
+
       - name: Add SSH key
         uses: webfactory/ssh-agent@v0.5.3
         with:
