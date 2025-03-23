@@ -45,6 +45,28 @@ services:
       timeout: 5s
       retries: 5
 
+  postgresAuth:
+    image: postgres:latest
+    container_name: postgresAuth
+    restart: always
+    user: postgres
+    ports:
+      - "5435:5432"
+    environment:
+      PGUSER: postgres
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: helios
+    networks:
+      - app_network
+    volumes:
+      - postgresAuth_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   menuService:
     container_name: menuService
     image: tavernhelios/menuservice 
@@ -95,6 +117,23 @@ services:
     command: ["dotnet", "TavernHelios.ReservationServiceServer.dll"]
     networks:
       - app_network
+
+  AuthService:
+    container_name: AuthService
+    image: tavernhelios/authservice 
+    build:
+      context: .
+      dockerfile: ./TavernHelios.Auth/Dockerfile
+    ports:
+      - '5066:5066'
+    depends_on:
+      - postgresAuth
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_URLS: "http://+:5066"  
+    command: ["dotnet", "TavernHelios.Auth.dll"]
+    networks:
+      - app_network      
 
   server:
     container_name: TavernHelios.Server
@@ -150,3 +189,4 @@ volumes:
   mongo_data:
   mongoLayout_data:
   postgresReservation_data:
+  postgresAuth_data:  

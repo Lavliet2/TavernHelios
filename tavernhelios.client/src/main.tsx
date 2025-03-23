@@ -10,19 +10,23 @@ import i18n from './i18n';
 
 import { Provider } from "react-redux";
 import { store } from "./store";
+import axios from 'axios';
+import { UserContextProvider } from './contexts/UserContext.tsx';
 
 i18n.init(); 
+axios.defaults.withCredentials = true;
+
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Provider store={store}>
-    {/* <AuthProvider>  */}
+    <UserContextProvider> 
       {/* <BrowserRouter> */}
         <LanguageProvider>
           <App />
         </LanguageProvider>
       {/* </BrowserRouter> */}
-    {/* </AuthProvider>  */}
+    </UserContextProvider> 
     </Provider>
   </StrictMode>,
 )
