@@ -20,4 +20,7 @@
 
 
 export const API_BASE_URL = import.meta.env.VITE_API_URL || "https://tavernhelios.duckdns.org";
+export const USER_ROLES = {
+    Admin: 1
+};
 console.log("VITE_API_URL from env:", import.meta.env.VITE_API_URL);

@@ -41,6 +41,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TavernHelios.LayoutService.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TavernHelios.LayoutService.APICore", "LayoutService\TavernHelios.LayoutService.APICore\TavernHelios.LayoutService.APICore.csproj", "{802FA832-4C5C-4EF7-983B-154141EB18B3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TavernHelios.Auth", "TavernHelios.Auth\TavernHelios.Auth.csproj", "{78661BED-6C42-4AC7-BD1B-C2555E4ABA39}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -109,6 +111,10 @@ Global
 		{802FA832-4C5C-4EF7-983B-154141EB18B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{802FA832-4C5C-4EF7-983B-154141EB18B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{802FA832-4C5C-4EF7-983B-154141EB18B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78661BED-6C42-4AC7-BD1B-C2555E4ABA39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78661BED-6C42-4AC7-BD1B-C2555E4ABA39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78661BED-6C42-4AC7-BD1B-C2555E4ABA39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78661BED-6C42-4AC7-BD1B-C2555E4ABA39}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -127,5 +133,8 @@ Global
 		{06A7073B-1404-48AD-BEF5-905FB16B14CB} = {5D137E25-0FDD-4F0E-8F3B-B3F9693B4252}
 		{2A8F957C-D220-4CF8-88CC-D19E33AA9D52} = {5D137E25-0FDD-4F0E-8F3B-B3F9693B4252}
 		{802FA832-4C5C-4EF7-983B-154141EB18B3} = {5D137E25-0FDD-4F0E-8F3B-B3F9693B4252}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DD293E23-CA84-4A1A-853B-B29BC3B68822}
 	EndGlobalSection
 EndGlobal

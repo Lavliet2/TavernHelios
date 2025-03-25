@@ -108,6 +108,18 @@ jobs:
             ghcr.io/lavliet2/layoutservice:${{ env.BRANCH }}-${{ github.ref_name }}
             ghcr.io/lavliet2/layoutservice:latest                
 
+      # **Сборка и публикация контейнера с authservice**
+      - name: Build and push authservice image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./TavernHelios.Auth/Dockerfile
+          
+          push: true
+          tags: |
+            ghcr.io/lavliet2/authservice:${{ env.BRANCH }}-${{ github.ref_name }}
+            ghcr.io/lavliet2/authservice:latest       
+
       - name: Add SSH key
         uses: webfactory/ssh-agent@v0.5.3
         with:
@@ -138,23 +150,29 @@ jobs:
           echo "✅ Репозиторий успешно клонирован. Запускаем деплой..."
       
           # Деплой в Kubernetes
+          ## Статичные поды
           kubectl apply -f .k8s/tavernhelios-ingress.yaml || exit 1
           kubectl apply -f .k8s/mongoMenuService-deployment.yaml || exit 1
           kubectl apply -f .k8s/mongoLayoutService-deployment.yaml || exit 1
-          kubectl apply -f .k8s/menuService-deployment.yaml || exit 1
           kubectl apply -f .k8s/postgresReservation-deployment.yaml || exit 1
+          kubectl apply -f .k8s/postgresAuth-deployment.yaml || exit 1
+
+          ## наши поды
+          kubectl apply -f .k8s/menuService-deployment.yaml || exit 1
           kubectl apply -f .k8s/reservationService-deployment.yaml || exit 1
           kubectl apply -f .k8s/layoutService-deployment.yaml || exit 1
+          kubectl apply -f .k8s/authService-deployment.yaml || exit 1
           kubectl apply -f .k8s/tavernhelios-server-deployment.yaml || exit 1
           kubectl apply -f .k8s/tavernhelios-client-deployment.yaml || exit 1
       
-          # Принудительный рестарт подов
+          # Принудительный рестарт подов (не уверен может и не надо так делать)
           echo "🔄 Перезапускаем поды..."
-          kubectl rollout restart deployment tavernhelios-server || exit 1
-          kubectl rollout restart deployment tavernhelios-client || exit 1
           kubectl rollout restart deployment menuservice || exit 1
           kubectl rollout restart deployment reservationservice || exit 1
           kubectl rollout restart deployment layoutservice || exit 1
+          kubectl rollout restart deployment authservice || exit 1
+          kubectl rollout restart deployment tavernhelios-server || exit 1
+          kubectl rollout restart deployment tavernhelios-client || exit 1
       
           echo "✅ Деплой успешно завершён!"
           EOF
