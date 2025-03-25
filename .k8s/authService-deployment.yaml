@@ -20,11 +20,11 @@ spec:
             - containerPort: 5067
           env:
             - name: ASPNETCORE_ENVIRONMENT
-              value: "Development"
+              value: "Production"
             - name: ASPNETCORE_URLS
               value: "http://+:5067"
             - name: CONNECTION_STRING
-              value: "Host=postgres-auth;Port=5432;Database=authdb;Username=postgres;Password=helios"
+              value: "Host=postgres-auth;Port=5432;Database=authdb;User Id=postgres;Password=helios"
       imagePullSecrets:
         - name: ghcr-secret
 
