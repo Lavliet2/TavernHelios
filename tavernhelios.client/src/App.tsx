@@ -30,7 +30,7 @@ function App() {
             <Route path="/forecast" element={<WeatherForecast />} />
 
             {/*Защищённые маршруты */}
-            <Route element={<ProtectedRoute />}>s
+            <Route element={<ProtectedRoute />}>
               <Route path="/menu" element={<Menu />} />
               <Route path="/management" element={<Management />} />
               <Route path="/management/dishes" element={<EditDishes />} />

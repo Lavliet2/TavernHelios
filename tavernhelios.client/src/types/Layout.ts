@@ -8,20 +8,21 @@ export const ItemTypes = {
   CHAIR: "chair",
 };
 
-export interface Table {
-  name: string;
-  description?: string; // <-- количество мест
-  p1: Point;
-  p2: Point;
-  p3: Point;
-  p4: Point;
-}
-
 export interface Seat {
   number: number;
   description?: string;
   center: Point;
   radius: number;
+}
+
+export interface Table {
+  name: string;
+  description?: string;
+  seats?: Seat[];
+  p1: Point;
+  p2: Point;
+  p3: Point;
+  p4: Point;
 }
 
 export interface Layout {
@@ -31,6 +32,5 @@ export interface Layout {
   height: number;
   imageStr?: string;
   tables?: Table[];
-  seats?: Seat[];
   isDeleted?: boolean;
 }

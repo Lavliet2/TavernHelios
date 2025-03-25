@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Box } from "@mui/material";
+import { Box,Menu, MenuItem } from "@mui/material";
 import { useDrop } from "react-dnd";
 
 import Sidebar from "../../components/Management/LayoutEditor/Sidebar";
@@ -38,6 +38,9 @@ const LayoutEditor: React.FC = () => {
   const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
   const dragOffset = useRef({ x: 0, y: 0 });
 
+  const [contextMenu, setContextMenu] = useState<{ mouseX: number; mouseY: number } | null>(null);
+  const [selectedObject, setSelectedObject] = useState<DroppedObject | null>(null);
+
   useEffect(() => {
     loadLayouts();
   }, []);
@@ -46,37 +49,36 @@ const LayoutEditor: React.FC = () => {
     const layout = layouts.find((l) => l.id === selectedLayoutId);
     if (layout) {
       setCanvasSize({ width: layout.width, height: layout.height });
-
-      const loadedTables =
-        layout.tables?.map((table) => {
-          const minX = Math.min(table.p1.x, table.p2.x, table.p3.x, table.p4.x);
-          const maxX = Math.max(table.p1.x, table.p2.x, table.p3.x, table.p4.x);
-          const minY = Math.min(table.p1.y, table.p2.y, table.p3.y, table.p4.y);
-          const maxY = Math.max(table.p1.y, table.p2.y, table.p3.y, table.p4.y);
-
-          return {
-            type: ItemTypes.TABLE,
-            x: minX,
-            y: minY,
-            tableWidth: maxX - minX,
-            tableHeight: maxY - minY,
-            name: table.name,
-            description: table.description,
-          };
-        }) || [];
-
-      const loadedSeats =
-        layout.seats?.map((seat) => ({
-          type: ItemTypes.CHAIR,
-          x: seat.center.x - seat.radius,
-          y: seat.center.y - seat.radius,
-          chairRadius: seat.radius,
-          name: seat.number.toString(),
-          description: seat.description,
-        })) || [];
-
+  
+      const loadedTables = layout.tables?.map((table) => {
+        const minX = Math.min(table.p1.x, table.p2.x, table.p3.x, table.p4.x);
+        const maxX = Math.max(table.p1.x, table.p2.x, table.p3.x, table.p4.x);
+        const minY = Math.min(table.p1.y, table.p2.y, table.p3.y, table.p4.y);
+        const maxY = Math.max(table.p1.y, table.p2.y, table.p3.y, table.p4.y);
+  
+        return {
+          type: ItemTypes.TABLE,
+          x: minX,
+          y: minY,
+          tableWidth: maxX - minX,
+          tableHeight: maxY - minY,
+          name: table.name,
+          description: table.description,
+          seats: table.seats?.map((seat) => ({
+            type: ItemTypes.CHAIR,
+            x: seat.center.x - seat.radius,
+            y: seat.center.y - seat.radius,
+            chairRadius: seat.radius,
+            name: seat.number.toString(),
+            description: seat.description,
+          })) || [],
+        };
+      }) || [];
+  
+      const loadedSeats = loadedTables.flatMap(table => table.seats);
+  
       setObjects([...loadedTables, ...loadedSeats]);
-
+  
       if (layout.imageStr) {
         const img = new Image();
         img.src = layout.imageStr;
@@ -90,7 +92,7 @@ const LayoutEditor: React.FC = () => {
       }
     }
   }, [selectedLayoutId, layouts]);
-
+  
   const loadLayouts = async () => {
     const data = await fetchLayouts();
     setLayouts(data);
@@ -105,37 +107,31 @@ const LayoutEditor: React.FC = () => {
     if (!ctx) return;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    if (backgroundImgRef.current) {
-      ctx.drawImage(backgroundImgRef.current, 0, 0, canvas.width, canvas.height);
-    }
+    if (backgroundImgRef.current) ctx.drawImage(backgroundImgRef.current, 0, 0, canvas.width, canvas.height);
 
     objs.forEach((obj) => {
       ctx.fillStyle = obj.type === ItemTypes.TABLE ? "brown" : "gray";
 
       if (obj.type === ItemTypes.TABLE) {
-        const w = obj.tableWidth ?? 50;
-        const h = obj.tableHeight ?? 50;
-        ctx.fillRect(obj.x, obj.y, w, h);
+        ctx.fillRect(obj.x, obj.y, obj.tableWidth!, obj.tableHeight!);
 
         ctx.fillStyle = "white";
         ctx.font = "14px Arial";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText(obj.name || "", obj.x + w / 2, obj.y + h / 2);
+        ctx.fillText(obj.name || "", obj.x + obj.tableWidth! / 2, obj.y + obj.tableHeight! / 2);
       }
 
       if (obj.type === ItemTypes.CHAIR) {
-        const r = obj.chairRadius ?? 15;
         ctx.beginPath();
-        ctx.arc(obj.x + r, obj.y + r, r, 0, 2 * Math.PI);
+        ctx.arc(obj.x + obj.chairRadius!, obj.y + obj.chairRadius!, obj.chairRadius!, 0, 2 * Math.PI);
         ctx.fill();
 
         ctx.fillStyle = "white";
         ctx.font = "12px Arial";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText(obj.name || "", obj.x + r, obj.y + r);
+        ctx.fillText(obj.name || "", obj.x + obj.chairRadius!, obj.y + obj.chairRadius!);
       }
     });
   };
@@ -146,7 +142,9 @@ const LayoutEditor: React.FC = () => {
 
   const [, dropRef] = useDrop(() => ({
     accept: [ItemTypes.TABLE, ItemTypes.CHAIR],
+    // canDrop: () => isEditing,
     drop: (item: any, monitor) => {
+      // if (!isEditing) return;
       const offset = monitor.getClientOffset();
       if (!offset || !canvasRef.current) return;
 
@@ -200,6 +198,33 @@ const LayoutEditor: React.FC = () => {
 
   const handleMouseUp = () => setDraggingIndex(null);
 
+  const handleContextMenu = (e: React.MouseEvent) => {
+    if (!isEditing) return;
+    e.preventDefault();
+    const rect = canvasRef.current!.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+
+    const obj = objects.find(
+      (o) => mouseX >= o.x && mouseX <= o.x + (o.tableWidth || o.chairRadius! * 2) &&
+        mouseY >= o.y && mouseY <= o.y + (o.tableHeight || o.chairRadius! * 2)
+    );
+
+    if (obj) {
+      setSelectedObject(obj);
+      setContextMenu({ mouseX: e.clientX, mouseY: e.clientY });
+    }
+  };
+
+  const handleCloseContextMenu = () => {
+    setContextMenu(null);
+  };
+
+  const handleDeleteObject = () => {
+    setObjects((prev) => prev.filter((obj) => obj !== selectedObject));
+    handleCloseContextMenu();
+  };
+
   if (loading) return <div>Загрузка...</div>;
 
   return (
@@ -216,7 +241,11 @@ const LayoutEditor: React.FC = () => {
         }}
         onToggleEdit={() => setIsEditing(!isEditing)}
       />
-      <div ref={(node) => dropRef(node) as unknown as void} style={{ flexGrow: 1, display: "flex", justifyContent: "center", alignItems: "center" }}>
+      <div
+        ref={(node) => dropRef(node) as unknown as void}
+        style={{ flexGrow: 1, display: "flex", justifyContent: "center", alignItems: "center" }}
+        onContextMenu={handleContextMenu}
+      >
         <canvas
           ref={canvasRef}
           width={canvasSize.width}
@@ -229,6 +258,10 @@ const LayoutEditor: React.FC = () => {
         />
       </div>
       <CreateLayoutModal open={isModalOpen} onClose={() => setIsModalOpen(false)} onCreateLayout={createLayout} />
+      <Menu open={!!contextMenu} onClose={handleCloseContextMenu} anchorReference="anchorPosition" anchorPosition={contextMenu ? { top: contextMenu.mouseY, left: contextMenu.mouseX } : undefined}>
+        <MenuItem onClick={() => console.log("Редактировать", selectedObject)}>Редактировать</MenuItem>
+        <MenuItem onClick={handleDeleteObject}>Удалить</MenuItem>
+      </Menu>
     </Box>
   );
 };
