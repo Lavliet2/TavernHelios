@@ -21,7 +21,13 @@ services:
     image: clickhouse/clickhouse-server:23.8.4.69-alpine
     container_name: clickhouse-monitoring
     ports:
-      - '8123:8123'
+      - 8123:8123   # HTTP порт
+      - 9005:9005   # TCP порт
+    environment:
+      CLICKHOUSE_USER: default
+      CLICKHOUSE_PASSWORD: ""
+    volumes:
+      - clickhouse_monitoring_data:/data/clickhouse_monitoring_data
     networks:
       - app_network
 
@@ -29,7 +35,13 @@ services:
     image: rabbitmq:3.12.14-management-alpine
     container_name: rabbitmq-monitoring
     ports:
-      - '5672:5672'
+      - 5672:5672       # Порт для AMQP
+      - 15672:15672     # Порт для управления RabbitMQ (Web UI)
+      - 5552:5552       # Порт для STOMP 
+      - 15692:15692     # Порт для Prometheus-метрик RabbitMQ
+    environment:
+       - RABBITMQ_DEFAULT_USER=admin
+       - RABBITMQ_DEFAULT_PASS=admin
     networks:
       - app_network
 
@@ -196,3 +208,10 @@ volumes:
   mongo_data:
   mongoLayout_data:
   postgresReservation_data:
+  clickhouse_monitoring_data:
+    name: clickhouse_monitoring_data    
+    driver: local
+    driver_opts:
+      type: none
+      device: C:\Users\Public\db_clickhouse_monitoring
+      o: bind
