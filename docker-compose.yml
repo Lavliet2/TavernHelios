@@ -7,17 +7,29 @@ services:
       context: .
       dockerfile: ./AdministrationService/TavernHelios.AdministrationService.AdministrationServiceServer/Dockerfile
     depends_on:
-      - clickhouse
-      - rabbitmq
-      - prometheus
-      - grafana
+      - clickhouse-monitoring
+      - rabbitmq-monitoring
+      - prometheus-monitoring
+      - grafana-monitoring
       - server    
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
+
+      ClickHouse:Host: "clickhouse-monitoring"
+      ClickHouse:Port: 8123
+      ClickHouse:Database: "default"
+      ClickHouse:User: "default"
+      ClickHouse:Password: ""
+
+      RabbitMQ:Host: "rabbitmq-monitoring"
+      RabbitMQ:Port: 5672
+      RabbitMQ:User: "admin"
+      RabbitMQ:Password: "admin"
+
     networks:
       - app_network
 
-  clickhouse:
+  clickhouse-monitoring:
     image: clickhouse/clickhouse-server:23.8.4.69-alpine
     container_name: clickhouse-monitoring
     ports:
@@ -31,7 +43,7 @@ services:
     networks:
       - app_network
 
-  rabbitmq:
+  rabbitmq-monitoring:
     image: rabbitmq:3.12.14-management-alpine
     container_name: rabbitmq-monitoring
     ports:
@@ -45,13 +57,13 @@ services:
     networks:
       - app_network
 
-  prometheus:
+  prometheus-monitoring:
     image: prom/prometheus
     container_name: prometheus-monitoring
     networks:
       - app_network
 
-  grafana:
+  grafana-monitoring:
     image: grafana/grafana
     container_name: grafana-monitoring
     networks:
