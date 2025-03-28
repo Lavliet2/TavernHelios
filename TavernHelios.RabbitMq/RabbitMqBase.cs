@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using TavernHelios.RabbitMq.Helpers;
 using TavernHelios.RabbitMq.Settings;
@@ -7,7 +8,7 @@ namespace TavernHelios.RabbitMq.Services
 {
     public abstract class RabbitMqBase : IDisposable
     {
-        protected readonly string _connectionString;
+        //protected readonly string _connectionString;
         protected readonly IConnection _connection;
         protected readonly IChannel _channel;
         protected readonly string _queueName;
@@ -16,10 +17,12 @@ namespace TavernHelios.RabbitMq.Services
 
         public RabbitMqBase(
             IOptions<RabbitMqSettings> settings,
+            ILogger<RabbitMqBase> logger,
             string queueName,
             (string exchangeName, string routingKey)? exchangeAndRoutingKey = null)
         {
-            _connectionString = ConnectionHelper.GetRabbitMqConnectionString(settings.Value);
+            //_connectionString = ConnectionHelper.GetRabbitMqConnectionString(settings.Value);
+            _connection = ConnectionHelper.CreateRabbitMqConnection(settings.Value, logger).Result;
 
             _queueName = queueName;
 
@@ -35,8 +38,8 @@ namespace TavernHelios.RabbitMq.Services
                 _routingKey = "";
             }
 
-            var factory = new ConnectionFactory() { Uri = new Uri(_connectionString) };
-            _connection = factory.CreateConnectionAsync().Result;
+            //var factory = new ConnectionFactory() { Uri = new Uri(_connectionString) };
+            //_connection = factory.CreateConnectionAsync().Result;
             _channel = _connection.CreateChannelAsync().Result;
 
             DeclareAsync().Wait();

@@ -1,4 +1,5 @@
 ﻿using MessagePack;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using TavernHelios.AdministrationService.ClickHouse.Entities;
 using TavernHelios.RabbitMq.Services;
@@ -9,8 +10,9 @@ namespace TavernHelios.AdministrationService.RabbitMq.Services
     public class LogProducerService : RabbitMqProducerService<LogEntity>
     {
         public LogProducerService(
-            IOptions<RabbitMqSettings> settings)
-            : base(settings, "admin_logs")
+            IOptions<RabbitMqSettings> settings,
+            ILogger<LogProducerService> logger)
+            : base(settings, logger, "admin_logs")
         {
             SerializeMessage += SerializeMsgPack;
             SerializeMessages += SerializeMsgPack;

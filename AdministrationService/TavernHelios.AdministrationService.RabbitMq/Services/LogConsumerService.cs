@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using TavernHelios.AdministrationService.ClickHouse;
 using TavernHelios.AdministrationService.ClickHouse.Converters;
 using TavernHelios.AdministrationService.ClickHouse.Entities;
@@ -13,8 +14,9 @@ namespace TavernHelios.AdministrationService.RabbitMqConsumer.Services
 
         public LogConsumerService(
             IOptions<RabbitMqSettings> settings, 
+            ILogger<LogConsumerService> logger, 
             LogRepository logRepository)
-            : base(settings, "logs", ("logs_exchange", "log"))
+            : base(settings, logger, "logs", ("logs_exchange", "log"))
         {
             _logRepository = logRepository;
 

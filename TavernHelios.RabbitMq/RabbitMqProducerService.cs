@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using TavernHelios.RabbitMq.Settings;
 
@@ -6,7 +7,6 @@ namespace TavernHelios.RabbitMq.Services
 {
     public class RabbitMqProducerService<T> : RabbitMqBase
     {
-
         public delegate byte[] SerializeMessageHandler(T message);
         public delegate byte[] SerializeMessagesHandler(IEnumerable<T> message);
 
@@ -18,9 +18,10 @@ namespace TavernHelios.RabbitMq.Services
 
         public RabbitMqProducerService(
             IOptions<RabbitMqSettings> settings,
+            ILogger<RabbitMqProducerService<T>> logger,
             string queueName,
             (string exchangeName, string routingKey)? exchangeAndRoutingKey = null)
-            : base(settings, queueName, exchangeAndRoutingKey)
+            : base(settings, logger, queueName, exchangeAndRoutingKey)
         {
         }
 

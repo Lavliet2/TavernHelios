@@ -1,4 +1,5 @@
 ﻿using TavernHelios.AdministrationService.AdministrationServiceServer.BackgroundServices;
+using TavernHelios.AdministrationService.AdministrationServiceServer.Services;
 using TavernHelios.AdministrationService.ClickHouse;
 using TavernHelios.AdministrationService.ClickHouse.Services;
 using TavernHelios.AdministrationService.RabbitMqConsumer.Services;
@@ -18,6 +19,8 @@ namespace TavernHelios.AdministrationService.AdministrationServiceServer.Extensi
             services.AddSingleton<LogConsumerService>();
 
             services.AddSingleton<ClickHouseCleanupService>();
+
+            services.AddSingleton<LogService>();
 
             services.AddHostedService<RabbitMqBackgroundService>();
             services.AddHostedService<ClickHouseCleanupBackgroundService>();

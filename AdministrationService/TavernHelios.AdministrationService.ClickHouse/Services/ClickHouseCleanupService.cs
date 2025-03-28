@@ -35,7 +35,7 @@ namespace TavernHelios.AdministrationService.ClickHouse.Services
                     connection.Open();
                     using var command = connection.CreateCommand();
                     command.CommandText = countQuery;
-                    var count = (int)await command.ExecuteScalarAsync(stoppingToken);
+                    var count = (ulong)await command.ExecuteScalarAsync(stoppingToken);
 
                     if (count > 2000)
                     {

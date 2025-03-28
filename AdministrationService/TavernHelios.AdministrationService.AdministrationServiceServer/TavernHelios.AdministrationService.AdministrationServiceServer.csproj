@@ -15,7 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TavernHelios.AdministrationService.APICore\TavernHelios.AdministrationService.APICore.csproj" />
     <ProjectReference Include="..\TavernHelios.AdministrationService.RabbitMq\TavernHelios.AdministrationService.RabbitMq.csproj" />
   </ItemGroup>
 

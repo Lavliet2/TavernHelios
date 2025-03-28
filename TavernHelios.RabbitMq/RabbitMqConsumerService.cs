@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using TavernHelios.RabbitMq.Settings;
@@ -23,9 +24,10 @@ namespace TavernHelios.RabbitMq.Services
 
         public RabbitMqConsumerService(
             IOptions<RabbitMqSettings> settings,
+            ILogger<RabbitMqConsumerService<T>> logger,
             string queueName,
             (string exchangeName, string routingKey)? exchangeAndRoutingKey = null)
-            : base(settings, queueName, exchangeAndRoutingKey)
+            : base(settings, logger, queueName, exchangeAndRoutingKey)
         {
         }
 
