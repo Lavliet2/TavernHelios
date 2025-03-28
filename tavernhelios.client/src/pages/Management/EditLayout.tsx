@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Box,Menu, MenuItem } from "@mui/material";
+import { Box, Menu, MenuItem } from "@mui/material";
 import { useDrop } from "react-dnd";
 
 import Sidebar from "../../components/Management/LayoutEditor/Sidebar";
@@ -9,6 +9,7 @@ import {
   fetchLayouts,
   createLayout,
   deleteLayout as deleteLayoutService,
+  updateLayout,
 } from "../../services/layoutService";
 
 interface DroppedObject {
@@ -49,13 +50,13 @@ const LayoutEditor: React.FC = () => {
     const layout = layouts.find((l) => l.id === selectedLayoutId);
     if (layout) {
       setCanvasSize({ width: layout.width, height: layout.height });
-  
+
       const loadedTables = layout.tables?.map((table) => {
         const minX = Math.min(table.p1.x, table.p2.x, table.p3.x, table.p4.x);
         const maxX = Math.max(table.p1.x, table.p2.x, table.p3.x, table.p4.x);
         const minY = Math.min(table.p1.y, table.p2.y, table.p3.y, table.p4.y);
         const maxY = Math.max(table.p1.y, table.p2.y, table.p3.y, table.p4.y);
-  
+
         return {
           type: ItemTypes.TABLE,
           x: minX,
@@ -64,21 +65,22 @@ const LayoutEditor: React.FC = () => {
           tableHeight: maxY - minY,
           name: table.name,
           description: table.description,
-          seats: table.seats?.map((seat) => ({
-            type: ItemTypes.CHAIR,
-            x: seat.center.x - seat.radius,
-            y: seat.center.y - seat.radius,
-            chairRadius: seat.radius,
-            name: seat.number.toString(),
-            description: seat.description,
-          })) || [],
         };
       }) || [];
-  
-      const loadedSeats = loadedTables.flatMap(table => table.seats);
-  
+
+      const loadedSeats = layout.tables?.flatMap((table) =>
+        table.seats?.map((seat) => ({
+          type: ItemTypes.CHAIR,
+          x: seat.center.x - seat.radius,
+          y: seat.center.y - seat.radius,
+          chairRadius: seat.radius,
+          name: table.name, // Привязываем к имени стола
+          description: seat.description,
+        })) || []
+      ) || [];
+
       setObjects([...loadedTables, ...loadedSeats]);
-  
+
       if (layout.imageStr) {
         const img = new Image();
         img.src = layout.imageStr;
@@ -92,7 +94,7 @@ const LayoutEditor: React.FC = () => {
       }
     }
   }, [selectedLayoutId, layouts]);
-  
+
   const loadLayouts = async () => {
     const data = await fetchLayouts();
     setLayouts(data);
@@ -142,9 +144,7 @@ const LayoutEditor: React.FC = () => {
 
   const [, dropRef] = useDrop(() => ({
     accept: [ItemTypes.TABLE, ItemTypes.CHAIR],
-    // canDrop: () => isEditing,
     drop: (item: any, monitor) => {
-      // if (!isEditing) return;
       const offset = monitor.getClientOffset();
       if (!offset || !canvasRef.current) return;
 
@@ -160,6 +160,7 @@ const LayoutEditor: React.FC = () => {
   }));
 
   const handleMouseDown = (e: React.MouseEvent) => {
+    if (!isEditing) return;
     const rect = canvasRef.current!.getBoundingClientRect();
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
@@ -182,7 +183,7 @@ const LayoutEditor: React.FC = () => {
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (draggingIndex === null) return;
+    if (!isEditing || draggingIndex === null) return;
     const rect = canvasRef.current!.getBoundingClientRect();
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
@@ -196,7 +197,10 @@ const LayoutEditor: React.FC = () => {
     );
   };
 
-  const handleMouseUp = () => setDraggingIndex(null);
+  const handleMouseUp = () => {
+    if (!isEditing) return;
+    setDraggingIndex(null);
+  };
 
   const handleContextMenu = (e: React.MouseEvent) => {
     if (!isEditing) return;
@@ -207,7 +211,7 @@ const LayoutEditor: React.FC = () => {
 
     const obj = objects.find(
       (o) => mouseX >= o.x && mouseX <= o.x + (o.tableWidth || o.chairRadius! * 2) &&
-        mouseY >= o.y && mouseY <= o.y + (o.tableHeight || o.chairRadius! * 2)
+              mouseY >= o.y && mouseY <= o.y + (o.tableHeight || o.chairRadius! * 2)
     );
 
     if (obj) {
@@ -225,6 +229,48 @@ const LayoutEditor: React.FC = () => {
     handleCloseContextMenu();
   };
 
+  const handleSaveLayout = async () => {
+    if (!selectedLayoutId) return;
+
+    const layoutToUpdate = layouts.find((l) => l.id === selectedLayoutId);
+    if (!layoutToUpdate) return;
+
+    const updatedLayout = {
+      ...layoutToUpdate,
+      tables: objects
+        .filter((obj) => obj.type === ItemTypes.TABLE)
+        .map((table) => {
+          const relatedSeats = objects
+            .filter((seat) => seat.type === ItemTypes.CHAIR && seat.name === table.name)
+            .map((seat, index) => ({
+              number: index + 1,
+              description: seat.description || "",
+              center: { x: seat.x + seat.chairRadius!, y: seat.y + seat.chairRadius! },
+              radius: seat.chairRadius!,
+            }));
+
+          return {
+            name: table.name || "",
+            description: table.description || "",
+            seats: relatedSeats,
+            p1: { x: table.x, y: table.y },
+            p2: { x: table.x + table.tableWidth!, y: table.y },
+            p3: { x: table.x + table.tableWidth!, y: table.y + table.tableHeight! },
+            p4: { x: table.x, y: table.y + table.tableHeight! },
+          };
+        }),
+    };
+
+    try {
+      await updateLayout(updatedLayout);
+      setIsEditing(false);
+      alert("Схема успешно сохранена!");
+    } catch (error) {
+      console.error("Ошибка при сохранении схемы:", error);
+      alert("Ошибка сохранения схемы");
+    }
+  };
+
   if (loading) return <div>Загрузка...</div>;
 
   return (
@@ -240,6 +286,7 @@ const LayoutEditor: React.FC = () => {
           loadLayouts();
         }}
         onToggleEdit={() => setIsEditing(!isEditing)}
+        onSaveLayout={handleSaveLayout}
       />
       <div
         ref={(node) => dropRef(node) as unknown as void}
@@ -258,7 +305,12 @@ const LayoutEditor: React.FC = () => {
         />
       </div>
       <CreateLayoutModal open={isModalOpen} onClose={() => setIsModalOpen(false)} onCreateLayout={createLayout} />
-      <Menu open={!!contextMenu} onClose={handleCloseContextMenu} anchorReference="anchorPosition" anchorPosition={contextMenu ? { top: contextMenu.mouseY, left: contextMenu.mouseX } : undefined}>
+      <Menu
+        open={!!contextMenu}
+        onClose={handleCloseContextMenu}
+        anchorReference="anchorPosition"
+        anchorPosition={contextMenu ? { top: contextMenu.mouseY, left: contextMenu.mouseX } : undefined}
+      >
         <MenuItem onClick={() => console.log("Редактировать", selectedObject)}>Редактировать</MenuItem>
         <MenuItem onClick={handleDeleteObject}>Удалить</MenuItem>
       </Menu>

@@ -1,4 +1,3 @@
-// Sidebar.tsx
 import React, { useState } from "react";
 import {
   Box,
@@ -22,6 +21,7 @@ interface SidebarProps {
   onCreateClick: () => void;
   onDeleteClick: (id: string) => void;
   onToggleEdit: () => void;
+  onSaveLayout: () => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -32,6 +32,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   onCreateClick,
   onDeleteClick,
   onToggleEdit,
+  onSaveLayout,
 }) => {
   // Размеры по умолчанию
   const [tableWidth, setTableWidth] = useState(50);
@@ -40,7 +41,6 @@ const Sidebar: React.FC<SidebarProps> = ({
   const [tableSeats, setTableSeats] = useState(4);
 
   const [chairRadius, setChairRadius] = useState(10);
-  const [chairName, setChairName] = useState("");
 
   return (
     <Box
@@ -82,7 +82,16 @@ const Sidebar: React.FC<SidebarProps> = ({
         Удалить схему
       </Button>
 
-      <Button variant="contained" color="warning" onClick={onToggleEdit}>
+      <Button
+        variant="contained"
+        color="warning"
+        onClick={() => {
+          if (isEditing) {
+            onSaveLayout(); // ✅ Сохраняем, если уже в режиме редактирования
+          }
+          onToggleEdit(); // ✅ Переключаем режим редактирования
+        }}
+      >
         {isEditing ? "Сохранить" : "Редактировать"}
       </Button>
 
@@ -132,24 +141,8 @@ const Sidebar: React.FC<SidebarProps> = ({
             seats={tableSeats}
           />
 
-          <TextField
-            label="Номер стула"
-            value={chairName}
-            onChange={(e) => setChairName(e.target.value)}
-            sx={{ my: 2 }}
-            fullWidth
-          />
-
-          <TextField
-            label="Радиус стула"
-            type="number"
-            value={chairRadius}
-            onChange={(e) => setChairRadius(Number(e.target.value))}
-            sx={{ my: 2 }}
-            fullWidth
-          />
-
-          <ChairItem chairRadius={chairRadius} name={chairName} />
+          {/* Стулья автоматически наследуют имя стола */}
+          <ChairItem chairRadius={chairRadius} name={tableName} />
         </Box>
       )}
     </Box>
