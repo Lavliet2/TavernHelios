@@ -1,17 +1,18 @@
 services:
-
   adminService:
     image: tavernhelios/adminservice
     container_name: adminService
     build:
       context: .
       dockerfile: ./AdministrationService/TavernHelios.AdministrationService.AdministrationServiceServer/Dockerfile
+    ports:
+      - 5263:5263 # для свагера
     depends_on:
       - clickhouse-monitoring
       - rabbitmq-monitoring
       - prometheus-monitoring
       - grafana-monitoring
-      - server    
+      - server
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
 
@@ -33,9 +34,11 @@ services:
     image: clickhouse/clickhouse-server:23.8.4.69-alpine
     container_name: clickhouse-monitoring
     ports:
-      - 8123:8123   # HTTP порт
-      - 9005:9005   # TCP порт
+      - 8123:8123 # HTTP порт
+      - 9000:9000 # Native-интерфейс ClickHouse
+      - 9005:9005 # TCP порт
     environment:
+      CLICKHOUSE_DB: default
       CLICKHOUSE_USER: default
       CLICKHOUSE_PASSWORD: ""
     volumes:
@@ -47,25 +50,45 @@ services:
     image: rabbitmq:3.12.14-management-alpine
     container_name: rabbitmq-monitoring
     ports:
-      - 5672:5672       # Порт для AMQP
-      - 15672:15672     # Порт для управления RabbitMQ (Web UI)
-      - 5552:5552       # Порт для STOMP 
-      - 15692:15692     # Порт для Prometheus-метрик RabbitMQ
+      - 5672:5672 # Порт для AMQP
+      - 15672:15672 # Порт для управления RabbitMQ (Web UI)
+      - 5552:5552 # Порт для STOMP
+      - 15692:15692 # Порт для Prometheus-метрик RabbitMQ
+    configs:
+      - source: rabbitmqplugins
+        target: /etc/rabbitmq/enabled_plugins
+    restart: unless-stopped
     environment:
-       - RABBITMQ_DEFAULT_USER=admin
-       - RABBITMQ_DEFAULT_PASS=admin
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+    volumes:
+      - rabbitmq_monitoring_data:/var/lib/rabbitmq
+      - rabbitmq_monitoring_plugins:/etc/rabbitmq
     networks:
       - app_network
 
   prometheus-monitoring:
     image: prom/prometheus
     container_name: prometheus-monitoring
+    ports:
+      - "9090:9090" # Порт для доступа к Prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
     networks:
       - app_network
 
   grafana-monitoring:
     image: grafana/grafana
     container_name: grafana-monitoring
+    ports:
+      - "3000:3000" # Порт для доступа к Grafana
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    volumes:
+      - grafana_monitoring_storage:/var/lib/grafana
     networks:
       - app_network
 
@@ -73,23 +96,23 @@ services:
     image: mongo
     container_name: mongoMenu
     ports:
-      - '27017:27017'
+      - "27017:27017"
     volumes:
       - mongo_data:/data/db
     environment:
-      MONGO_INITDB_DATABASE: 'mongoMenu'
+      MONGO_INITDB_DATABASE: "mongoMenu"
     networks:
       - app_network
-      
+
   mongoLayout:
     image: mongo
     container_name: mongoLayout
     ports:
-      - '27018:27017'
+      - "27018:27017"
     volumes:
       - mongoLayout_data:/data/db
     environment:
-      MONGO_INITDB_DATABASE: 'mongoLayout'
+      MONGO_INITDB_DATABASE: "mongoLayout"
     networks:
       - app_network
 
@@ -110,19 +133,19 @@ services:
     volumes:
       - postgresReservation_data:/var/lib/postgresql/data
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
       interval: 10s
       timeout: 5s
       retries: 5
 
   menuService:
     container_name: menuService
-    image: tavernhelios/menuservice 
+    image: tavernhelios/menuservice
     build:
       context: .
       dockerfile: ./MenuService/MenuServiceServer/Dockerfile
     ports:
-      - '5064:5064'
+      - "5064:5064"
     depends_on:
       - mongoMenu
     environment:
@@ -131,15 +154,15 @@ services:
     command: ["dotnet", "MenuServiceServer.dll"]
     networks:
       - app_network
-      
+
   layoutService:
     container_name: layoutService
-    image: tavernhelios/layoutservice 
+    image: tavernhelios/layoutservice
     build:
       context: .
       dockerfile: ./LayoutService/TavernHelios.LayoutService.LayoutServiceServer/Dockerfile
     ports:
-      - '5066:5066'
+      - "5066:5066"
     depends_on:
       - mongoLayout
     environment:
@@ -151,17 +174,17 @@ services:
 
   ReservationService:
     container_name: ReservationService
-    image: tavernhelios/reservationservice 
+    image: tavernhelios/reservationservice
     build:
       context: .
       dockerfile: ./ReservationService\TavernHelios.ReservationServiceServer/Dockerfile
     ports:
-      - '5065:5065'
+      - "5065:5065"
     depends_on:
       - postgresReservation
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
-      ASPNETCORE_URLS: "http://+:5065"  
+      ASPNETCORE_URLS: "http://+:5065"
     command: ["dotnet", "TavernHelios.ReservationServiceServer.dll"]
     networks:
       - app_network
@@ -207,23 +230,30 @@ services:
     networks:
       - app_network
     volumes:
-      # - ./nginx/nginx.conf:/etc/nginx/nginx.conf 
+      # - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       # - ./nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf
       - ./nginx/nginx.conf.dev:/etc/nginx/nginx.conf
       - ./nginx/ssl:/etc/nginx/ssl
-      
+
 # networks:
 #   app_network:
-#     driver: bridge     
+#     driver: bridge
 
 volumes:
   mongo_data:
   mongoLayout_data:
   postgresReservation_data:
   clickhouse_monitoring_data:
-    name: clickhouse_monitoring_data    
+    name: clickhouse_monitoring_data
     driver: local
     driver_opts:
       type: none
       device: C:\Users\Public\db_clickhouse_monitoring
       o: bind
+  rabbitmq_monitoring_data:
+  rabbitmq_monitoring_plugins:
+  grafana_monitoring_storage:
+
+configs:
+  rabbitmqplugins:
+    content: "[rabbitmq_management, rabbitmq_prometheus, rabbitmq_stream, rabbitmq_stream_management]."
