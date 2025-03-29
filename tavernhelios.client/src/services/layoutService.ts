@@ -36,7 +36,7 @@ export const createLayout = async (layout: Partial<Layout>): Promise<Layout> => 
 
 export const updateLayout = async (layout: Layout): Promise<Layout> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/layout`, {
+    const response = await fetch(`${API_BASE_URL}/api/Layout`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(layout),
@@ -45,6 +45,7 @@ export const updateLayout = async (layout: Layout): Promise<Layout> => {
     if (!response.ok) {
       throw new Error("Ошибка при обновлении схемы зала");
     }
+
     return response.json();
   } catch (error) {
     console.error("Ошибка при обновлении схемы зала:", error);

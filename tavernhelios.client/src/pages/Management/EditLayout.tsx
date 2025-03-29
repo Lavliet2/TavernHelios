@@ -303,6 +303,21 @@ const LayoutEditor: React.FC = () => {
     }
   };
 
+  const handleCreateLayout = async (data: Partial<Layout>) => {
+    try {
+      const newLayout = await createLayout(data); // должен вернуть Layout с id
+      if (newLayout?.id) {
+        await loadLayouts(); // Обновляем список схем
+        setSelectedLayoutId(newLayout.id); // Автоматически выбираем новую схему
+      }
+      setIsModalOpen(false);
+      return newLayout;
+    } catch (error) {
+      console.error("Ошибка при создании схемы:", error);
+      alert("Ошибка при создании схемы");
+    }
+  };
+
   if (loading) return <div>Загрузка...</div>;
   const currentSeatCount = objects.filter(
     (o) => o.type === ItemTypes.CHAIR && o.name === tableName
@@ -347,7 +362,10 @@ const LayoutEditor: React.FC = () => {
           onMouseLeave={handleMouseUp}
         />
       </div>
-      <CreateLayoutModal open={isModalOpen} onClose={() => setIsModalOpen(false)} onCreateLayout={createLayout} />
+      <CreateLayoutModal 
+        open={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        onCreateLayout={handleCreateLayout} />
       <Menu
         open={!!contextMenu}
         onClose={handleCloseContextMenu}

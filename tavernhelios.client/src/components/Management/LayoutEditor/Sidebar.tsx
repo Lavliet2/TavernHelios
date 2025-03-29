@@ -60,7 +60,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     const trimmedName = tableName.trim().toLowerCase();
     return isEditing && trimmedName !== "" && existingTableNames.includes(trimmedName);
   }, [tableName, isEditing, existingTableNames]);
-  
+  const isMaxChairsReached = currentSeatCount >= tableSeats;
   
   return (
     <Box
@@ -172,7 +172,14 @@ const Sidebar: React.FC<SidebarProps> = ({
             onChange={(e) => setChairRadius(Number(e.target.value))}
             sx={{ my: 2 }}
             fullWidth
+            error={isMaxChairsReached}
+            helperText={
+              isMaxChairsReached
+                ? "Все стулья уже добавлены"
+                : ""
+            }
           />
+
 
           {/* Стул отображается только если имя стола указано и не превышено кол-во */}
           {tableName.trim() !== "" && currentSeatCount < tableSeats && (
