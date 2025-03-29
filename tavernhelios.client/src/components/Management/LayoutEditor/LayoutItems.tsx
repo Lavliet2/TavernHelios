@@ -1,18 +1,15 @@
 // src/pages/Management/EditLayout/LayoutItems.tsx
 import React from "react";
 import { useDrag } from "react-dnd";
+import { ItemTypes } from "../../../types/Layout";
 
-/** Типы для Drag and Drop */
-export const ItemTypes = {
-  TABLE: "table",
-  CHAIR: "chair",
-};
 
 interface TableItemProps {
     tableWidth?: number;
     tableHeight?: number;
     name: string;
     seats: number;
+    isDraggable?: boolean;
 }
 
 /** Компонент "Стол" – квадрат */
@@ -21,6 +18,7 @@ export const TableItem: React.FC<TableItemProps> = ({
     tableHeight = 50,
     name,
     seats,
+    isDraggable = true,
   }) => {
     const [{ isDragging }, dragRef] = useDrag(
       () => ({
@@ -32,24 +30,25 @@ export const TableItem: React.FC<TableItemProps> = ({
           name,
           seats,
         },
+        canDrag: () => isDraggable,
         collect: (monitor) => ({
           isDragging: !!monitor.isDragging(),
         }),
       }),
       [tableWidth, tableHeight, name, seats]
     );
-  
-    return (
+    if (!isDraggable) return null;
+    return dragRef(
       <div
-        ref={dragRef}
         style={{
           width: tableWidth,
           height: tableHeight,
-          backgroundColor: "brown",
+          backgroundColor: isDraggable ? "brown" : "lightgray",
           opacity: isDragging ? 0.5 : 1,
-          cursor: "grab",
+          cursor: isDraggable ? "grab" : "not-allowed",
           marginBottom: 10,
         }}
+        title={isDraggable ? "" : "Такой стол уже есть на схеме"}
       />
     );
   };
@@ -86,9 +85,8 @@ interface ChairItemProps {
   
     const diameter = chairRadius * 2;
   
-    return (
+    return dragRef(
       <div
-        ref={dragRef}
         style={{
           width: diameter,
           height: diameter,

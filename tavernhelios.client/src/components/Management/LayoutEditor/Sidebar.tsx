@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   Box,
   Typography,
@@ -9,6 +9,7 @@ import {
   Button,
   TextField,
 } from "@mui/material";
+import type { DroppedObject } from "../../../pages/Management/EditLayout";
 import type { Layout } from "../../../types/Layout";
 import { TableItem, ChairItem } from "./LayoutItems";
 
@@ -22,6 +23,15 @@ interface SidebarProps {
   onDeleteClick: (id: string) => void;
   onToggleEdit: () => void;
   onSaveLayout: () => void;
+
+  tableName: string;
+  setTableName: (value: string) => void;
+  tableSeats: number;
+  setTableSeats: (value: number) => void;
+  currentSeatCount: number;
+
+  objects: DroppedObject[];
+  existingTableNames: string[];
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -33,15 +43,25 @@ const Sidebar: React.FC<SidebarProps> = ({
   onDeleteClick,
   onToggleEdit,
   onSaveLayout,
+  tableName,
+  setTableName,
+  tableSeats,
+  setTableSeats,
+  currentSeatCount,
+  objects,
+  existingTableNames,
 }) => {
-  // Размеры по умолчанию
   const [tableWidth, setTableWidth] = useState(50);
   const [tableHeight, setTableHeight] = useState(50);
-  const [tableName, setTableName] = useState("");
-  const [tableSeats, setTableSeats] = useState(4);
-
+  // const [tableName, setTableName] = useState("");
+  // const [tableSeats, setTableSeats] = useState(4);
   const [chairRadius, setChairRadius] = useState(10);
-
+  const isDuplicateName = useMemo(() => {
+    const trimmedName = tableName.trim().toLowerCase();
+    return isEditing && trimmedName !== "" && existingTableNames.includes(trimmedName);
+  }, [tableName, isEditing, existingTableNames]);
+  
+  
   return (
     <Box
       sx={{
@@ -87,9 +107,9 @@ const Sidebar: React.FC<SidebarProps> = ({
         color="warning"
         onClick={() => {
           if (isEditing) {
-            onSaveLayout(); // ✅ Сохраняем, если уже в режиме редактирования
+            onSaveLayout();
           }
-          onToggleEdit(); // ✅ Переключаем режим редактирования
+          onToggleEdit();
         }}
       >
         {isEditing ? "Сохранить" : "Редактировать"}
@@ -100,6 +120,8 @@ const Sidebar: React.FC<SidebarProps> = ({
           <Typography variant="h6">Инструменты</Typography>
 
           <TextField
+            error={isDuplicateName}
+            helperText={isDuplicateName ? "Такой стол уже существует" : ""}
             label="Номер стола"
             value={tableName}
             onChange={(e) => setTableName(e.target.value)}
@@ -134,15 +156,28 @@ const Sidebar: React.FC<SidebarProps> = ({
             fullWidth
           />
 
-          <TableItem
-            tableWidth={tableWidth}
-            tableHeight={tableHeight}
-            name={tableName}
-            seats={tableSeats}
+          {isEditing && objects.length > 0 && tableName.trim() !== "" && !isDuplicateName && (
+            <TableItem
+              tableWidth={tableWidth}
+              tableHeight={tableHeight}
+              name={tableName}
+              seats={tableSeats}
+            />
+          )}
+
+          <TextField
+            label="Радиус стула"
+            type="number"
+            value={chairRadius}
+            onChange={(e) => setChairRadius(Number(e.target.value))}
+            sx={{ my: 2 }}
+            fullWidth
           />
 
-          {/* Стулья автоматически наследуют имя стола */}
-          <ChairItem chairRadius={chairRadius} name={tableName} />
+          {/* Стул отображается только если имя стола указано и не превышено кол-во */}
+          {tableName.trim() !== "" && currentSeatCount < tableSeats && (
+            <ChairItem chairRadius={chairRadius} name={tableName} />
+          )}
         </Box>
       )}
     </Box>

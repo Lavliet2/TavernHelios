@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 import { Box, Menu, MenuItem } from "@mui/material";
 import { useDrop } from "react-dnd";
 
@@ -12,7 +12,7 @@ import {
   updateLayout,
 } from "../../services/layoutService";
 
-interface DroppedObject {
+export interface DroppedObject {
   type: string;
   x: number;
   y: number;
@@ -41,6 +41,16 @@ const LayoutEditor: React.FC = () => {
 
   const [contextMenu, setContextMenu] = useState<{ mouseX: number; mouseY: number } | null>(null);
   const [selectedObject, setSelectedObject] = useState<DroppedObject | null>(null);
+
+  const [tableName, setTableName] = useState("");
+  // const [existingTableNames, setExistingTableNames] = useState<string[]>([]);
+  const existingTableNames = useMemo(() => {
+    return objects
+      .filter((obj) => obj.type === ItemTypes.TABLE)
+      .map((obj) => (obj.name || "").trim().toLowerCase());
+  }, [objects]);
+  const [tableSeats, setTableSeats] = useState(4);
+  
 
   useEffect(() => {
     loadLayouts();
@@ -80,6 +90,7 @@ const LayoutEditor: React.FC = () => {
       ) || [];
 
       setObjects([...loadedTables, ...loadedSeats]);
+      // setExistingTableNames(loadedTables.map(t => (t.name || "").trim()));
 
       if (layout.imageStr) {
         const img = new Image();
@@ -125,6 +136,7 @@ const LayoutEditor: React.FC = () => {
       }
 
       if (obj.type === ItemTypes.CHAIR) {
+        ctx.fillStyle = "green";
         ctx.beginPath();
         ctx.arc(obj.x + obj.chairRadius!, obj.y + obj.chairRadius!, obj.chairRadius!, 0, 2 * Math.PI);
         ctx.fill();
@@ -147,7 +159,7 @@ const LayoutEditor: React.FC = () => {
     drop: (item: any, monitor) => {
       const offset = monitor.getClientOffset();
       if (!offset || !canvasRef.current) return;
-
+  
       const rect = canvasRef.current.getBoundingClientRect();
       const newObj = {
         type: item.type,
@@ -155,6 +167,26 @@ const LayoutEditor: React.FC = () => {
         y: offset.y - rect.top,
         ...item,
       };
+  
+      if (item.type === ItemTypes.TABLE) {
+        const newName = (item.name || "").trim();
+        if (!newName) {
+          alert("Введите имя стола перед добавлением.");
+          return;
+        }
+  
+        const isDuplicate = objects.some(
+          (obj) => obj.type === ItemTypes.TABLE && (obj.name || "").trim() === newName
+        );
+        if (isDuplicate) {
+          alert(`Стол с именем "${newName}" уже существует`);
+          return;
+        }
+  
+        newObj.name = newName;
+        // setExistingTableNames((prev) => [...prev, newName]); // обновляем список
+      }
+  
       setObjects((prev) => [...prev, newObj]);
     },
   }));
@@ -272,7 +304,9 @@ const LayoutEditor: React.FC = () => {
   };
 
   if (loading) return <div>Загрузка...</div>;
-
+  const currentSeatCount = objects.filter(
+    (o) => o.type === ItemTypes.CHAIR && o.name === tableName
+  ).length;
   return (
     <Box sx={{ display: "flex", height: "100vh" }}>
       <Sidebar
@@ -287,6 +321,15 @@ const LayoutEditor: React.FC = () => {
         }}
         onToggleEdit={() => setIsEditing(!isEditing)}
         onSaveLayout={handleSaveLayout}
+        tableName={tableName}
+        setTableName={setTableName}
+        tableSeats={tableSeats}
+        setTableSeats={setTableSeats}
+        currentSeatCount={objects.filter(
+          (o) => o.type === ItemTypes.CHAIR && o.name === tableName
+        ).length}
+        objects={objects}
+        existingTableNames={existingTableNames}
       />
       <div
         ref={(node) => dropRef(node) as unknown as void}

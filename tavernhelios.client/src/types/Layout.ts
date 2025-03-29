@@ -6,7 +6,7 @@ export interface Point {
 export const ItemTypes = {
   TABLE: "table",
   CHAIR: "chair",
-};
+} as const;
 
 export interface Seat {
   number: number;
