@@ -9,7 +9,7 @@ export const useLayoutEditorState = () => {
 
   const existingTableNames = useMemo(() => {
     return objects
-      .filter((obj) => obj.type === DroppedObjectType.TABLE)
+      .filter((obj) => obj.type === DroppedObjectType.TABLE && obj.name)
       .map((obj) => (obj.name || "").trim().toLowerCase());
   }, [objects]);
 
@@ -18,6 +18,11 @@ export const useLayoutEditorState = () => {
       (o) => o.type === DroppedObjectType.CHAIR && o.name === tableName
     ).length;
   }, [objects, tableName]);
+
+  const resetTableState = () => {
+    setTableName("");
+    setTableSeats(4);
+  };
 
   return {
     objects,
@@ -28,5 +33,6 @@ export const useLayoutEditorState = () => {
     setTableSeats,
     existingTableNames,
     currentSeatCount,
+    resetTableState,
   };
 };

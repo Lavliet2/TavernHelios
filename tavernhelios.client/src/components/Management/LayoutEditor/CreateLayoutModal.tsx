@@ -2,6 +2,8 @@
 import React, { useState } from "react";
 import { Modal, Box, Typography, TextField, Button } from "@mui/material";
 import type { Layout } from "../../../types/Layout";
+import { useSnackbar } from "../../../hooks/useSnackbar";
+
 
 interface CreateLayoutModalProps {
     open: boolean;
@@ -14,6 +16,7 @@ const CreateLayoutModal: React.FC<CreateLayoutModalProps> = ({
   onClose,
   onCreateLayout,
 }) => {
+  const { showSnackbar } = useSnackbar();
   const [formData, setFormData] = useState<Partial<Layout>>({
     restaurantId: "",
     width: 800,
@@ -44,11 +47,18 @@ const CreateLayoutModal: React.FC<CreateLayoutModalProps> = ({
 
   const handleSave = async () => {
     if (!formData.restaurantId) {
-      alert("Введите название зала!");
+      showSnackbar("Введите название зала!", "error");
       return;
     }
-    await onCreateLayout(formData);
-    // Сбрасываем и закрываем
+  
+    const result = await onCreateLayout(formData);
+  
+    if (result) {
+      showSnackbar("Схема успешно создана", "success");
+    } else {
+      showSnackbar("Не удалось создать схему", "error");
+    }
+  
     setFormData({
       restaurantId: "",
       width: 800,

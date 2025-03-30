@@ -27,7 +27,6 @@ const TableControls: React.FC<TableControlsProps> = ({
   setTableHeight,
   isDuplicateName,
   isEditing,
-  objectsLength,
 }) => {
   return (
     <Box>
@@ -70,7 +69,7 @@ const TableControls: React.FC<TableControlsProps> = ({
         fullWidth
       />
 
-      {isEditing && objectsLength > 0 && tableName.trim() !== "" && !isDuplicateName && (
+        {isEditing && tableName.trim() !== "" && !isDuplicateName && (
         <TableItem
           tableWidth={tableWidth}
           tableHeight={tableHeight}

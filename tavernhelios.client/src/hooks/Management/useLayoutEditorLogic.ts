@@ -10,39 +10,57 @@ import {
 } from "../../services/layoutService";
 
 import { transformObjectsToTables } from "../../utils/transformers/objectsToLayoutTables";
+import { useSnackbar } from "../useSnackbar";
 
 export const useLayoutEditorLogic = () => {
   const [layouts, setLayouts] = useState<Layout[]>([]);
   const [selectedLayoutId, setSelectedLayoutId] = useState<string>("");
   const [loading, setLoading] = useState(true);
+  const { showSnackbar } = useSnackbar();
 
-  const loadLayouts = useCallback(async () => {
+  const loadLayouts = useCallback(async (): Promise<Layout[]> => {
     try {
       const data = await fetchLayouts();
       setLayouts(data);
-      if (data.length > 0) setSelectedLayoutId(data[0].id);
+  
+      // Проверим, есть ли выбранная схема среди загруженных
+      const exists = data.find((l) => l.id === selectedLayoutId);
+  
+      if (!selectedLayoutId || !exists) {
+        if (data.length > 0) {
+          setSelectedLayoutId(data[0].id);
+        } else {
+          setSelectedLayoutId(""); // сбрасываем, если схем вообще нет
+        }
+      }
+  
+      return data;
     } catch (error) {
       console.error("Ошибка загрузки схем:", error);
+      showSnackbar("Ошибка загрузки схем", "error");
+      return [];
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [selectedLayoutId, showSnackbar]);
+  
 
   const handleCreateLayout = useCallback(
     async (data: Partial<Layout>) => {
       try {
         const newLayout = await createLayout(data);
         if (newLayout?.id) {
-          await loadLayouts();
-          setSelectedLayoutId(newLayout.id);
+          const layouts = await loadLayouts(); 
+          setLayouts(layouts);                 
+          setSelectedLayoutId(newLayout.id);   
         }
         return newLayout;
       } catch (err) {
         console.error("Ошибка при создании схемы:", err);
-        alert("Ошибка при создании схемы");
+        showSnackbar("Ошибка при создании схемы", "error");
       }
     },
-    [loadLayouts]
+    [loadLayouts, showSnackbar]
   );
 
   const handleSaveLayout = useCallback(
@@ -58,23 +76,38 @@ export const useLayoutEditorLogic = () => {
   
       try {
         await updateLayout(updatedLayout);
-        alert("Схема успешно сохранена!");
+        showSnackbar("Схема успешно сохранена!", "success");
+
+        setLayouts((prev) =>
+          prev.map((l) => (l.id === updatedLayout.id ? updatedLayout : l))
+        );
       } catch (err) {
         console.error("Ошибка при сохранении схемы:", err);
-        alert("Ошибка сохранения схемы");
+        showSnackbar("Ошибка сохранения схемы", "error");
       }
     },
-    [layouts, selectedLayoutId]
+    [layouts, selectedLayoutId, showSnackbar]
   );
-
+  
   const handleDeleteLayout = useCallback(
     async (id: string) => {
-      await deleteLayout(id);
-      await loadLayouts();
+      try {
+        await deleteLayout(id);
+        const updatedLayouts = await loadLayouts();
+        if (updatedLayouts.length > 0) {
+          setSelectedLayoutId(updatedLayouts[0].id);
+        } else {
+          setSelectedLayoutId("");
+        }
+        showSnackbar("Схема удалена", "info");
+      } catch (error) {
+        console.error("Ошибка удаления схемы:", error);
+        showSnackbar("Ошибка удаления схемы", "error");
+      }
     },
-    [loadLayouts]
+    [loadLayouts, showSnackbar]
   );
-
+  
   return {
     layouts,
     selectedLayoutId,
