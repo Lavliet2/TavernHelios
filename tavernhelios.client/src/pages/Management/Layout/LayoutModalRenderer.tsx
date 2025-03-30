@@ -1,8 +1,8 @@
 import React, { Suspense } from "react";
-import type { Layout } from "../../types/Layout";
+import type { Layout } from "../../../types/Layout";
 
 const CreateLayoutModal = React.lazy(
-  () => import("../../components/Management/LayoutEditor/CreateLayoutModal")
+  () => import("../../../components/Management/LayoutEditor/CreateLayoutModal")
 );
 
 interface RenderLayoutModalProps {

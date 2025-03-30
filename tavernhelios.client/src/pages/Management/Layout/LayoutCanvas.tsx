@@ -1,6 +1,6 @@
 // src/components/Management/LayoutEditor/LayoutCanvas.tsx
 import React from "react";
-import { CANVAS_BORDER } from "../../constants/layoutDefaults";
+import { CANVAS_BORDER } from "../../../constants/layoutDefaults";
 
 interface LayoutCanvasProps {
   canvasRef: React.RefObject<HTMLCanvasElement | null>;

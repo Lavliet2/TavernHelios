@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
-import { Layout } from "../../types/Layout";
-import { fetchLayouts, createLayout, deleteLayout } from "../../services/layoutService";
-import { useSnackbar } from "../useSnackbar";
+import { Layout } from "../../../types/Layout";
+import { fetchLayouts, createLayout, deleteLayout } from "../../../services/layoutService";
+import { useSnackbar } from "../../useSnackbar";
 
 export const useLayoutManager = () => {
   const [layouts, setLayouts] = useState<Layout[]>([]);

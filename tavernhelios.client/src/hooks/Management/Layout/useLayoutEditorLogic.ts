@@ -1,9 +1,9 @@
 import { useCallback } from "react";
-import { DroppedObject } from "../../types/DroppedObject";
-import { Layout } from "../../types/Layout";
-import { updateLayout } from "../../services/layoutService";
-import { transformObjectsToTables } from "../../utils/transformers/objectsToLayoutTables";
-import { useSnackbar } from "../useSnackbar";
+import { DroppedObject } from "../../../types/DroppedObject";
+import { Layout } from "../../../types/Layout";
+import { updateLayout } from "../../../services/layoutService";
+import { transformObjectsToTables } from "../../../utils/transformers/objectsToLayoutTables";
+import { useSnackbar } from "../../useSnackbar";
 
 export const useLayoutEditorLogic = (
     layouts: Layout[],

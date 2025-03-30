@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback } from "react";
-import { DroppedObject, DroppedObjectType } from "../../types/DroppedObject";
+import { DroppedObject, DroppedObjectType } from "../../../types/DroppedObject";
 
 export const useLayoutEditorState = () => {
   const [objects, setObjects] = useState<DroppedObject[]>([]);

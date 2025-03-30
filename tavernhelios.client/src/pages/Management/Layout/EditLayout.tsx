@@ -15,15 +15,15 @@ import React, {
 } from "react";
 import { Box, Typography } from "@mui/material";
 
-import Sidebar from "../../components/Management/LayoutEditor/Sidebar";
+import Sidebar from "../../../components/Management/LayoutEditor/Sidebar";
 import LayoutCanvas from "./LayoutCanvas";
-import { useLayoutEditorState } from "../../hooks/Management/useLayoutEditorState";
-import { useCanvasInteractions } from "../../hooks/Management/useCanvasInteractions";
-import { useLayoutManager } from "../../hooks/Management/useLayoutManager";
-import { useLayoutEditorLogic } from "../../hooks/Management/useLayoutEditorLogic";
-import { useLayoutLoader } from "../../hooks/Management/useLayoutLoader";
-import { useCanvasRenderLoop } from "../../hooks/Management/useCanvasRenderLoop";
-import { useDropHandler } from "../../hooks/Management/useDropHandler";
+import { useLayoutEditorState } from "../../../hooks/Management/Layout/useLayoutEditorState";
+import { useCanvasInteractions } from "../../../hooks/Management/Layout/useCanvasInteractions";
+import { useLayoutManager } from "../../../hooks/Management/Layout/useLayoutManager";
+import { useLayoutEditorLogic } from "../../../hooks/Management/Layout/useLayoutEditorLogic";
+import { useLayoutLoader } from "../../../hooks/Management/Layout/useLayoutLoader";
+import { useCanvasRenderLoop } from "../../../hooks/Management/Layout/useCanvasRenderLoop";
+import { useDropHandler } from "../../../hooks/Management/Layout/useDropHandler";
 
 import {
   DEFAULT_CHAIR_RADIUS,
@@ -31,8 +31,8 @@ import {
   DEFAULT_TABLE_WIDTH,
   CANVAS_WIDTH,
   CANVAS_HEIGHT,
-} from "../../constants/layoutDefaults";
-import { drawCanvas } from "../../utils/canvasUtils";
+} from "../../../constants/layoutDefaults";
+import { drawCanvas } from "../../../utils/canvasUtils";
 
 import { RenderLayoutModal } from "./LayoutModalRenderer";
 import { RenderContextMenu } from "./RenderContextMenu";

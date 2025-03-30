@@ -1,5 +1,5 @@
 import { RefObject, useState, useRef } from "react";
-import { DroppedObject } from "../../types/DroppedObject";
+import { DroppedObject } from "../../../types/DroppedObject";
 
 export function useCanvasInteractions(
   canvasRef: RefObject<HTMLCanvasElement | null>,

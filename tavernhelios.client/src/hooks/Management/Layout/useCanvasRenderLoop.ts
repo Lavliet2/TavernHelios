@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { DroppedObject } from "../../types/DroppedObject";
+import { DroppedObject } from "../../../types/DroppedObject";
 
 interface UseCanvasRenderLoopParams {
   canvasRef: React.RefObject<HTMLCanvasElement | null>;

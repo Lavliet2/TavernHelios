@@ -1,7 +1,7 @@
 import { useDrop } from "react-dnd";
-import { DroppedObject, DroppedObjectType } from "../../types/DroppedObject";
-import { getNewDroppedObject } from "../../utils/dragDropUtils";
-import { useSnackbar } from "../useSnackbar";
+import { DroppedObject, DroppedObjectType } from "../../../types/DroppedObject";
+import { getNewDroppedObject } from "../../../utils/dragDropUtils";
+import { useSnackbar } from "../../useSnackbar";
 
 export const useDropHandler = (
   canvasRef: React.RefObject<HTMLCanvasElement | null>,

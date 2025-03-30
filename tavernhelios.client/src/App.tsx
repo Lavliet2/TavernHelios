@@ -12,7 +12,7 @@ import EditDishes from "./pages/Management/EditDishes";
 import EditMenu from "./pages/Management/EditMenu";
 import EditSchedule from "./pages/Management/EditSchedule";
 import Reservations from "./pages/Management/Reservations";
-import Layout from "./pages/Management/EditLayout";
+import Layout from "./pages/Management/Layout/EditLayout";
 
 import { SnackbarProvider } from "./hooks/useSnackbar";
 import { DndProvider } from "react-dnd";

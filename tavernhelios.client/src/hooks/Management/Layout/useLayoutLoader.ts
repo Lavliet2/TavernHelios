@@ -1,6 +1,6 @@
 import { useEffect, RefObject  } from "react";
-import { Layout } from "../../types/Layout";
-import { DroppedObject, DroppedObjectType } from "../../types/DroppedObject";
+import { Layout } from "../../../types/Layout";
+import { DroppedObject, DroppedObjectType } from "../../../types/DroppedObject";
 
 interface UseLayoutLoaderParams {
   selectedLayoutId: string;
