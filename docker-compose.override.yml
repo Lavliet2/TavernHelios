@@ -6,10 +6,10 @@ services:
     networks:
       - app_network      
     
-  client:
-    environment:
-      VITE_API_URL: "https://localhost:5555"
-      NODE_ENV: "development"
+  # client:
+  #   environment:
+  #     VITE_API_URL: "https://localhost:5555"
+  #     NODE_ENV: "development"
 
 
 networks:
