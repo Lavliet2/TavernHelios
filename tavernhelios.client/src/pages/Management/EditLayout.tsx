@@ -1,24 +1,28 @@
 /**
  * Главный компонент редактора схем зала.
- * Отвечает за рендеринг холста, боковой панели и контекстного меню.
- * Управляет логикой загрузки, редактирования и сохранения схем.
+ *
+ * - Отвечает за рендеринг холста (canvas)
+ * - Включает боковую панель с управлением объектами (Sidebar)
+ * - Загружает и сохраняет схемы из API
+ * - Обрабатывает взаимодействие drag-n-drop
+ * - Использует хуки управления: загрузкой, отрисовкой, редактором и холстом
  */
 import React, {
   useEffect,
   useRef,
   useState,
-  lazy,
-  Suspense,
+  useCallback,
 } from "react";
-import { Box, Menu, MenuItem } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 import Sidebar from "../../components/Management/LayoutEditor/Sidebar";
 import LayoutCanvas from "./LayoutCanvas";
 import { useLayoutEditorState } from "../../hooks/Management/useLayoutEditorState";
 import { useCanvasInteractions } from "../../hooks/Management/useCanvasInteractions";
+import { useLayoutManager } from "../../hooks/Management/useLayoutManager";
 import { useLayoutEditorLogic } from "../../hooks/Management/useLayoutEditorLogic";
 import { useLayoutLoader } from "../../hooks/Management/useLayoutLoader";
-import { useCanvasRenderer } from "../../hooks/Management/useCanvasRenderer";
+import { useCanvasRenderLoop } from "../../hooks/Management/useCanvasRenderLoop";
 import { useDropHandler } from "../../hooks/Management/useDropHandler";
 
 import {
@@ -30,13 +34,12 @@ import {
 } from "../../constants/layoutDefaults";
 import { drawCanvas } from "../../utils/canvasUtils";
 
-const CreateLayoutModal = lazy(
-  () => import("../../components/Management/LayoutEditor/CreateLayoutModal")
-);
+import { RenderLayoutModal } from "./LayoutModalRenderer";
+import { RenderContextMenu } from "./RenderContextMenu";
 
-const LayoutEditor: React.FC = () => {
+const LayoutEditor: React.FC = React.memo(() => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const backgroundImgRef = useRef(null as unknown) as React.RefObject<HTMLImageElement>;
+  const backgroundImgRef = useRef<HTMLImageElement>(null);
 
   const [canvasSize, setCanvasSize] = useState({
     width: CANVAS_WIDTH,
@@ -51,18 +54,21 @@ const LayoutEditor: React.FC = () => {
 
   const {
     layouts,
+    setLayouts,
     selectedLayoutId,
     setSelectedLayoutId,
     loading,
     loadLayouts,
-    handleCreateLayout,
-    handleSaveLayout,
-    handleDeleteLayout,
-  } = useLayoutEditorLogic();
+    createNewLayout,
+    removeLayout,    
+  } = useLayoutManager();
 
   const {
     objects,
     setObjects,
+    addObject,
+    removeObject,
+    getObjects,
     tableName,
     setTableName,
     tableSeats,
@@ -71,6 +77,10 @@ const LayoutEditor: React.FC = () => {
     currentSeatCount,
     resetTableState,
   } = useLayoutEditorState();
+
+  const {
+    handleSaveLayout
+  } = useLayoutEditorLogic(layouts, selectedLayoutId, setLayouts);
 
   const {
     handleMouseDown,
@@ -93,25 +103,37 @@ const LayoutEditor: React.FC = () => {
     drawCanvas,
   });
 
-  useCanvasRenderer({
+  useCanvasRenderLoop({
     canvasRef,
     backgroundImgRef,
     objects,
     drawCanvas,
   });
 
-  const [, dropRef] = useDropHandler(canvasRef, objects, setObjects);
+  const [, dropRef] = useDropHandler(
+    canvasRef,
+    addObject,
+    getObjects
+  );
 
-  const handleDeleteObject = () => {
-    setObjects((prev) => prev.filter((obj) => obj !== selectedObject));
+  const handleDeleteObject = useCallback(() => {
+    if (selectedObject) {
+      removeObject(selectedObject);
+    }
     setContextMenu(null);
-  };
-  
+  }, [selectedObject, removeObject, setContextMenu]);
+
   useEffect(() => {
     loadLayouts();
   }, [loadLayouts]);
 
-  if (loading) return <div>Загрузка...</div>;
+  if (loading) {
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+        <Typography variant="h6">Загрузка схемы...</Typography>
+      </Box>
+    );
+  }
 
   return (
     <Box sx={{ display: "flex", height: "100vh" }}>
@@ -121,7 +143,7 @@ const LayoutEditor: React.FC = () => {
         isEditing={isEditing}
         onSelectLayout={setSelectedLayoutId}
         onCreateClick={() => setIsModalOpen(true)}
-        onDeleteClick={handleDeleteLayout}
+        onDeleteClick={removeLayout}
         onToggleEdit={() => setIsEditing(!isEditing)}
         onSaveLayout={() => handleSaveLayout(objects)}
         tableName={tableName}
@@ -150,31 +172,20 @@ const LayoutEditor: React.FC = () => {
         onContextMenu={handleContextMenu}
       />
 
-      <Suspense fallback={<div>Загрузка модального окна...</div>}>
-        <CreateLayoutModal
-          open={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          onCreateLayout={handleCreateLayout}
-        />
-      </Suspense>
-
-      <Menu
-        open={!!contextMenu}
+      <RenderContextMenu
+        contextMenu={contextMenu}
+        selectedObject={selectedObject}
         onClose={() => setContextMenu(null)}
-        anchorReference="anchorPosition"
-        anchorPosition={
-          contextMenu
-            ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
-            : undefined
-        }
-      >
-        <MenuItem onClick={() => console.log("Редактировать", selectedObject)}>
-          Редактировать
-        </MenuItem>
-        <MenuItem onClick={handleDeleteObject}>Удалить</MenuItem>
-      </Menu>
+        onDelete={handleDeleteObject}
+      />
+
+      <RenderLayoutModal
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onCreateLayout={createNewLayout}
+      />
     </Box>
   );
-};
+});
 
 export default LayoutEditor;

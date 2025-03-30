@@ -5,8 +5,8 @@ import { useSnackbar } from "../useSnackbar";
 
 export const useDropHandler = (
   canvasRef: React.RefObject<HTMLCanvasElement | null>,
-  objects: DroppedObject[],
-  setObjects: React.Dispatch<React.SetStateAction<DroppedObject[]>>
+  onDropObject: (object: DroppedObject) => void,
+  getObjects: () => DroppedObject[] // передаём getter, чтобы не терять актуальность
 ) => {
   const { showSnackbar } = useSnackbar();
 
@@ -14,18 +14,19 @@ export const useDropHandler = (
     accept: [DroppedObjectType.TABLE, DroppedObjectType.CHAIR],
     drop: (item, monitor) => {
       const offset = monitor.getClientOffset();
-      if (!offset || !canvasRef.current) return;
+      const canvas = canvasRef.current;
+      if (!offset || !canvas) return;
 
       const newObj = getNewDroppedObject(
         item,
-        canvasRef.current,
+        canvas,
         offset,
-        objects,
+        getObjects(),
         (msg) => showSnackbar(msg, "error")
       );
 
       if (newObj) {
-        setObjects((prev) => [...prev, newObj]);
+        onDropObject(newObj);
       }
     },
   }));

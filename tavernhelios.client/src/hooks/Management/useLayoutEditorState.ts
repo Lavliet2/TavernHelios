@@ -1,11 +1,27 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { DroppedObject, DroppedObjectType } from "../../types/DroppedObject";
-// import { ItemTypes } from "../../types/Layout";
 
 export const useLayoutEditorState = () => {
   const [objects, setObjects] = useState<DroppedObject[]>([]);
   const [tableName, setTableName] = useState("");
   const [tableSeats, setTableSeats] = useState(4);
+
+  const resetTableState = useCallback(() => {
+    setTableName("");
+    setTableSeats(4);
+  }, []);
+
+  const addObject = useCallback((object: DroppedObject) => {
+    setObjects((prev) => [...prev, object]);
+  }, []);
+
+  const removeObject = useCallback((object: DroppedObject) => {
+    setObjects((prev) => prev.filter((obj) => obj !== object));
+  }, []);
+
+  const getObjects = useCallback(() => {
+    return [...objects]; // возвращаем копию для предотвращения мутаций
+  }, [objects]);
 
   const existingTableNames = useMemo(() => {
     return objects
@@ -19,14 +35,12 @@ export const useLayoutEditorState = () => {
     ).length;
   }, [objects, tableName]);
 
-  const resetTableState = () => {
-    setTableName("");
-    setTableSeats(4);
-  };
-
   return {
     objects,
     setObjects,
+    addObject,
+    removeObject,
+    getObjects,
     tableName,
     setTableName,
     tableSeats,
