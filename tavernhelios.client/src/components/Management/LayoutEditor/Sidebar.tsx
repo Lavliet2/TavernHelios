@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useMemo, useCallback } from "react";
 import {
   Box,
   Typography,
@@ -7,32 +7,13 @@ import {
   Select,
   MenuItem,
   Button,
-  TextField,
 } from "@mui/material";
-import type { DroppedObject } from "../../../pages/Management/EditLayout";
-import type { Layout } from "../../../types/Layout";
-import { TableItem, ChairItem } from "./LayoutItems";
 
-interface SidebarProps {
-  layouts: Layout[];
-  selectedLayoutId: string;
-  isEditing: boolean;
+import { InstructionBlock } from "./InstructionBlock";
+import TableControls from "./TableControls";
+import ChairControls from "./ChairControls";
 
-  onSelectLayout: (id: string) => void;
-  onCreateClick: () => void;
-  onDeleteClick: (id: string) => void;
-  onToggleEdit: () => void;
-  onSaveLayout: () => void;
-
-  tableName: string;
-  setTableName: (value: string) => void;
-  tableSeats: number;
-  setTableSeats: (value: number) => void;
-  currentSeatCount: number;
-
-  objects: DroppedObject[];
-  existingTableNames: string[];
-}
+import type { SidebarProps } from "../../../types/Layout";
 
 const Sidebar: React.FC<SidebarProps> = ({
   layouts,
@@ -50,18 +31,25 @@ const Sidebar: React.FC<SidebarProps> = ({
   currentSeatCount,
   objects,
   existingTableNames,
+  tableWidth,
+  setTableWidth,
+  tableHeight,
+  setTableHeight,
+  chairRadius,
+  setChairRadius,
 }) => {
-  const [tableWidth, setTableWidth] = useState(50);
-  const [tableHeight, setTableHeight] = useState(50);
-  // const [tableName, setTableName] = useState("");
-  // const [tableSeats, setTableSeats] = useState(4);
-  const [chairRadius, setChairRadius] = useState(10);
   const isDuplicateName = useMemo(() => {
-    const trimmedName = tableName.trim().toLowerCase();
-    return isEditing && trimmedName !== "" && existingTableNames.includes(trimmedName);
+    const trimmed = tableName.trim().toLowerCase();
+    return isEditing && trimmed !== "" && existingTableNames.includes(trimmed);
   }, [tableName, isEditing, existingTableNames]);
+
   const isMaxChairsReached = currentSeatCount >= tableSeats;
-  
+
+  const handleToggleEdit = useCallback(() => {
+    if (isEditing) onSaveLayout();
+    onToggleEdit();
+  }, [isEditing, onSaveLayout, onToggleEdit]);
+
   return (
     <Box
       sx={{
@@ -71,6 +59,8 @@ const Sidebar: React.FC<SidebarProps> = ({
         display: "flex",
         flexDirection: "column",
         gap: 2,
+        maxHeight: "100vh",
+        overflowY: "auto",
       }}
     >
       <Typography variant="h5">Редактор схем зала</Typography>
@@ -102,16 +92,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         Удалить схему
       </Button>
 
-      <Button
-        variant="contained"
-        color="warning"
-        onClick={() => {
-          if (isEditing) {
-            onSaveLayout();
-          }
-          onToggleEdit();
-        }}
-      >
+      <Button variant="contained" color="warning" onClick={handleToggleEdit}>
         {isEditing ? "Сохранить" : "Редактировать"}
       </Button>
 
@@ -119,76 +100,32 @@ const Sidebar: React.FC<SidebarProps> = ({
         <Box sx={{ p: 2, bgcolor: "#ddd", borderRadius: 2 }}>
           <Typography variant="h6">Инструменты</Typography>
 
-          <TextField
-            error={isDuplicateName}
-            helperText={isDuplicateName ? "Такой стол уже существует" : ""}
-            label="Номер стола"
-            value={tableName}
-            onChange={(e) => setTableName(e.target.value)}
-            sx={{ mb: 1 }}
-            fullWidth
+          <TableControls
+            tableName={tableName}
+            setTableName={setTableName}
+            tableSeats={tableSeats}
+            setTableSeats={setTableSeats}
+            tableWidth={tableWidth}
+            setTableWidth={setTableWidth}
+            tableHeight={tableHeight}
+            setTableHeight={setTableHeight}
+            isDuplicateName={isDuplicateName}
+            isEditing={isEditing}
+            objectsLength={objects.length}
           />
 
-          <Box sx={{ display: "flex", gap: 1, mb: 1 }}>
-            <TextField
-              label="Ширина стола"
-              type="number"
-              value={tableWidth}
-              onChange={(e) => setTableWidth(Number(e.target.value))}
-              fullWidth
-            />
-
-            <TextField
-              label="Высота стола"
-              type="number"
-              value={tableHeight}
-              onChange={(e) => setTableHeight(Number(e.target.value))}
-              fullWidth
-            />
-          </Box>
-
-          <TextField
-            label="Количество мест"
-            type="number"
-            value={tableSeats}
-            onChange={(e) => setTableSeats(Number(e.target.value))}
-            sx={{ mb: 2 }}
-            fullWidth
+          <ChairControls
+            chairRadius={chairRadius}
+            setChairRadius={setChairRadius}
+            tableName={tableName}
+            isMaxChairsReached={isMaxChairsReached}
           />
-
-          {isEditing && objects.length > 0 && tableName.trim() !== "" && !isDuplicateName && (
-            <TableItem
-              tableWidth={tableWidth}
-              tableHeight={tableHeight}
-              name={tableName}
-              seats={tableSeats}
-            />
-          )}
-
-          <TextField
-            label="Радиус стула"
-            type="number"
-            value={chairRadius}
-            onChange={(e) => setChairRadius(Number(e.target.value))}
-            sx={{ my: 2 }}
-            fullWidth
-            error={isMaxChairsReached}
-            helperText={
-              isMaxChairsReached
-                ? "Все стулья уже добавлены"
-                : ""
-            }
-          />
-
-
-          {/* Стул отображается только если имя стола указано и не превышено кол-во */}
-          {tableName.trim() !== "" && currentSeatCount < tableSeats && (
-            <ChairItem chairRadius={chairRadius} name={tableName} />
-          )}
         </Box>
       )}
+
+      <InstructionBlock />
     </Box>
   );
 };
 
-export default Sidebar;
+export default React.memo(Sidebar);

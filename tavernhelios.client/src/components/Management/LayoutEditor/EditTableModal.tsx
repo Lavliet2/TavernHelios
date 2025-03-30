@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Box, Typography, TextField, Button } from "@mui/material";
-import { DroppedObject } from "../../../pages/Management/EditLayout";
+import { DroppedObject, DroppedObjectType } from "../../../types/DroppedObject";
 
 interface EditTableModalProps {
   open: boolean;
@@ -23,7 +23,7 @@ const EditTableModal: React.FC<EditTableModalProps> = ({
 
   if (!formData) return null;
 
-  const handleChange = (field: keyof DroppedObject, value: any) => {
+  const handleChange = <K extends keyof DroppedObject>(field: K, value: DroppedObject[K]) => {
     setFormData((prev) => prev && { ...prev, [field]: value });
   };
 
@@ -31,7 +31,7 @@ const EditTableModal: React.FC<EditTableModalProps> = ({
     <Modal open={open} onClose={onClose}>
       <Box sx={{ p: 3, bgcolor: "background.paper", margin: "10% auto", width: 400, borderRadius: 2 }}>
         <Typography variant="h6" sx={{ mb: 2 }}>
-          {formData.type === "table" ? "Редактировать стол" : "Редактировать стул"}
+          {formData.type === DroppedObjectType.TABLE ? "Редактировать стол" : "Редактировать стул"}
         </Typography>
 
         <TextField
@@ -42,14 +42,14 @@ const EditTableModal: React.FC<EditTableModalProps> = ({
           sx={{ mb: 2 }}
         />
 
-        {formData.type === "table" && (
+        {formData.type === DroppedObjectType.TABLE && (
           <>
             <TextField
               type="number"
               label="Ширина"
               fullWidth
-              value={formData.tableWidth || 50}
-              onChange={(e) => handleChange("tableWidth", Number(e.target.value))}
+              value={"tableWidth" in formData ? formData.tableWidth : 50}
+              onChange={(e) => handleChange("tableWidth" as any, Number(e.target.value))}
               sx={{ mb: 2 }}
             />
 
@@ -57,8 +57,8 @@ const EditTableModal: React.FC<EditTableModalProps> = ({
               type="number"
               label="Высота"
               fullWidth
-              value={formData.tableHeight || 50}
-              onChange={(e) => handleChange("tableHeight", Number(e.target.value))}
+              value={"tableHeight" in formData ? formData.tableHeight : 50}
+              onChange={(e) => handleChange("tableHeight" as any, Number(e.target.value))}
               sx={{ mb: 2 }}
             />
 
@@ -73,13 +73,13 @@ const EditTableModal: React.FC<EditTableModalProps> = ({
           </>
         )}
 
-        {formData.type === "chair" && (
+        {formData.type === DroppedObjectType.CHAIR && (
           <TextField
             type="number"
             label="Радиус"
             fullWidth
-            value={formData.chairRadius || 15}
-            onChange={(e) => handleChange("chairRadius", Number(e.target.value))}
+            value={"chairRadius" in formData ? formData.chairRadius : 15}
+            onChange={(e) => handleChange("chairRadius" as any, Number(e.target.value))}
             sx={{ mb: 2 }}
           />
         )}
