@@ -12,8 +12,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import dishTypes from "../../constants/dishTypes";
 import { useMenu } from "../../hooks/Management/useMenu";
 
-import MenuAddDishModal from "../../components/Management/MenuAddDishModal";
-import MenuCreateModal from "../../components/Management/MenuCreateModal";
+import MenuAddDishModal from "../../components/Management/MenuEditor/MenuAddDishModal";
+import MenuCreateModal from "../../components/Management/MenuEditor/MenuCreateModal";
 
 
 const EditMenu: React.FC = () => {

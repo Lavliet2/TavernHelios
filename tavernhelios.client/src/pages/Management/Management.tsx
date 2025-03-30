@@ -4,7 +4,8 @@ import Grid from "@mui/material/Grid2";
 import { useNavigate } from 'react-router-dom';
 import ImageLunch from '../../assets/Management/lunch.webp';
 import ImageDish from '../../assets/Management/dish.webp';
-import Imageschedule from '../../assets/Management/schedule.webp';
+import ImageSchedule from '../../assets/Management/schedule.webp';
+import ImageLayout from '../../assets/Management/layout.webp';
 
 const Management: React.FC = () => {
   const navigate = useNavigate();
@@ -23,7 +24,8 @@ const Management: React.FC = () => {
         {[
           { image: ImageDish, title: "Управление блюдами", desc: "Редактируйте, добавляйте или удаляйте блюда.", path: "/management/dishes" },
           { image: ImageLunch, title: "Управление меню", desc: "Редактируйте, добавляйте или удаляйте блюда из меню.", path: "/management/menu" },
-          { image: Imageschedule, title: "Управление расписанием", desc: "Редактируйте, добавляйте или удаляйте меню из расписания.", path: "/management/schedule" }
+          { image: ImageSchedule, title: "Управление расписанием", desc: "Редактируйте, добавляйте или удаляйте меню из расписания.", path: "/management/schedule" },
+          { image: ImageLayout, title: "Управление залом", desc: "Редактируйте, добавляйте или удаляйте стлы и стулья.", path: "/management/layout" }
         ].map((card, index) => (
           <Grid key={index} size={{ xs: 12, sm: 6, md:2 }} sx={{ display: 'flex', justifyContent:' center' }}>
             <Card
