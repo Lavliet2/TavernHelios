@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TavernHelios.ReservationService.PostgreRepository;
@@ -11,9 +12,11 @@ using TavernHelios.ReservationService.PostgreRepository;
 namespace TavernHelios.ReservationService.PostgreRepository.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20250402200718_RestaurantId")]
+    partial class RestaurantId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -59,14 +62,14 @@ namespace TavernHelios.ReservationService.PostgreRepository.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("LayoutId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("PersonId")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
+
+                    b.Property<string>("RestaurantId")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int>("SeatNumber")
                         .HasColumnType("integer");

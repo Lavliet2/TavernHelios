@@ -3,6 +3,7 @@ using Microsoft.OpenApi.Models;
 using System.Diagnostics.Contracts;
 using TavernHelios.GrpcCommon.Settings;
 using TavernHelios.Server;
+using TavernHelios.Server.Services.ReservedLayoutService;
 using static GrpcContract.LayoutService.LayoutService;
 using static GrpcContract.MenuService.MenuService;
 using static GrpcContract.ReservationService.ReservationService;
@@ -67,6 +68,7 @@ namespace MenuServiceServer.Extensions
         private static void AddServices(this IServiceCollection services)
         {
             //services.AddSingleton<ISupportServices, ClientService>();
+            services.AddSingleton<ReservedLayoutService, ReservedLayoutService>();
         }
 
        
