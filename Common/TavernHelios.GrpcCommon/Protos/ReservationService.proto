@@ -23,6 +23,7 @@ message Reservation{
 	int32 SeatNumber = 5;
 	repeated string DishIds = 6;
 	bool IsDeleted = 7;
+	string RestaurantId = 8;
 }
 
 message ReservationsReply{
@@ -40,5 +41,6 @@ message ReservationQueryRequest
 	optional google.protobuf.Timestamp BeginDate = 4;
 	optional google.protobuf.Timestamp EndDate = 5;
 	optional bool IsDeleted = 6;
+	optional string RestaurantId = 7;
 }
 
