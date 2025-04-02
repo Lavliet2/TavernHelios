@@ -16,7 +16,7 @@
 
         public bool IsDeleted { get; set; } = false;
 
-        public string RestaurantId { get; set; } = string.Empty;
+        public string LayoutId { get; set; } = string.Empty;
     }
 
     public class ReservationCreateValue
@@ -31,6 +31,6 @@
 
         public string TableName { get; set; } = string.Empty;
 
-        public string RestaurantId { get; set; } = string.Empty;
+        public string LayoutId { get; set; } = string.Empty;
     }
 }

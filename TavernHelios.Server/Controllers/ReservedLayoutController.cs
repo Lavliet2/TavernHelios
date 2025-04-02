@@ -41,7 +41,6 @@ namespace TavernHelios.Server.Controllers
             {
                 var reservedLayout = await _service.GetLayoutForReservationDate(
                queryRequest.ReservationDateTime,
-               queryRequest.RestaurantId,
                queryRequest.LayoutId);
 
                 return Ok(reservedLayout);
@@ -57,8 +56,6 @@ namespace TavernHelios.Server.Controllers
     {
         public DateTime ReservationDateTime { get; set; } = DateTime.MinValue;
 
-        public string RestaurantId { get; set; } = string.Empty;
-
-        public string? LayoutId { get; set; } = null;
+        public string LayoutId { get; set; } = string.Empty;
     }
 }

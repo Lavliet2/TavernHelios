@@ -24,6 +24,6 @@ namespace TavernHelios.ReservationService.APICore.DTOValues
         public DateTime? BeginDate { get; set; } = null;
         public DateTime? EndDate { get; set; } = null;
 
-        public string? RestaurantId { get; set; } = null;
+        public string? LayoutId { get; set; } = null;
     }
 }

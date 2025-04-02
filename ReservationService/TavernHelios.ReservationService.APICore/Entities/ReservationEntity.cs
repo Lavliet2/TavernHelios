@@ -23,7 +23,7 @@ namespace TavernHelios.ReservationService.APICore.Entities
 
         public bool IsDeleted { get; set; } = false;
 
-        public string RestaurantId { get; set; } = string.Empty;
+        public string LayoutId { get; set; } = string.Empty;
 
     }
 }

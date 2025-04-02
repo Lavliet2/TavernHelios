@@ -32,11 +32,11 @@ public class ReservedLayoutService
     /// <param name="reservationDateTime"></param>
     /// <param name="RestaurantId"></param>
     /// <returns></returns>
-    public async Task<ReservedLayoutValue> GetLayoutForReservationDate(DateTime reservationDateTime, string restaurantId, string? layoutId = null)
+    public async Task<ReservedLayoutValue> GetLayoutForReservationDate(DateTime reservationDateTime, string layoutId)
     {
-        var reservations = await GetReservations(reservationDateTime, restaurantId);
+        var reservations = await GetReservations(reservationDateTime, layoutId);
 
-        var layout = await GetLayout(reservationDateTime, restaurantId, layoutId);
+        var layout = await GetLayout(reservationDateTime, layoutId);
 
         var reservedLayout = new ReservedLayoutValue(layout);
         reservedLayout.ReservationDateTime = reservationDateTime;
@@ -55,13 +55,13 @@ public class ReservedLayoutService
         return reservedLayout;
     }
 
-    private async Task<IEnumerable<ReservationValue>> GetReservations(DateTime reservationDateTime, string restaurantId)
+    private async Task<IEnumerable<ReservationValue>> GetReservations(DateTime reservationDateTime, string layoutId)
     {
         //Получение бронирований
         ReservationQueryRequest reservationRequest = new();
         reservationRequest.BeginDate = reservationDateTime.ToUniversalTime().ToTimestamp();
         reservationRequest.EndDate = reservationDateTime.ToUniversalTime().ToTimestamp();
-        reservationRequest.RestaurantId = restaurantId;
+        reservationRequest.LayoutId = layoutId;
         reservationRequest.IsDeleted = false;
         var reservationsResult = await _reservationApiClient.GetReservationsAsync(reservationRequest);
 
@@ -73,14 +73,12 @@ public class ReservedLayoutService
         return reservations;
     }
 
-    private async Task<LayoutValue> GetLayout(DateTime reservationDateTime, string restaurantId, string? layoutId)
+    private async Task<LayoutValue> GetLayout(DateTime reservationDateTime, string layoutId)
     {
         //Получение схемы зала
         LayoutQueryRequest layoutQueryRequest = new();
-        layoutQueryRequest.RestaurantId = restaurantId;
         layoutQueryRequest.IsDeleted = false;
-        if (layoutId != null)
-            layoutQueryRequest.LayoutId = layoutId;
+        layoutQueryRequest.LayoutId = layoutId;
 
         var layoutResult = await _layoutApiClient.GetLayoutsAsync(layoutQueryRequest);
 
