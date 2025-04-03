@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from 'react-i18next';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Accordion, AccordionSummary, AccordionDetails, IconButton, Tooltip, Typography } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import EditIcon from "@mui/icons-material/Edit";
@@ -14,7 +15,7 @@ interface DishListProps {
 }
 
 const DishList: React.FC<DishListProps> = ({ dishes, onEdit, onDelete }) => {
-  // Группируем блюда по `dishType`
+  const { t } = useTranslation();
   const groupedData = new Map<string, Dish[]>();
 
   dishes.forEach((dish) => {
@@ -38,10 +39,10 @@ const DishList: React.FC<DishListProps> = ({ dishes, onEdit, onDelete }) => {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell>Название</TableCell>
-                    <TableCell>Описание</TableCell>
-                    <TableCell>Изображение</TableCell>
-                    <TableCell>Действия</TableCell>
+                    <TableCell>{ t('editDishes.dishList.title') }</TableCell>
+                    <TableCell>{ t('editDishes.dishList.desc') }</TableCell>
+                    <TableCell>{ t('editDishes.dishList.image') }</TableCell>
+                    <TableCell>{ t('editDishes.dishList.actions') }</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>

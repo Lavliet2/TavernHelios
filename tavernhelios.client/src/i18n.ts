@@ -13,7 +13,7 @@ i18n.use(initReactI18next).init({
         home: "Home",
         menu: "Menu",
         forecast: "Forecast",
-        management: "Management",
+        managementMenu: "Management",
         about: "About",
         aboutCompany: "About our company",
         welcomeText: "Welcome to Tavern Helios! Inspired by the worlds of fantasy and adventure, our team created this app to make the process of registering employees for corporate lunches simple and enjoyable, providing practical benefits and a pleasurable experience.",
@@ -27,8 +27,46 @@ i18n.use(initReactI18next).init({
         mark: "Mark",
         markRole: "Database",
         vadim: "Vadim",
-        vadimRole: "API Authorization",
+        vadimRole: "API Authorization", 
         copy: "© 2025 TavernHelios. All rights reserved.",
+
+        management: {
+          title: "Entity Management",
+          dishes: {
+            title: "Manage Dishes",
+            desc: "Edit, add, or remove dishes."
+          },
+          menu: {
+            title: "Manage Menu",
+            desc: "Edit, add, or remove dishes from the menu."
+          },
+          schedule: {
+            title: "Manage Schedule",
+            desc: "Edit, add, or remove menus from the schedule."
+          },
+          layout: {
+            title: "Manage Layout",
+            desc: "Edit, add, or remove tables and chairs."
+          }
+        },
+
+        editDishes: {
+          title: "Manage Dishes",
+          dishes: {
+            addTooltip: "Add dish",
+            desc: "Редактируйте, добавляйте или удаляйте блюда."
+          },
+          dishList: {
+            title: "Title",
+            desc: "Description",
+            image: "Image",
+            actions: "Actions",
+          },
+          dishAction: {
+            edit: "Edit",
+            delete: "Delete",
+          },
+        }
       }
     },
     ru: {
@@ -39,7 +77,7 @@ i18n.use(initReactI18next).init({
         home: "Главная",
         menu: "Меню",
         forecast: "Прогноз погоды",
-        management: "Администрирование",
+        managementMenu: "Управление",
         about: "О нас",
         aboutCompany: "О нашей компании",
         welcomeText: "Добро пожаловать в Tavern Helios! Вдохновленные мирами фэнтези и приключений, наша команда создала это приложение, чтобы сделать процесс записи сотрудников на корпоративные обеды простым и удобным, приносящим как практическую пользу, так и удовольствие от использования.",
@@ -54,9 +92,47 @@ i18n.use(initReactI18next).init({
         markRole: "База данных",
         vadim: "Вадим",
         vadimRole: "API авторизации",
-        copy: "© 2025 TavernHelios. Все права защищены."
-      }
-    }
+        copy: "© 2025 TavernHelios. Все права защищены.",
+
+        management: {
+          title: "Управление сущностями",
+          dishes: {
+            title: "Управление блюдами",
+            desc: "Редактируйте, добавляйте или удаляйте блюда."
+          },
+          menu: {
+            title: "Управление меню",
+            desc: "Редактируйте, добавляйте или удаляйте блюда из меню."
+          },
+          schedule: {
+            title: "Управление расписанием",
+            desc: "Редактируйте, добавляйте или удаляйте меню из расписания."
+          },
+          layout: {
+            title: "Управление залом",
+            desc: "Редактируйте, добавляйте или удаляйте столы и стулья."
+          }
+        },
+
+        editDishes: {
+          title: "Редактирование блюд",
+          dishes: {
+            addTooltip: "Добавить блюдо",
+            desc: "Редактируйте, добавляйте или удаляйте блюда."
+          },
+          dishList: {
+            title: "Название",
+            desc: "Описание",
+            image: "Изображение",
+            actions: "Действия",
+          },
+          dishAction: {
+            edit: "Редактировать",
+            delete: "Удалить",
+          },
+        }
+      }    
+    }          
   },
   lng: storedLanguage,
   fallbackLng: 'ru',
