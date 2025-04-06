@@ -18,7 +18,8 @@ const RegisterForm: React.FC = () => {
         const formIsValid = validateForm();
         if (formIsValid) {
             axios.post(`${API_BASE_URL}/api/auth/register`, { fullName, login, password, confirmPassword })
-                .then(() => navigate("/login"));
+                .then(() => axios.post(`${API_BASE_URL}/api/auth/login`, { login, password }))
+                .then(() => navigate("/"));
         }
     };
 
@@ -116,7 +117,7 @@ const RegisterForm: React.FC = () => {
                     >
                         Зарегистрироваться
                     </Button>
-                    
+
                     {error && (
                         <Typography color="error" align="center" sx={{ marginTop: 2 }}>
                             {error}
