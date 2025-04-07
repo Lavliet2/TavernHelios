@@ -6,7 +6,7 @@ namespace TavernHelios.ClickHouse.Helpers
     {
         public static string GetClickHouseConnectionString(ClickHouseSettings settings)
         {
-            return $"Host={settings.Host};Port={settings.Port};Database=default;User={settings.User};Password={settings.Password};";
+            return $"Host={settings.Host};Port={settings.Port};Database=default;User={settings.User};Password={settings.Password};UsePOST=true";
         }
     }
 }

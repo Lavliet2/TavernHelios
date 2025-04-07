@@ -15,6 +15,7 @@ services:
       - server
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_URLS: "http://+:5263"
 
       ClickHouse:Host: "clickhouse-monitoring"
       ClickHouse:Port: 8123
@@ -205,6 +206,11 @@ services:
       ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/aspnetapp.pfx"
       ASPNETCORE_Kestrel__Certificates__Default__Password: "helios"
       # VITE_API_URL: "https://localhost:5555"
+
+      RABBITMQ_HOST: "rabbitmq-monitoring"
+      RABBITMQ_USER: "admin"
+      RABBITMQ_PASSWORD: "admin"
+      RABBITMQ_PORT: 5672
     volumes:
       - ${USERPROFILE}/.aspnet/https:/https:ro
     command: ["dotnet", "TavernHelios.Server.dll"]

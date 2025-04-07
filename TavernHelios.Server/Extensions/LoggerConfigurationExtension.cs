@@ -16,7 +16,7 @@ namespace TavernHelios.Server.Extensions
             return logger
                 .Enrich.WithProperty("Application", assemblyName) // Добавляем поле Application
                 .Enrich.FromLogContext() // Для добавления дополнительных свойств из контекста
-                .WriteTo.Console(new JsonFormatter(renderMessage: true))
+                //.WriteTo.Console(new JsonFormatter(renderMessage: true))
                 .WriteTo.Logger(lc => lc
                     .Filter.ByIncludingOnly(logEvent =>
                         logEvent.Properties.TryGetValue("SourceContext", out var value) &&

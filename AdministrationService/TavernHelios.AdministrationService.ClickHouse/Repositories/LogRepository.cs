@@ -49,44 +49,54 @@ namespace TavernHelios.AdministrationService.ClickHouse
 
         public async Task<LogEntity?> CreateAsync(LogEntity? log)
         {
-            if (log == null)
+            try
             {
-                return null;
-            }
+                if (log == null)
+                {
+                    return null;
+                }
 
-            using var connection = new ClickHouseConnection(_connectionString);
-            await connection.OpenAsync();
+                using var connection = new ClickHouseConnection(_connectionString);
+                await connection.OpenAsync();
 
-            // Генерируем уникальный RequestId, если он не задан
-            if (string.IsNullOrEmpty(log.RequestId))
-            {
-                log.RequestId = Guid.NewGuid().ToString();
-            }
+                // Генерируем уникальный RequestId, если он не задан
+                if (string.IsNullOrEmpty(log.RequestId))
+                {
+                    log.RequestId = Guid.NewGuid().ToString();
+                }
 
-            var insertQuery = $@"
+                log.RequestBody = log.RequestBody.Substring(0, log.RequestBody.Length < 200 ? log.RequestBody.Length : 200);
+                log.ResponseBody = log.ResponseBody.Substring(0, log.ResponseBody.Length < 200 ? log.ResponseBody.Length : 200);
+
+                var insertQuery = $@"
             INSERT INTO logs (
                 {nameof(LogEntity.Timestamp)}, {nameof(LogEntity.Level)}, {nameof(LogEntity.MessageTemplate)},
                 {nameof(LogEntity.Method)}, {nameof(LogEntity.Path)}, {nameof(LogEntity.RequestBody)},
                 {nameof(LogEntity.StatusCode)}, {nameof(LogEntity.ResponseBody)}, {nameof(LogEntity.Controller)},
                 {nameof(LogEntity.Application)}, {nameof(LogEntity.SourceContext)}, {nameof(LogEntity.RequestId)},
                 {nameof(LogEntity.RequestPath)}, {nameof(LogEntity.ConnectionId)}, {nameof(LogEntity.User)}" +
-                (log.Exception != null ? $", {nameof(LogEntity.Exception)}" : "") +
-            $@") VALUES (
+                    (log.Exception != null ? $", {nameof(LogEntity.Exception)}" : "") +
+                $@") VALUES (
                 @{nameof(LogEntity.Timestamp)}, @{nameof(LogEntity.Level)}, @{nameof(LogEntity.MessageTemplate)},
                 @{nameof(LogEntity.Method)}, @{nameof(LogEntity.Path)}, @{nameof(LogEntity.RequestBody)},
                 @{nameof(LogEntity.StatusCode)}, @{nameof(LogEntity.ResponseBody)}, @{nameof(LogEntity.Controller)},
                 @{nameof(LogEntity.Application)}, @{nameof(LogEntity.SourceContext)}, @{nameof(LogEntity.RequestId)},
                 @{nameof(LogEntity.RequestPath)}, @{nameof(LogEntity.ConnectionId)}, @{nameof(LogEntity.User)}" +
-                (log.Exception != null ? $", @{nameof(LogEntity.Exception)}" : "") + 
-            ");";
+                    (log.Exception != null ? $", @{nameof(LogEntity.Exception)}" : "") +
+                ");";
 
-            await connection.ExecuteAsync(insertQuery, log);
+                await connection.ExecuteAsync(insertQuery, log);
 
-            // Получаем добавленную запись по RequestId
-            var selectQuery = $"SELECT * FROM logs WHERE {nameof(LogEntity.RequestId)} = @RequestId LIMIT 1";
-            var addedLog = await connection.QueryFirstOrDefaultAsync<LogEntity>(selectQuery, new { log.RequestId });
+                // Получаем добавленную запись по RequestId
+                var selectQuery = $"SELECT * FROM logs WHERE {nameof(LogEntity.RequestId)} = @RequestId LIMIT 1";
+                var addedLog = await connection.QueryFirstOrDefaultAsync<LogEntity>(selectQuery, new { log.RequestId });
 
-            return addedLog;
+                return addedLog;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
 
         public async Task<IEnumerable<LogEntity>> GetByQueryAsync(

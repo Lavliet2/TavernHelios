@@ -46,11 +46,12 @@ namespace TavernHelios.RabbitMq.Services
                         return;
                     }
 
-                    await DoAsync.Invoke(message);
-                    //if (!string.IsNullOrEmpty(res == null))
-                    //{
-                    //    Console.WriteLine(res);
-                    //}
+                    //await DoAsync.Invoke(message);
+                    var res = DoAsync.Invoke(message).Result;
+                    if (res != null)
+                    {
+                        _logger.LogInformation("Result: {res}", res);
+                    }
                 }
             };
 

@@ -11,6 +11,7 @@ namespace TavernHelios.RabbitMq.Services
         //protected readonly string _connectionString;
         protected readonly IConnection _connection;
         protected readonly IChannel _channel;
+        protected readonly ILogger<RabbitMqBase> _logger;
         protected readonly string _queueName;
         protected readonly string _exchangeName;
         protected readonly string _routingKey;
@@ -21,6 +22,8 @@ namespace TavernHelios.RabbitMq.Services
             string queueName,
             (string exchangeName, string routingKey)? exchangeAndRoutingKey = null)
         {
+            _logger = logger;
+
             //_connectionString = ConnectionHelper.GetRabbitMqConnectionString(settings.Value);
             _connection = ConnectionHelper.CreateRabbitMqConnection(settings.Value, logger).Result;
 

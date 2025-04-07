@@ -47,19 +47,19 @@ namespace TavernHelios.Server
             app.UseDefaultFiles();
             app.UseStaticFiles();
 
-            if (app.Environment.IsDevelopment())
-            {
-                //app.UseSwagger();
-                //app.UseSwaggerUI();
+            //if (app.Environment.IsDevelopment())
+            //{
+            //    //app.UseSwagger();
+            //    //app.UseSwaggerUI();
 
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-                app.UseHsts();
-            }
-
+            //    app.UseDeveloperExceptionPage();
+            //}
+            //else
+            //{
+            //    app.UseExceptionHandler("/Home/Error");
+            //    app.UseHsts();
+            //}
+            app.UseHsts();
                 app.UseSwagger();
                 app.UseSwaggerUI();
 
