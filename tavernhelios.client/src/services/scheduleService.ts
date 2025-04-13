@@ -63,13 +63,7 @@ export const fetchTodaySchedule = async (isDeleted = false): Promise<Schedule | 
     const beginDate = encodeURIComponent(`${formattedDate}T00:00:00Z`);
     const endDate = encodeURIComponent(`${formattedDate}T23:59:59Z`);
 
-    const response = await axios.get(`${API_BASE_URL}/api/MenuSchedule`, {
-      params: {
-        BeginDate: beginDate,
-        EndDate: endDate,
-        IsDeleted: isDeleted,
-      }
-    });
+    const response = await axios.get(`${API_BASE_URL}/api/MenuSchedule?BeginDate=${beginDate}&EndDate=${endDate}&IsDeleted=${isDeleted}`);
 
     const schedules: Schedule[] = response.data;
 
