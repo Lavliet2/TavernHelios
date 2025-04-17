@@ -2,13 +2,10 @@ global:
   scrape_interval: 15s
 
 scrape_configs:
-  - job_name: 'aspnetcore'
+  - job_name: "clickhouse"
     static_configs:
-    # ASP.NET Core приложение доступно по адресу http://host.docker.internal:5000 (для Docker на Windows/macOS) или используйте IP-адрес контейнера.
-      - targets: ['host.docker.internal:8085']  # Адрес ASP.NET Core приложения
-  - job_name: 'rabbitmq'
+      - targets: ["clickhouse-monitoring:9363"] # Встроенный эндпоинт ClickHouse
+
+  - job_name: "prometheus"
     static_configs:
-      - targets: ['rabbitmq:15672']  # RabbitMQ metrics endpoint
-  - job_name: 'clickhouse'
-    static_configs:
-      - targets: ['clickhouse:8123']  # ClickHouse metrics endpoint
+      - targets: ["localhost:9090"]

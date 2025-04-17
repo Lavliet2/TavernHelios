@@ -38,15 +38,17 @@ services:
       - 8123:8123 # HTTP порт
       - 9000:9000 # Native-интерфейс ClickHouse
       - 9005:9005 # TCP порт
+      - 9363:9363 # Prometheus-метрики
     environment:
       CLICKHOUSE_DB: default
       CLICKHOUSE_USER: default
       CLICKHOUSE_PASSWORD: ""
     volumes:
       - clickhouse_monitoring_data:/data/clickhouse_monitoring_data
+      - ./clickhouse-config.xml:/etc/clickhouse-server/config.d/prometheus.xml  # Конфиг метрик
     networks:
       - app_network
-
+  
   rabbitmq-monitoring:
     image: rabbitmq:3.12.14-management-alpine
     container_name: rabbitmq-monitoring
@@ -77,6 +79,8 @@ services:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
+    depends_on:
+      - clickhouse-monitoring
     networks:
       - app_network
 
@@ -90,6 +94,9 @@ services:
       GF_SECURITY_ADMIN_PASSWORD: admin
     volumes:
       - grafana_monitoring_storage:/var/lib/grafana
+    depends_on:
+      - prometheus-monitoring
+      - clickhouse-monitoring
     networks:
       - app_network
 
