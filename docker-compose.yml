@@ -93,6 +93,7 @@ services:
       GF_SECURITY_ADMIN_USER: admin
       GF_SECURITY_ADMIN_PASSWORD: admin
     volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning  # Критично для дашбордов
       - grafana_monitoring_storage:/var/lib/grafana
     depends_on:
       - prometheus-monitoring

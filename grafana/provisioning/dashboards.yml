@@ -1,0 +1,11 @@
+apiVersion: 1
+
+providers:
+  - name: "Project Dashboards"
+    orgId: 1
+    folder: "ClickHouse" # Папка в Grafana
+    type: file
+    disableDeletion: true # Запретить удаление через UI
+    updateIntervalSeconds: 30 # Проверять изменения
+    options:
+      path: /etc/grafana/provisioning/dashboards # Путь в контейнере
