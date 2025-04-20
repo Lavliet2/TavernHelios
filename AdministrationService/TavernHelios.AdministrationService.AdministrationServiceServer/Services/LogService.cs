@@ -6,21 +6,16 @@ namespace TavernHelios.AdministrationService.AdministrationServiceServer.Service
 {
     public class LogService
     {
-        //private RabbitMqProducerService<LogEntity> _rabbitMqProducer;
         private LogRepository _logRepository;
 
-        public LogService(
-            //RabbitMqProducerService<LogEntity> rabbitMqProducer,
-            LogRepository logRepository)
+        public LogService(LogRepository logRepository)
         {
-            //_rabbitMqProducer = rabbitMqProducer;
             _logRepository = logRepository;
         }
 
         public async Task<IEnumerable<LogEntity>> GetLogsAsync()
         {
             return await _logRepository.GetByQueryAsync();
-            //await _rabbitMqProducer.SendMessages(entities);
         }
     }
 }
