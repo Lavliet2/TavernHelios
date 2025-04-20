@@ -2,10 +2,10 @@ import React from "react";
 import { Container, Typography, IconButton, Tooltip, Snackbar, Alert } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import useDishes from "../../hooks/Management/useDishes";
-import DishList from "../../components/Management/DishList";
-import DishAddModal from "../../components/Management/DishAddModal";
-import DishEditModal from "../../components/Management/DishEditModal";
-import DishListSkeleton from "../../components/Management/DishListSkeleton";
+import DishList from "../../components/Management/DishEditor/DishList";
+import DishAddModal from "../../components/Management/DishEditor/DishAddModal";
+import DishEditModal from "../../components/Management/DishEditor/DishEditModal";
+import DishListSkeleton from "../../components/Management/DishEditor/DishListSkeleton";
 
 const EditDishes: React.FC = () => {
   const {

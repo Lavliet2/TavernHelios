@@ -12,6 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.DataAnnotations" Version="2.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.SpaProxy">
       <Version>8.*-*</Version>
@@ -26,6 +27,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AdministrationService\TavernHelios.AdministrationService.APICore\TavernHelios.AdministrationService.APICore.csproj" />
+    <ProjectReference Include="..\Common\TavernHelios.Common\TavernHelios.Common.csproj" />
     <ProjectReference Include="..\Common\TavernHelios.GrpcCommon\TavernHelios.GrpcCommon.csproj" />
     <ProjectReference Include="..\Common\TavernHelios.Utils\TavernHelios.Utils.csproj" />
     <ProjectReference Include="..\LayoutService\TavernHelios.LayoutService.APICore\TavernHelios.LayoutService.APICore.csproj" />

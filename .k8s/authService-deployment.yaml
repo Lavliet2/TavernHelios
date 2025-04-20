@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: authservice
+  template:
+    metadata:
+      labels:
+        app: authservice
+    spec:
+      containers:
+        - name: authservice
+          image: ghcr.io/lavliet2/authservice:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5067
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Production"
+            - name: ASPNETCORE_URLS
+              value: "http://+:5067"
+            - name: CONNECTION_STRING
+              value: "Host=postgres-auth;Port=5432;Database=authdb;User Id=postgres;Password=helios"
+      imagePullSecrets:
+        - name: ghcr-secret
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: authservice
+spec:
+  type: NodePort
+  selector:
+    app: authservice
+  ports:
+    - protocol: TCP
+      port: 5067
+      targetPort: 5067
+      nodePort: 32049

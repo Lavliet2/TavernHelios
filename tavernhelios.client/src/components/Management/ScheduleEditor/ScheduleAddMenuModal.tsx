@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Box, Typography, Button, Modal } from "@mui/material";
-import MenuCard from "../../components/Management/MenuCard";
-import { Menu } from "../../types/Management";
+import MenuCard from "../MenuEditor/MenuCard";
+import { Menu } from "../../../types/Management";
 
 interface MenuAddScheduleModalProps {
   isOpen: boolean;

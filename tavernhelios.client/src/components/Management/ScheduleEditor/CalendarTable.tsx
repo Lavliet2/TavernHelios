@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Tooltip, Box, Modal, Button } from "@mui/material";
-import { Menu } from "../../types/Management";
-import MenuCard from "../../components/Management/MenuCard";
+import { Menu } from "../../../types/Management";
+import MenuCard from "../MenuEditor/MenuCard";
 
 interface CalendarTableProps {
   days: any[];

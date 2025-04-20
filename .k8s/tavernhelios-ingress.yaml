@@ -39,7 +39,15 @@ spec:
           service:
             name: layoutservice
             port:
-              number: 5066              
+              number: 5066                   
+      - path: /authservice
+        pathType: Prefix
+        backend:
+          service:
+            name: authservice
+            port:
+              number: 5067
+
       - path: /
         pathType: Prefix
         backend:
