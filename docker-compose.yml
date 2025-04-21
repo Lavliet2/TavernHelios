@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: ./AdministrationService/TavernHelios.AdministrationService.AdministrationServiceServer/Dockerfile
     ports:
-      - 5263:5263 # ��� �������
+      - 5263:5263 # для свагера
     depends_on:
       - clickhouse-monitoring
       - rabbitmq-monitoring
@@ -35,17 +35,17 @@ services:
     image: clickhouse/clickhouse-server:23.8.4.69-alpine
     container_name: clickhouse-monitoring
     ports:
-      - 8123:8123 # HTTP ����
-      - 9000:9000 # Native-��������� ClickHouse
-      - 9005:9005 # TCP ����
-      - 9363:9363 # Prometheus-�������
+      - 8123:8123 # HTTP порт
+      - 9000:9000 # Native-интерфейс ClickHouse
+      - 9005:9005 # TCP порт
+      - 9363:9363 # Prometheus-метрики
     environment:
       CLICKHOUSE_DB: default
       CLICKHOUSE_USER: default
       CLICKHOUSE_PASSWORD: ""
     volumes:
       - clickhouse_monitoring_data:/data/clickhouse_monitoring_data
-      - ./clickhouse-config.xml:/etc/clickhouse-server/config.d/prometheus.xml  # ������ ������
+      - ./clickhouse-config.xml:/etc/clickhouse-server/config.d/prometheus.xml  # Конфиг метрик
     networks:
       - app_network
   
@@ -53,10 +53,10 @@ services:
     image: rabbitmq:3.12.14-management-alpine
     container_name: rabbitmq-monitoring
     ports:
-      - 5672:5672 # ���� ��� AMQP
-      - 15672:15672 # ���� ��� ���������� RabbitMQ (Web UI)
-      - 5552:5552 # ���� ��� STOMP
-      - 15692:15692 # ���� ��� Prometheus-������ RabbitMQ
+      - 5672:5672 # Порт для AMQP
+      - 15672:15672 # Порт для управления RabbitMQ (Web UI)
+      - 5552:5552 # Порт для STOMP
+      - 15692:15692 # Порт для Prometheus-метрик RabbitMQ
     configs:
       - source: rabbitmqplugins
         target: /etc/rabbitmq/enabled_plugins
@@ -74,7 +74,7 @@ services:
     image: prom/prometheus
     container_name: prometheus-monitoring
     ports:
-      - "9090:9090" # ���� ��� ������� � Prometheus
+      - "9090:9090" # Порт для доступа к Prometheus
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     command:
@@ -88,12 +88,12 @@ services:
     image: grafana/grafana
     container_name: grafana-monitoring
     ports:
-      - "3000:3000" # ���� ��� ������� � Grafana
+      - "3000:3000" # Порт для доступа к Grafana
     environment:
       GF_SECURITY_ADMIN_USER: admin
       GF_SECURITY_ADMIN_PASSWORD: admin
     volumes:
-      - ./grafana/provisioning:/etc/grafana/provisioning  # �������� ��� ���������
+      - ./grafana/provisioning:/etc/grafana/provisioning  # Критично для дашбордов
       - grafana_monitoring_storage:/var/lib/grafana
     depends_on:
       - prometheus-monitoring
