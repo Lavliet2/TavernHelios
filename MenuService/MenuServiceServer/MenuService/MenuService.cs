@@ -1,14 +1,14 @@
-﻿using TavernHelios.MenuService.Common.Interfaces;
-using Grpc.Core;
+﻿using Grpc.Core;
 using GrpcContract;
-using Microsoft.Extensions.Options;
-using TavernHelios.MenuService.Common.Entities;
-using TavernHelios.GrpcCommon.Settings;
-using static GrpcContract.MenuService.MenuService;
 using GrpcContract.MenuService;
-using TavernHelios.MenuService.Common.Extensions;
-using TavernHelios.MenuService.APICore.Entities.Menu;
+using Microsoft.Extensions.Options;
 using System.Linq.Expressions;
+using TavernHelios.GrpcCommon.Settings;
+using TavernHelios.MenuService.APICore.Entities.Menu;
+using TavernHelios.MenuService.Common.Entities;
+using TavernHelios.MenuService.Common.Extensions;
+using TavernHelios.MenuService.Common.Interfaces;
+using static GrpcContract.MenuService.MenuService;
 
 namespace MenuServiceServer.MenuService
 {
