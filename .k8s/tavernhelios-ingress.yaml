@@ -53,7 +53,7 @@ spec:
           service:
             name: adminservice
             port:
-              number: 5068
+              number: 5263
 
       - path: /
         pathType: Prefix

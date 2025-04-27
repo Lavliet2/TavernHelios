@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: adminservice
-          image: tavernhelios/adminservice
+          image: ghcr.io/lavliet2/tavernhelios/adminservice
           ports:
             - containerPort: 5263
           env:
