@@ -47,6 +47,13 @@ spec:
             name: authservice
             port:
               number: 5067
+      - path: /adminservice
+        pathType: Prefix
+        backend:
+          service:
+            name: adminservice
+            port:
+              number: 5068
 
       - path: /
         pathType: Prefix

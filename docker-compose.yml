@@ -50,16 +50,16 @@ services:
       - app_network
   
   rabbitmq-monitoring:
-    image: rabbitmq:3.12.14-management-alpine
+    image: rabbitmq:4-management-alpine
     container_name: rabbitmq-monitoring
     ports:
       - 5672:5672 # ���� ��� AMQP
       - 15672:15672 # ���� ��� ���������� RabbitMQ (Web UI)
       - 5552:5552 # ���� ��� STOMP
       - 15692:15692 # ���� ��� Prometheus-������ RabbitMQ
-    configs:
-      - source: rabbitmqplugins
-        target: /etc/rabbitmq/enabled_plugins
+    # configs:
+    #   - source: rabbitmqplugins
+    #     target: /etc/rabbitmq/enabled_plugins
     restart: unless-stopped
     environment:
       - RABBITMQ_DEFAULT_USER=admin
@@ -67,6 +67,7 @@ services:
     volumes:
       - rabbitmq_monitoring_data:/var/lib/rabbitmq
       - rabbitmq_monitoring_plugins:/etc/rabbitmq
+      - ./rabbitmq/enabled_plugins:/etc/rabbitmq/enabled_plugins:ro      
     networks:
       - app_network
 
@@ -308,6 +309,8 @@ volumes:
   rabbitmq_monitoring_plugins:
   grafana_monitoring_storage:
 
-configs:
-  rabbitmqplugins:
-    content: "[rabbitmq_management, rabbitmq_prometheus, rabbitmq_stream, rabbitmq_stream_management]."
+# configs:
+#   rabbitmqplugins:
+#     content: "[rabbitmq_management, rabbitmq_prometheus]."
+    # mode: 0444
+    # content: "[rabbitmq_management, rabbitmq_prometheus, rabbitmq_stream, rabbitmq_stream_management]."

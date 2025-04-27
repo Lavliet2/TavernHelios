@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana-monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafana-monitoring
+  template:
+    metadata:
+      labels:
+        app: grafana-monitoring
+    spec:
+      containers:
+        - name: grafana
+          image: grafana/grafana
+          ports:
+            - containerPort: 3000
+          env:
+            - name: GF_SECURITY_ADMIN_USER
+              value: "admin"
+            - name: GF_SECURITY_ADMIN_PASSWORD
+              value: "admin"
+          volumeMounts:
+            - name: grafana-storage
+              mountPath: /var/lib/grafana
+            - name: grafana-provisioning
+              mountPath: /etc/grafana/provisioning
+      volumes:
+        - name: grafana-storage
+          persistentVolumeClaim:
+            claimName: grafana-monitoring-pvc
+        - name: grafana-provisioning
+          configMap:
+            name: grafana-provisioning-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana-monitoring
+spec:
+  selector:
+    app: grafana-monitoring
+  ports:
+    - name: web
+      port: 3000
+      targetPort: 3000
+  type: NodePort
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-provisioning-config
+data:
+  dummy.txt: |
+    This is a dummy config. Replace it with real provisioning files if needed.
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: grafana-monitoring-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
