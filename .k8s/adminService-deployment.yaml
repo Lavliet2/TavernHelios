@@ -16,12 +16,12 @@ spec:
         - name: adminservice
           image: tavernhelios/adminservice
           ports:
-            - containerPort: 5068
+            - containerPort: 5263
           env:
             - name: ASPNETCORE_ENVIRONMENT
               value: "Development"
             - name: ASPNETCORE_URLS
-              value: "http://+:5068"
+              value: "http://+:5263"
 
             # ClickHouse
             - name: ClickHouse__Host
@@ -55,7 +55,7 @@ spec:
     app: adminservice
   ports:
     - name: web
-      port: 5068
-      targetPort: 5068
+      port: 5263
+      targetPort: 5263
       nodePort: 32051
   type: NodePort
