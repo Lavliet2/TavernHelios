@@ -179,6 +179,7 @@ jobs:
           kubectl apply -f .k8s/reservationService-deployment.yaml || exit 1
           kubectl apply -f .k8s/layoutService-deployment.yaml || exit 1
           kubectl apply -f .k8s/authService-deployment.yaml || exit 1
+          kubectl apply -f .k8s/adminService-deployment.yaml || exit 1
           kubectl apply -f .k8s/tavernhelios-server-deployment.yaml || exit 1
           kubectl apply -f .k8s/tavernhelios-client-deployment.yaml || exit 1
       
