@@ -57,5 +57,5 @@ spec:
     - name: web
       port: 5068
       targetPort: 5068
-      nodePort: 32048 
+      nodePort: 32051
   type: NodePort
