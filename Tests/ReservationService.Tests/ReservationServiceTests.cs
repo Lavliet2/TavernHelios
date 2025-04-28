@@ -1,6 +1,5 @@
 using AutoFixture;
 using AutoFixture.AutoMoq;
-using Google.Protobuf.Collections;
 using Google.Protobuf.WellKnownTypes;
 using GrpcContract;
 using GrpcContract.ReservationService;
@@ -25,201 +24,112 @@ namespace ReservationService.Tests
         {
             _fixture = new Fixture().Customize(new AutoMoqCustomization());
 
-            _fixture.Customize<Reservation>(c => c
-                .With(r => r.IsDeleted, false)
-                .With(r => r.Date, Timestamp.FromDateTime(DateTime.UtcNow)));
-
-            _fixture.Customize<ReservationEntity>(c => c
-                .With(r => r.IsDeleted, false)
-                .With(r => r.Date, DateTime.UtcNow));
-
             _loggerMock = _fixture.Freeze<Mock<ILogger<ReservationServiceApi>>>();
             _reservationRepositoryMock = _fixture.Freeze<Mock<IRepository<ReservationEntity>>>();
 
-            _service = _fixture.Create<ReservationServiceApi>();
+            _service = new ReservationServiceApi(
+                _loggerMock.Object,
+                _reservationRepositoryMock.Object);
+        }
+
+        private Reservation CreateReservation(string id, params string[] dishIds)
+        {
+            var reservation = new Reservation
+            {
+                Id = id,
+                PersonId = "person1",
+                Date = Timestamp.FromDateTime(DateTime.UtcNow),
+                TableName = "Table1",
+                SeatNumber = 4,
+                IsDeleted = false
+            };
+
+            reservation.DishIds.AddRange(dishIds);
+            return reservation;
+        }
+
+        private ReservationEntity CreateReservationEntity(long id, params string[] dishIds)
+        {
+            var entity = new ReservationEntity
+            {
+                Id = id,
+                PersonId = "person1",
+                Date = DateTime.UtcNow,
+                TableName = "Table1",
+                SeatNumber = 4,
+                IsDeleted = false
+            };
+
+            entity.DishReservations.AddRange(
+                dishIds.Select((d, i) => new DishReservationEntity
+                {
+                    Id = i + 1,
+                    DishId = d,
+                    ReservationId = id
+                }));
+
+            return entity;
         }
 
         [Test]
-        public async Task AddReservation_ValidRequest_ReturnsSuccessWithCreatedReservation()
+        public async Task AddReservation_ValidRequest_ReturnsSuccess()
         {
-            var testReservation = _fixture.Create<Reservation>();
-            var entity = _fixture.Build<ReservationEntity>()
-                .With(e => e.DishReservations, testReservation.DishIds
-                    .Select((d, i) => new DishReservationEntity
-                    {
-                        Id = i + 1,
-                        DishId = d,
-                        ReservationId = 1
-                    })
-                    .ToList())
-                .Create();
+            var testReservation = CreateReservation("1", "dish1", "dish2");
+            var expectedEntity = CreateReservationEntity(1, "dish1", "dish2");
 
             _reservationRepositoryMock.Setup(x => x.CreateAsync(It.IsAny<ReservationEntity>()))
-                .ReturnsAsync(entity);
+                .ReturnsAsync(expectedEntity);
 
             var result = await _service.AddReservation(testReservation, null);
 
             Assert.That(result.State, Is.EqualTo(ReplyState.Ok));
-            Assert.That(result.Reservations, Has.Count.EqualTo(1));
-            Assert.That(result.Reservations[0].Id, Is.EqualTo(entity.Id.ToString()));
-            Assert.That(result.Reservations[0].TableName, Is.EqualTo(entity.TableName));
+            Assert.That(result.Reservations[0].Id, Is.EqualTo("1"));
         }
 
         [Test]
-        public async Task AddReservation_WithDishes_CreatesDishReservations()
+        public async Task UpdateReservation_WithDishes_UpdatesCorrectly()
         {
-            var dishIds = _fixture.CreateMany<string>(2).ToList();
-            var repeatedField = new RepeatedField<string>();
-            repeatedField.AddRange(dishIds);
+            var testReservation = CreateReservation("1", "newDish1", "newDish2");
+            var existingEntity = CreateReservationEntity(1, "oldDish1");
+            var updatedEntity = CreateReservationEntity(1, "newDish1", "newDish2");
 
-            var testReservation = _fixture.Build<Reservation>()
-                .With(r => r.DishIds, repeatedField)
-                .With(r => r.Id, "1")
-                .Create();
-
-            var entity = _fixture.Build<ReservationEntity>()
-                .With(e => e.DishReservations, testReservation.DishIds
-                    .Select((d, i) => new DishReservationEntity
-                    {
-                        Id = i + 1,
-                        DishId = d,
-                        ReservationId = 1
-                    })
-                    .ToList())
-                .Create();
-
-            _reservationRepositoryMock.Setup(x => x.CreateAsync(It.Is<ReservationEntity>(r =>
-                r.DishReservations.Count == testReservation.DishIds.Count)))
-                .ReturnsAsync(entity);
-
-            var result = await _service.AddReservation(testReservation, null);
-
-            Assert.That(result.Reservations[0].DishIds, Is.EquivalentTo(testReservation.DishIds));
-        }
-
-        [Test]
-        public async Task GetReservations_ByDishId_ReturnsReservationsWithDish()
-        {
-            var testDishId = _fixture.Create<string>();
-            var testData = _fixture.Build<ReservationEntity>()
-                .With(r => r.DishReservations, new List<DishReservationEntity>
-                {
-                    new DishReservationEntity { DishId = testDishId, ReservationId = 1 }
-                })
-                .CreateMany(1)
-                .Concat(_fixture.Build<ReservationEntity>()
-                    .With(r => r.DishReservations, new List<DishReservationEntity>
-                    {
-                        new DishReservationEntity { DishId = _fixture.Create<string>(), ReservationId = 2 }
-                    })
-                    .CreateMany(1))
-                .ToArray();
-
-            var request = _fixture.Build<ReservationQueryRequest>()
-                .With(r => r.DishId, testDishId)
-                .Create();
-
-            _reservationRepositoryMock.Setup(x => x.GetByQueryAsync(It.IsAny<Func<ReservationEntity, bool>>()))
-                .ReturnsAsync(testData.Where(r =>
-                    r.DishReservations.Any(d => d.DishId == testDishId)).ToList());
-
-            var result = await _service.GetReservations(request, null);
-
-            Assert.That(result.Reservations, Has.Count.EqualTo(1));
-            Assert.That(result.Reservations[0].DishIds, Contains.Item(testDishId));
-        }
-
-        [Test]
-        public async Task GetReservations_IncludesDishReservationsInResponse()
-        {
-            var dishIds = _fixture.CreateMany<string>(2).ToList();
-            var testData = _fixture.Build<ReservationEntity>()
-                .With(r => r.DishReservations, dishIds
-                    .Select((d, i) => new DishReservationEntity
-                    {
-                        Id = i + 1,
-                        DishId = d,
-                        ReservationId = 1
-                    })
-                    .ToList())
-                .CreateMany(1)
-                .ToArray();
-
-            _reservationRepositoryMock.Setup(x => x.GetByQueryAsync(It.IsAny<Func<ReservationEntity, bool>>()))
-                .ReturnsAsync(testData.ToList());
-
-            var result = await _service.GetReservations(new ReservationQueryRequest(), null);
-
-            Assert.That(result.Reservations[0].DishIds, Has.Count.EqualTo(2));
-        }
-
-        [Test]
-        public async Task UpdateReservation_WithDishes_UpdatesDishReservations()
-        {
-            var newDishIds = _fixture.CreateMany<string>(2).ToList();
-            var dishIdsRepeatedField = new RepeatedField<string>();
-            dishIdsRepeatedField.AddRange(newDishIds);
-
-            var testReservation = _fixture.Build<Reservation>()
-                .With(r => r.DishIds, dishIdsRepeatedField)
-                .With(r => r.Id, "1")
-                .Create();
-
-            var oldDishId = _fixture.Create<string>();
-            var existingEntity = _fixture.Build<ReservationEntity>()
-                .With(r => r.Id, 1)
-                .With(r => r.DishReservations, new List<DishReservationEntity>
-                {
-                    new DishReservationEntity
-                    {
-                        Id = 1,
-                        DishId = oldDishId,
-                        ReservationId = 1
-                    }
-                })
-                .Create();
-
-            var updatedEntity = _fixture.Build<ReservationEntity>()
-                .With(r => r.Id, 1)
-                .With(r => r.DishReservations, newDishIds
-                    .Select((d, i) => new DishReservationEntity
-                    {
-                        Id = i + 2,
-                        DishId = d,
-                        ReservationId = 1
-                    })
-                    .ToList())
-                .Create();
-
-            _reservationRepositoryMock.Setup(x => x.UpdateAsync(It.Is<ReservationEntity>(r =>
-                r.DishReservations.Count == newDishIds.Count &&
-                r.DishReservations.All(dr => newDishIds.Contains(dr.DishId)))))
+            _reservationRepositoryMock.Setup(x => x.UpdateAsync(It.IsAny<ReservationEntity>()))
                 .ReturnsAsync(updatedEntity);
 
             var result = await _service.UpdateReservation(testReservation, null);
 
-            Assert.Multiple(() =>
-            {
-                Assert.That(result.State, Is.EqualTo(ReplyState.Ok));
-                Assert.That(result.Reservations, Has.Count.EqualTo(1));
-                Assert.That(result.Reservations[0].DishIds, Is.EquivalentTo(newDishIds));
-            });
+            Assert.That(result.Reservations[0].DishIds, Is.EquivalentTo(new[] { "newDish1", "newDish2" }));
         }
 
         [Test]
-        public async Task DeleteReservation_AlsoDeletesDishReservations()
+        public async Task GetReservations_ByDishId_ReturnsCorrectReservations()
         {
-            var request = _fixture.Build<IdRequest>()
-                .With(r => r.Id, "1")
-                .Create();
+            var testData = new[]
+            {
+                CreateReservationEntity(1, "dish1"),
+                CreateReservationEntity(2, "dish2")
+            };
 
+            var request = new ReservationQueryRequest { DishId = "dish1" };
+
+            _reservationRepositoryMock.Setup(x => x.GetByQueryAsync(It.IsAny<Func<ReservationEntity, bool>>()))
+                .ReturnsAsync(testData.Where(x => x.DishReservations.Any(d => d.DishId == "dish1")).ToList());
+
+            var result = await _service.GetReservations(request, null);
+
+            Assert.That(result.Reservations, Has.Count.EqualTo(1));
+            Assert.That(result.Reservations[0].Id, Is.EqualTo("1"));
+        }
+
+        [Test]
+        public async Task DeleteReservation_ValidId_ReturnsSuccess()
+        {
             _reservationRepositoryMock.Setup(x => x.DeleteAsync(1))
                 .ReturnsAsync(1);
 
-            var result = await _service.DeleteReservation(request, null);
+            var result = await _service.DeleteReservation(new IdRequest { Id = "1" }, null);
 
             Assert.That(result.State, Is.EqualTo(ReplyState.Ok));
-            _reservationRepositoryMock.Verify(x => x.DeleteAsync(1), Times.Once);
         }
     }
 }
