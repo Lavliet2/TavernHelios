@@ -26,7 +26,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AdministrationService\TavernHelios.AdministrationService.APICore\TavernHelios.AdministrationService.APICore.csproj" />
     <ProjectReference Include="..\Common\TavernHelios.Common\TavernHelios.Common.csproj" />
     <ProjectReference Include="..\Common\TavernHelios.GrpcCommon\TavernHelios.GrpcCommon.csproj" />
     <ProjectReference Include="..\Common\TavernHelios.Utils\TavernHelios.Utils.csproj" />

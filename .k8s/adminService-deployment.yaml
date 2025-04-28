@@ -40,6 +40,15 @@ spec:
               value: "admin"
             - name: RabbitMQ__Password
               value: "admin"
+              #Serilog
+            - name: RABBITMQ_HOST
+              value: "rabbitmq-monitoring"
+            - name: RABBITMQ_USER
+              value: "admin"
+            - name: RABBITMQ_PASSWORD
+              value: "admin"
+            - name: RABBITMQ_PORT
+              value: "5672"              
           imagePullPolicy: Always
       imagePullSecrets:
         - name: ghcr-secret

@@ -51,15 +51,19 @@ spec:
     - name: amqp
       port: 5672
       targetPort: 5672
+      nodePort: 32055
     - name: web-ui
       port: 15672
       targetPort: 15672
+      nodePort: 32054
     - name: stomp
       port: 5552
       targetPort: 5552
+      nodePort: 32056      
     - name: prometheus
       port: 15692
       targetPort: 15692
+      nodePort: 32057      
   type: NodePort
 
 ---
