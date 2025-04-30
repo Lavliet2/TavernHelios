@@ -18,6 +18,9 @@
       <Version>8.*-*</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
+    <PackageReference Include="Serilog.Sinks.RabbitMQ" Version="8.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
     <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="7.2.0" />
   </ItemGroup>
@@ -29,6 +32,7 @@
     <ProjectReference Include="..\LayoutService\TavernHelios.LayoutService.APICore\TavernHelios.LayoutService.APICore.csproj" />
     <ProjectReference Include="..\MenuService\APICore\TavernHelios.MenuService.APICore.csproj" />
     <ProjectReference Include="..\ReservationService\TavernHelios.ReservationService.APICore\TavernHelios.ReservationService.APICore.csproj" />
+    <ProjectReference Include="..\TavernHelios.RabbitMq\TavernHelios.RabbitMq.csproj" />
     <!--<ProjectReference Include="..\tavernhelios.client\tavernhelios.client.esproj">
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>-->

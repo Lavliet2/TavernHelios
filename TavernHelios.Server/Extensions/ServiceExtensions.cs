@@ -1,7 +1,7 @@
 ﻿using Grpc.Core;
 using Microsoft.OpenApi.Models;
-using System.Diagnostics.Contracts;
 using TavernHelios.GrpcCommon.Settings;
+using TavernHelios.RabbitMq.Settings;
 using TavernHelios.Server;
 using static GrpcContract.LayoutService.LayoutService;
 using static GrpcContract.MenuService.MenuService;
@@ -76,13 +76,13 @@ namespace MenuServiceServer.Extensions
             //services.AddSingleton<ICache<MenuEntity>, MenuCache>();
         }
 
-        
         private static void AddSettings(
             this IServiceCollection services,
             IConfiguration configuration)
         {
             services.Configure<GrpcMenuServiceSettings>(configuration.GetSection(nameof(GrpcMenuServiceSettings)));
             services.Configure<GrpcReservationServiceSettings>(configuration.GetSection(nameof(GrpcReservationServiceSettings)));
+            services.Configure<RabbitMqSettings>(configuration.GetSection(nameof(RabbitMqSettings)));
         }
     }
 }

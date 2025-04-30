@@ -1,4 +1,7 @@
 using MenuServiceServer.Extensions;
+using Serilog;
+using TavernHelios.Server.Extensions;
+using TavernHelios.Server.Middleware;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using TavernHelios.Server.Exceptions;
 using TavernHelios.Server.Services;
@@ -58,14 +61,30 @@ namespace TavernHelios.Server
                 });
             builder.Services.AddAuthorization();
 
+            Log.Logger = new LoggerConfiguration()
+                .Configure(builder.Configuration)
+                .CreateLogger();
+
+            builder.Host.UseSerilog();
+
             var app = builder.Build();
 
             app.UseDefaultFiles();
             app.UseStaticFiles();
 
-            if (app.Environment.IsDevelopment())
-            {
-            }
+            //if (app.Environment.IsDevelopment())
+            //{
+            //    //app.UseSwagger();
+            //    //app.UseSwaggerUI();
+
+            //    app.UseDeveloperExceptionPage();
+            //}
+            //else
+            //{
+            //    app.UseExceptionHandler("/Home/Error");
+            //    app.UseHsts();
+            //}
+            app.UseHsts();
                 app.UseSwagger();
                 app.UseSwaggerUI();
 
@@ -78,6 +97,7 @@ namespace TavernHelios.Server
             app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();
+            app.UseMiddleware<LoggingMiddleware>();
             app.MapFallbackToFile("/index.html");
 
             app.Run();
