@@ -1,12 +1,10 @@
-﻿using TavernHelios.ReservationService.ApiCore.Interfaces;
-using Grpc.Core;
+﻿using Grpc.Core;
 using GrpcContract;
-using Microsoft.Extensions.Options;
-using TavernHelios.GrpcCommon.Settings;
-using static GrpcContract.ReservationService.ReservationService;
 using GrpcContract.ReservationService;
 using TavernHelios.ReservationService.ApiCore.Extensions;
+using TavernHelios.ReservationService.ApiCore.Interfaces;
 using TavernHelios.ReservationService.APICore.Entities;
+using static GrpcContract.ReservationService.ReservationService;
 
 namespace ReservationServiceServer.ReservationService
 {

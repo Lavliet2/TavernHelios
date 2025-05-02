@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TavernHelios.ReservationService.ApiCore.Interfaces;
+﻿using TavernHelios.ReservationService.ApiCore.Interfaces;
 
 namespace TavernHelios.ReservationService.APICore.Entities
 {
