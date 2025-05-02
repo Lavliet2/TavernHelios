@@ -1,5 +1,5 @@
 # (1) Сборка фронта
-FROM node:23.6 AS build
+FROM node:23.10 AS build
 WORKDIR /app
 
 COPY ./tavernhelios.client/package*.json ./
@@ -13,7 +13,7 @@ ENV NODE_ENV=${NODE_ENV}
 RUN npm run build
 
 # (2) Финальный образ
-FROM nginx:latest as frontend
+FROM nginx:1.26.3 as frontend
 # Копируем статические файлы
 COPY --from=build /app/dist /usr/share/nginx/html
 # Копируем production-конфиг (где listen 80, без SSL)

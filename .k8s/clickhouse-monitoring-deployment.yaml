@@ -1,0 +1,94 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clickhouse-monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: clickhouse-monitoring
+  template:
+    metadata:
+      labels:
+        app: clickhouse-monitoring
+    spec:
+      containers:
+        - name: clickhouse
+          image: clickhouse/clickhouse-server:23.8.4.69-alpine
+          ports:
+            - containerPort: 8123
+            - containerPort: 9000
+            - containerPort: 9005
+            - containerPort: 9363
+          env:
+            - name: CLICKHOUSE_DB
+              value: "default"
+            - name: CLICKHOUSE_USER
+              value: "default"
+            - name: CLICKHOUSE_PASSWORD
+              value: ""
+          volumeMounts:
+            - name: clickhouse-storage
+              mountPath: /data/clickhouse_monitoring_data
+            - name: config-volume
+              mountPath: /etc/clickhouse-server/config.d/prometheus.xml
+              subPath: prometheus.xml
+      volumes:
+        - name: clickhouse-storage
+          persistentVolumeClaim:
+            claimName: clickhouse-monitoring-pvc
+        - name: config-volume
+          configMap:
+            name: clickhouse-prometheus-config
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: clickhouse-monitoring
+spec:
+  selector:
+    app: clickhouse-monitoring
+  ports:
+    - name: http
+      port: 8123
+      targetPort: 8123
+    - name: native
+      port: 9000
+      targetPort: 9000
+    - name: tcp
+      port: 9005
+      targetPort: 9005
+    - name: prometheus
+      port: 9363
+      targetPort: 9363
+  type: NodePort
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: clickhouse-prometheus-config
+data:
+  prometheus.xml: |
+    <clickhouse>
+        <prometheus>
+            <endpoint>/metrics</endpoint>
+            <port>9363</port>
+            <metrics>true</metrics>
+            <events>true</events>
+            <asynchronous_metrics>true</asynchronous_metrics>
+        </prometheus>
+    </clickhouse>
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: clickhouse-monitoring-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi

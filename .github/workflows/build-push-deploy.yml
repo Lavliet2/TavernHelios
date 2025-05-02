@@ -120,6 +120,18 @@ jobs:
             ghcr.io/lavliet2/authservice:${{ env.BRANCH }}-${{ github.ref_name }}
             ghcr.io/lavliet2/authservice:latest       
 
+      # **Сборка и публикация контейнера с AdminService**
+      - name: Build and push AdminService image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./AdministrationService/TavernHelios.AdministrationService.AdministrationServiceServer/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/lavliet2/adminservice:${{ env.BRANCH }}-${{ github.ref_name }}
+            ghcr.io/lavliet2/adminservice:latest
+
+
       - name: Add SSH key
         uses: webfactory/ssh-agent@v0.5.3
         with:
@@ -156,12 +168,18 @@ jobs:
           kubectl apply -f .k8s/mongoLayoutService-deployment.yaml || exit 1
           kubectl apply -f .k8s/postgresReservation-deployment.yaml || exit 1
           kubectl apply -f .k8s/postgresAuth-deployment.yaml || exit 1
+          ### Мониторинг и Админка
+          kubectl apply -f .k8s/clickhouse-monitoring-deployment.yaml || exit 1
+          kubectl apply -f .k8s/rabbitmq-monitoring-deployment.yaml || exit 1
+          kubectl apply -f .k8s/prometheus-monitoring-deployment.yaml || exit 1
+          kubectl apply -f .k8s/grafana-monitoring-deployment.yaml || exit 1
 
           ## наши поды
           kubectl apply -f .k8s/menuService-deployment.yaml || exit 1
           kubectl apply -f .k8s/reservationService-deployment.yaml || exit 1
           kubectl apply -f .k8s/layoutService-deployment.yaml || exit 1
           kubectl apply -f .k8s/authService-deployment.yaml || exit 1
+          kubectl apply -f .k8s/adminService-deployment.yaml || exit 1
           kubectl apply -f .k8s/tavernhelios-server-deployment.yaml || exit 1
           kubectl apply -f .k8s/tavernhelios-client-deployment.yaml || exit 1
       
@@ -171,6 +189,7 @@ jobs:
           kubectl rollout restart deployment reservationservice || exit 1
           kubectl rollout restart deployment layoutservice || exit 1
           kubectl rollout restart deployment authservice || exit 1
+          kubectl rollout restart deployment adminservice || exit 1
           kubectl rollout restart deployment tavernhelios-server || exit 1
           kubectl rollout restart deployment tavernhelios-client || exit 1
       
