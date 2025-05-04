@@ -1,5 +1,10 @@
+import { Description } from '@mui/icons-material';
+import { common } from '@mui/material/colors';
+import { error } from 'console';
 import i18n from 'i18next';
+import { title } from 'process';
 import { initReactI18next } from 'react-i18next';
+import { addDish } from './services/dishService';
 
 const storedLanguage = localStorage.getItem('language') || 'ru'; 
 
@@ -30,6 +35,44 @@ i18n.use(initReactI18next).init({
         vadimRole: "API Authorization", 
         copy: "© 2025 TavernHelios. All rights reserved.",
 
+        common: {
+          Add: "Add",
+          edit: "Edit",
+          delete: "Delete",
+          save: "Save",
+          Cancel: "Cancel",
+          close: "Close",
+          confirm: "Confirm",
+          yes: "Yes",
+          no: "No",
+          ok: "OK",
+          title: "Title",
+          description: "Description",
+          name: "Name",
+          type: "Type",
+          actions: "Actions",
+          required: "Required",
+          image: "Image",
+          selectImage: "Select image",
+          uploadImage: "Upload image",
+          upload: "Upload",
+          download: "Download",
+          downloadImage: "Download image",
+          preview: "Preview",
+          previewImage: "Preview image",
+        
+          error: "Error",
+          success: "Success",
+          loading: "Loading...",
+          loadingData: "Loading data...",
+          noData: "No data",
+          search: "Search",
+          filter: "Filter",
+          select: "Select",
+          selectAll: "Select all",
+
+        },
+
         management: {
           title: "Entity Management",
           dishes: {
@@ -52,6 +95,9 @@ i18n.use(initReactI18next).init({
 
         editDishes: {
           title: "Manage Dishes",
+          addDish: "Add dish",
+          editDish: "Edit dish",
+          dishType: "Dish type",
           dishes: {
             addTooltip: "Add dish",
             desc: "Редактируйте, добавляйте или удаляйте блюда."
@@ -65,7 +111,20 @@ i18n.use(initReactI18next).init({
           dishAction: {
             edit: "Edit",
             delete: "Delete",
-          },
+          }
+        },
+
+        // menuAddDishModal: {
+        //   title: "Add dish",
+        //   dishType: "Dish type"
+        // },
+
+        editMenu:{
+          title: "Manage Menu",
+          addDish: "Add dish",
+          Menu: "Menu",
+          menu: "menu",
+
         }
       }
     },
@@ -94,6 +153,43 @@ i18n.use(initReactI18next).init({
         vadimRole: "API авторизации",
         copy: "© 2025 TavernHelios. Все права защищены.",
 
+        common: {
+          add: "Добавить",
+          edit: "Редактировать",
+          delete: "Удалить",
+          save: "Сохранить",
+          cancel: "Отмена",
+          close: "Закрыть",
+          confirm: "Подтвердить",
+          yes: "Да",
+          no: "Нет",
+          ok: "ОК",
+          title: "Заголовок",
+          description: "Описание",
+          name: "Название",
+          type: "Тип",
+          actions: "Действия",
+          required: "Обязательно",
+          image: "Изображение",
+          selectImage: "Выберите изображение",
+          uploadImage: "Загрузить изображение",
+          upload: "Загрузить",
+          download: "Скачать",
+          downloadImage: "Скачать изображение",
+          preview: "Предпросмотр",
+          previewImage: "Предпросмотр изображения",
+
+          error: "Ошибка",
+          success: "Успех",
+          loading: "Загрузка...",
+          loadingData: "Загрузка данных...",
+          noData: "Нет данных",
+          search: "Поиск",
+          filter: "Фильтр",
+          select: "Выбрать",
+          selectAll: "Выбрать все",
+        },
+
         management: {
           title: "Управление сущностями",
           dishes: {
@@ -116,6 +212,9 @@ i18n.use(initReactI18next).init({
 
         editDishes: {
           title: "Редактирование блюд",
+          addDish: "Добавить блюдо",
+          editDish: "Редактировать блюдо",
+          dishType: "Тип блюда",
           dishes: {
             addTooltip: "Добавить блюдо",
             desc: "Редактируйте, добавляйте или удаляйте блюда."
@@ -130,6 +229,18 @@ i18n.use(initReactI18next).init({
             edit: "Редактировать",
             delete: "Удалить",
           },
+        },
+
+        // menuAddDishModal: {
+        //   title: "Добавить блюдо",
+        //   dishType: "Тип блюда",
+        // },
+
+        editMenu:{
+          title: "Редактирование меню",
+          addDish: "Добавить блюдо",
+          Menu: "Меню",
+          menu: "меню",  
         }
       }    
     }          

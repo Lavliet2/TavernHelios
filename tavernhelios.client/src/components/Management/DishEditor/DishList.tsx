@@ -56,12 +56,12 @@ const DishList: React.FC<DishListProps> = ({ dishes, onEdit, onDelete }) => {
                         )}
                       </TableCell>
                       <TableCell>
-                        <Tooltip title="Редактировать">
+                        <Tooltip title={ t('common.edit') }>
                           <IconButton color="primary" onClick={() => onEdit(dish)}>
                             <EditIcon />
                           </IconButton>
                         </Tooltip>
-                        <Tooltip title="Удалить">
+                        <Tooltip title={ t('common.delete') }>
                           <IconButton color="error" onClick={() => onDelete(dish.id)}>
                             <DeleteIcon />
                           </IconButton>

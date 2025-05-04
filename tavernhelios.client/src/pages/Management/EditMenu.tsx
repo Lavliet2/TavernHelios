@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from "react";
+import { useTranslation } from 'react-i18next';
 import { Container, Typography, CircularProgress, Card,
   CardContent, List, ListItem, ListItemText, ListItemAvatar,
   Avatar, IconButton, Box, Tooltip } from "@mui/material";
@@ -17,6 +18,7 @@ import MenuCreateModal from "../../components/Management/MenuEditor/MenuCreateMo
 
 
 const EditMenu: React.FC = () => {
+  const { t } = useTranslation();
   const {
     menuData, dishesData, loading, snackbarMessage, createMenu, 
     removeMenu, addDishToMenu, removeDishFromMenu, isAddModalOpen,
@@ -48,7 +50,7 @@ const EditMenu: React.FC = () => {
     return (
       <Container sx={{ mt: 4, display: "flex", flexDirection: "column", alignItems: "center" }}>
         <CircularProgress />
-        <Typography variant="body1" sx={{ mt: 2 }}>Загрузка данных...</Typography>
+        <Typography variant="body1" sx={{ mt: 2 }}> { t('common.loadingData') }</Typography>
       </Container>
     );
   }
@@ -66,7 +68,7 @@ const EditMenu: React.FC = () => {
   return (
     <Container sx={{ mt: 4 }}>
       <Typography variant="h4" color="primary" align="center" sx={{ mb: 4 }}>
-        Редактирование меню
+        { t('editMenu.title') }
       </Typography>
 
       <Grid container spacing={4} justifyContent="center">
@@ -76,7 +78,7 @@ const EditMenu: React.FC = () => {
               <CardContent>
               <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <Typography variant="h6">{menu.name}</Typography>
-                  <Tooltip title="Удалить меню">
+                  <Tooltip title={ t('common.delete') + ' ' + t('editMenu.menu')}>
                     <IconButton onClick={() => removeMenu(menu.id)} color="error">
                       <DeleteIcon />
                     </IconButton>
@@ -114,7 +116,7 @@ const EditMenu: React.FC = () => {
                         ))}
                         {/* Кнопка добавления */}
                         <ListItem>
-                          <Tooltip title="Добавить блюдо">
+                          <Tooltip title={t("editMenu.addDish")}>
                             <IconButton
                               color="primary"
                               onClick={() => handleOpenAddDishModal(menu.id, category.label)}
@@ -123,7 +125,7 @@ const EditMenu: React.FC = () => {
                             </IconButton>
                           </Tooltip>
                           <Typography variant="body2" color="text.secondary" sx={{ ml: 1 }}>
-                            Добавить блюдо
+                            {t("editMenu.addDish")}
                           </Typography>
                         </ListItem>
                       </List>
