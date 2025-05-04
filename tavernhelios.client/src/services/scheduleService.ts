@@ -2,6 +2,7 @@ import axios from 'axios';
 import { API_BASE_URL } from "../config";
 import { Schedule } from "../types/Management";
 import getLocalISODate from "../constants/localDate";
+import { isHttpResponseSuccess } from '../utils/httpUtils';
 
 export const fetchScheduleData = async (isDeleted = false): Promise<Schedule[]> => {
   try {
@@ -27,7 +28,7 @@ export const addSchedule = async (date: string, menuId: string): Promise<void> =
       }
     );
 
-    if (response.status !== 200) {
+    if (!isHttpResponseSuccess(response.status)) {
       throw new Error(`Ошибка при добавлении расписания: ${response.data.message || response.statusText}`);
     }
   } catch (error) {
@@ -46,7 +47,7 @@ export const deleteSchedule = async (id: string): Promise<void> => {
       }
     );
 
-    if (response.status !== 200) {
+    if (!isHttpResponseSuccess(response.status)) {
       throw new Error(`Ошибка при удалении: ${response.data.message || response.statusText}`);
     }
   } catch (error) {
