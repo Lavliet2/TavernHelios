@@ -29,6 +29,7 @@ namespace TavernHelios.Server.Services
             {
                 PropertyNameCaseInsensitive = true
             });
+            user.IsAdmin = user.UserRoles.Any(x => x.RoleName == "Admin");
             return user;
         }
 
