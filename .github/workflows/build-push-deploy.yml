@@ -20,16 +20,16 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '8.0.x'
-    
+
       - name: Restore solution
         run: dotnet restore TavernHelios.sln
-    
+
       - name: Build solution
         run: dotnet build TavernHelios.sln --no-restore --configuration Debug
-    
-      - name: Run tests
-        run: dotnet test TavernHelios.sln --no-build --verbosity normal -p:TreatWarningsAsErrors=false --max-parallel-threads=4      
 
+      - name: Run tests
+        run: dotnet test TavernHelios.sln --no-build --verbosity normal -p:TreatWarningsAsErrors=false -m:4
+        
       # 🔥 Получаем родительскую ветку тега
       - name: Determine branch from tag
         id: get-branch
