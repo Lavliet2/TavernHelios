@@ -222,7 +222,7 @@ services:
       - server
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
-      ASPNETCORE_URLS: "http://+:5263"
+      ASPNETCORE_URLS: "http://+:5068"
 
       ClickHouse:Host: "clickhouse-monitoring"
       ClickHouse:Port: 8123
