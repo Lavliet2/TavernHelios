@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from 'react-i18next';
 import { Container, Typography, IconButton, Tooltip, Snackbar, Alert } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import useDishes from "../../hooks/Management/useDishes";
@@ -8,6 +9,7 @@ import DishEditModal from "../../components/Management/DishEditor/DishEditModal"
 import DishListSkeleton from "../../components/Management/DishEditor/DishListSkeleton";
 
 const EditDishes: React.FC = () => {
+  const { t } = useTranslation();
   const {
     DishData,
     loading,
@@ -34,7 +36,7 @@ const EditDishes: React.FC = () => {
     return (
       <Container sx={{ mt: 4 }}>
         <Typography variant="h4" color="primary" align="center" sx={{ mb: 4 }}>
-          Редактирование блюд
+          { t('editDishes.title') }
         </Typography>
         <DishListSkeleton />
       </Container>
@@ -44,9 +46,9 @@ const EditDishes: React.FC = () => {
   return (
     <Container sx={{ mt: 4 }}>
       <Typography variant="h4" color="primary" align="center" sx={{ mb: 4 }}>
-        Редактирование блюд
+        { t('editDishes.title') }
       </Typography>
-      <Tooltip title="Добавить блюдо">
+      <Tooltip title= { t('editDishes.dishes.addTooltip') } >
         <IconButton color="success" onClick={() => setIsAddModalOpen(true)} sx={{ mb: 2 }}>
           <AddIcon />
         </IconButton>

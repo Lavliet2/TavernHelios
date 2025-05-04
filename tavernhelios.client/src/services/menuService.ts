@@ -1,9 +1,11 @@
 import { API_BASE_URL } from "../config";
 import { Menu } from "../types/Management";
 
-export const fetchMenus = async (): Promise<Menu[]> => {
+
+export const fetchMenus = async (isDeleted = false): Promise<Menu[]> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/Menu`);
+    const response = await fetch(`${API_BASE_URL}/api/Menu?isDeleted=${isDeleted}`);
+    
     if (!response.ok) throw new Error("Ошибка при загрузке меню");
     return response.json();
   } catch (error) {

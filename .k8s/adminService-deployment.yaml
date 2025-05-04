@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adminservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: adminservice
+  template:
+    metadata:
+      labels:
+        app: adminservice
+    spec:
+      containers:
+        - name: adminservice
+          image: ghcr.io/lavliet2/adminservice
+          ports:
+            - containerPort: 5068
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Development"
+            - name: ASPNETCORE_URLS
+              value: "http://+:5068"
+            - name: ClickHouse__Host
+              value: "clickhouse-monitoring"
+            - name: ClickHouse__Port
+              value: "8123"
+            - name: ClickHouse__Database
+              value: "default"
+            - name: ClickHouse__User
+              value: "default"
+            - name: ClickHouse__Password
+              value: ""
+            - name: RabbitMQ__Host
+              value: "rabbitmq-monitoring"
+            - name: RabbitMQ__Port
+              value: "5672"
+            - name: RabbitMQ__User
+              value: "admin"
+            - name: RabbitMQ__Password
+              value: "admin"
+              #Serilog
+            - name: RABBITMQ_HOST
+              value: "rabbitmq-monitoring"
+            - name: RABBITMQ_USER
+              value: "admin"
+            - name: RABBITMQ_PASSWORD
+              value: "admin"
+            - name: RABBITMQ_PORT
+              value: "5672"              
+          imagePullPolicy: Always
+      imagePullSecrets:
+        - name: ghcr-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: adminservice
+spec:
+  selector:
+    app: adminservice
+  ports:
+    - name: web
+      port: 5068
+      targetPort: 5068
+      nodePort: 32051
+  type: NodePort

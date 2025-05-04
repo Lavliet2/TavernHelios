@@ -20,6 +20,7 @@ namespace TavernHelios.ReservationService.ApiCore.Extensions
             result.IsDeleted = entity.IsDeleted;
             result.SeatNumber = entity.SeatNumber;
             result.TableName = entity.TableName;
+            result.LayoutId = entity.LayoutId;
             return result;
         }
 
@@ -32,6 +33,7 @@ namespace TavernHelios.ReservationService.ApiCore.Extensions
             result.IsDeleted = value.IsDeleted;
             result.SeatNumber = value.SeatNumber;
             result.TableName = value.TableName;
+            result.LayoutId = value.LayoutId;
             foreach(var dishId in value.DishIds)
             {
                 result.DishReservations.Add(new DishReservationEntity() { DishId = dishId });
@@ -49,6 +51,7 @@ namespace TavernHelios.ReservationService.ApiCore.Extensions
             result.SeatNumber = value.SeatNumber;
             result.TableName = value.TableName;
             result.IsDeleted = value.IsDeleted;
+            result.LayoutId = value.LayoutId;
             return result;
         }
 
@@ -62,6 +65,7 @@ namespace TavernHelios.ReservationService.ApiCore.Extensions
             result.SeatNumber = value.SeatNumber;
             result.TableName = value.TableName;
             result.IsDeleted = false;
+            result.LayoutId = value.LayoutId;
             return result;
         }
 
@@ -75,6 +79,7 @@ namespace TavernHelios.ReservationService.ApiCore.Extensions
             result.SeatNumber = value.SeatNumber;
             result.TableName = value.TableName;
             result.IsDeleted = value.IsDeleted;
+            result.LayoutId = value.LayoutId;
             return result;
         }
 
@@ -88,6 +93,7 @@ namespace TavernHelios.ReservationService.ApiCore.Extensions
             if (value.IsDeleted != null) result.IsDeleted = value.IsDeleted.Value;
             if (value.BeginDate != null) result.BeginDate = value.BeginDate.Value.ToUniversalTime().ToTimestamp();
             if (value.EndDate != null) result.EndDate = value.EndDate.Value.ToUniversalTime().ToTimestamp();
+            if (value.LayoutId != null) result.LayoutId = value.LayoutId;
             
             return result;
         }
@@ -106,6 +112,11 @@ namespace TavernHelios.ReservationService.ApiCore.Extensions
             if (value.HasPersonId)
             {
                 result = result.AndAlso(x => x.PersonId == value.PersonId);
+            }
+
+            if (value.HasLayoutId)
+            {
+                result = result.AndAlso(x => x.LayoutId == value.LayoutId);
             }
 
             if (value.HasIsDeleted)

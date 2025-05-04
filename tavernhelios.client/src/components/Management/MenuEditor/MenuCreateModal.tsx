@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from 'react-i18next';
 import { Modal, Box, Typography, TextField, Button } from "@mui/material";
 
 interface MenuCreateModalProps {
@@ -8,6 +9,7 @@ interface MenuCreateModalProps {
 }
 
 const MenuCreateModal: React.FC<MenuCreateModalProps> = ({ open, onClose, onCreate }) => {
+  const { t } = useTranslation();
   const [menuName, setMenuName] = React.useState<string>("");
 
   const handleCreate = () => {
@@ -32,7 +34,7 @@ const MenuCreateModal: React.FC<MenuCreateModalProps> = ({ open, onClose, onCrea
       >
         <Typography variant="h6" sx={{ mb: 2 }}>Создать новое меню</Typography>
         <TextField
-          label="Название меню"
+          label={ t("editMenu.name" + " " + t("common.menu")) }
           fullWidth
           variant="outlined"
           value={menuName}

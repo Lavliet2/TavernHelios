@@ -59,6 +59,10 @@ namespace TavernHelios.ReservationService.PostgreRepository.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("LayoutId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("PersonId")
                         .IsRequired()
                         .HasMaxLength(100)

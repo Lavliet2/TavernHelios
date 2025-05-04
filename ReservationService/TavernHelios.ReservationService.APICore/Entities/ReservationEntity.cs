@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TavernHelios.ReservationService.ApiCore.Interfaces;
+﻿using TavernHelios.ReservationService.ApiCore.Interfaces;
 
 namespace TavernHelios.ReservationService.APICore.Entities
 {
@@ -22,5 +17,8 @@ namespace TavernHelios.ReservationService.APICore.Entities
         public string TableName { get; set; } = string.Empty;
 
         public bool IsDeleted { get; set; } = false;
+
+        public string LayoutId { get; set; } = string.Empty;
+
     }
 }
