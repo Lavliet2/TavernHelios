@@ -15,6 +15,26 @@ jobs:
         with:
           fetch-depth: 0  # Загружаем ВСЮ историю с тегами и ветками
 
+      # 🧪 NUnit тесты
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'       
+      - name: Restore only test projects
+        run: |
+          dotnet restore ./Tests/ControllersTests/ControllersTests.csproj
+          dotnet restore ./Tests/MenuService.Tests/MenuService.Tests.csproj
+          dotnet restore ./Tests/ReservationService.Tests/ReservationService.Tests.csproj
+      
+      - name: Run unit tests
+        run: |
+          echo "🧪 Running NUnit tests..."
+          dotnet test ./Tests/ControllersTests/ControllersTests.csproj --no-build --verbosity normal
+          dotnet test ./Tests/MenuService.Tests/MenuService.Tests.csproj --no-build --verbosity normal
+          dotnet test ./Tests/ReservationService.Tests/ReservationService.Tests.csproj --no-build --verbosity normal
+          echo "✅ All unit tests passed!"
+
+
       # 🔥 Получаем родительскую ветку тега
       - name: Determine branch from tag
         id: get-branch
