@@ -1,10 +1,10 @@
-import { Description } from '@mui/icons-material';
-import { common } from '@mui/material/colors';
-import { error } from 'console';
+// import { Description } from '@mui/icons-material';
+// import { common } from '@mui/material/colors';
+// import { error } from 'console';
 import i18n from 'i18next';
-import { title } from 'process';
+// import { title } from 'process';
 import { initReactI18next } from 'react-i18next';
-import { addDish } from './services/dishService';
+// import { addDish } from './services/dishService';
 
 const storedLanguage = localStorage.getItem('language') || 'ru'; 
 
