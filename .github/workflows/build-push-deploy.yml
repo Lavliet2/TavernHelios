@@ -19,19 +19,17 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '8.0.x'       
-      - name: Restore dependencies
-        run: dotnet restore
+          dotnet-version: '8.0.x'
 
-      - name: Run unit tests
-        run: |
-          echo "🧪 Starting NUnit tests..."
-          dotnet test ./Tests/ControllersTests/ControllersTests.csproj --no-build --verbosity normal
-          dotnet test ./Tests/MenuService.Tests/MenuService.Tests.csproj --no-build --verbosity normal
-          dotnet test ./Tests/ReservationService.Tests/ReservationService.Tests.csproj --no-build --verbosity normal
-          echo "✅ All unit tests passed!"
+      - name: Restore solution
+        run: dotnet restore TavernHelios.sln
 
+      - name: Build solution
+        run: dotnet build TavernHelios.sln --no-restore --configuration Debug
 
+      - name: Run tests
+        run: dotnet test TavernHelios.sln --no-build --verbosity normal -p:TreatWarningsAsErrors=false -m:4
+        
       # 🔥 Получаем родительскую ветку тега
       - name: Determine branch from tag
         id: get-branch
