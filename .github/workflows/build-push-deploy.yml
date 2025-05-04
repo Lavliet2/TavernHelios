@@ -20,14 +20,14 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '8.0.x'
-          
+
       - name: Restore solution
         run: dotnet restore TavernHelios.sln
     
       - name: Run unit tests from solution
         run: |
           echo "🧪 Running NUnit tests..."
-          dotnet test TavernHelios.sln --no-build --verbosity normal
+          dotnet test TavernHelios.sln --verbosity normal
 
       # 🔥 Получаем родительскую ветку тега
       - name: Determine branch from tag
