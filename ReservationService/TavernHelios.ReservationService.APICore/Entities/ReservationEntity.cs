@@ -17,5 +17,8 @@ namespace TavernHelios.ReservationService.APICore.Entities
         public string TableName { get; set; } = string.Empty;
 
         public bool IsDeleted { get; set; } = false;
+
+        public string LayoutId { get; set; } = string.Empty;
+
     }
 }
