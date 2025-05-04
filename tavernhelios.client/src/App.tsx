@@ -17,8 +17,19 @@ import Layout from "./pages/Management/Layout/EditLayout";
 import { SnackbarProvider } from "./hooks/useSnackbar";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import { useUser } from "./contexts/UserContext";
+import { useEffect } from "react";
+import axios from "axios";
+import { API_BASE_URL } from "./config";
 
 function App() {
+  const userContext = useUser();
+
+  useEffect(() => {
+      axios.get(`${API_BASE_URL}/api/auth/userInfo`)
+          .then(response => userContext?.login(response.data));
+  }, []) 
+
   return (
     <DndProvider backend={HTML5Backend}>
       <SnackbarProvider>

@@ -38,6 +38,7 @@ const NavigationBar: React.FC = () => {
   const handleMenuLogout = () => {
     setAnchorEl(null);
     axios.post(`${API_BASE_URL}/api/auth/logout`)
+      .then(() => userContext?.logout())
       .then(() => navigate("/login"));
   };
 

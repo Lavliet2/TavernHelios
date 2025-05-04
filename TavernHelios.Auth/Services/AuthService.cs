@@ -25,7 +25,7 @@ namespace TavernHelios.Auth.Services
         {
             var existingUser = _context.Users.FirstOrDefault(x => x.Login == registerDTO.Login);
             if (existingUser != null) throw new Exception("Пользователь с таким логином уже зарегистрирован");
-
+            if (registerDTO.Password != registerDTO.ConfirmPassword) throw new Exception("Пароли не совпадают");
             var newUser = new User
             {
                 FullName = registerDTO.FullName,

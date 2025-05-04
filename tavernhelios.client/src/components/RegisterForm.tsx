@@ -5,6 +5,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import axios from "axios";
 import { API_BASE_URL } from "../config";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../contexts/UserContext";
 
 const RegisterForm: React.FC = () => {
     const [fullName, setFullName] = useState("");
@@ -13,12 +14,17 @@ const RegisterForm: React.FC = () => {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState("");
     const navigate = useNavigate();
+    const userContext = useUser();
 
     const handleSubmit = () => {
         const formIsValid = validateForm();
         if (formIsValid) {
             axios.post(`${API_BASE_URL}/api/auth/register`, { fullName, login, password, confirmPassword })
-                .then(() => navigate("/login"));
+                .then(() => axios.post(`${API_BASE_URL}/api/auth/login`, { login, password }))
+                .then((response) => {
+                    userContext?.login(response.data);
+                    navigate("/");
+                });
         }
     };
 
@@ -116,7 +122,7 @@ const RegisterForm: React.FC = () => {
                     >
                         Зарегистрироваться
                     </Button>
-                    
+
                     {error && (
                         <Typography color="error" align="center" sx={{ marginTop: 2 }}>
                             {error}
