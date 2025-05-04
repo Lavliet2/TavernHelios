@@ -15,6 +15,8 @@
         public string TableName { get; set; } = string.Empty;
 
         public bool IsDeleted { get; set; } = false;
+
+        public string LayoutId { get; set; } = string.Empty;
     }
 
     public class ReservationCreateValue
@@ -28,5 +30,7 @@
         public int SeatNumber { get; set; } = -1;
 
         public string TableName { get; set; } = string.Empty;
+
+        public string LayoutId { get; set; } = string.Empty;
     }
 }

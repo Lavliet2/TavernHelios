@@ -1,11 +1,8 @@
-using TavernHelios.MenuService.Common.Interfaces;
-using TavernHelios.MenuService.Common.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using TavernHelios.MenuService.Common.Entities;
-using TavernHelios.MenuService.Common.DTOValues.Menu;
-using static GrpcContract.MenuService.MenuService;
 using Swashbuckle.AspNetCore.Annotations;
-using GrpcContract.MenuService;
+using TavernHelios.MenuService.Common.DTOValues.Menu;
+using TavernHelios.MenuService.Common.Extensions;
+using static GrpcContract.MenuService.MenuService;
 
 namespace DishServiceServer.Controllers
 {

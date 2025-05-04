@@ -1,12 +1,10 @@
-
-using Microsoft.AspNetCore.Mvc;
-
-using Swashbuckle.AspNetCore.Annotations;
-using static GrpcContract.ReservationService.ReservationService;
-using TavernHelios.ReservationService.ApiCore.Extensions;
 using GrpcContract.ReservationService;
+using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
+using TavernHelios.ReservationService.ApiCore.Extensions;
 using TavernHelios.ReservationService.APICore.DTOValues;
 using TavernHelios.Server.Services;
+using static GrpcContract.ReservationService.ReservationService;
 
 namespace TavernHelios.Server.Controllers
 {

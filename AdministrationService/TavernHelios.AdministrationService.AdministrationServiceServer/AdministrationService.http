@@ -1,0 +1,6 @@
+@TavernHelios.AdministrationService.AdministrationServiceServer_HostAddress = http://localhost:5263
+
+GET {{TavernHelios.AdministrationService.AdministrationServiceServer_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
