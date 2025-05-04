@@ -28,8 +28,9 @@ jobs:
         run: dotnet build TavernHelios.sln --no-restore --configuration Debug
     
       - name: Run tests without failing on warnings
-        continue-on-error: true
         run: dotnet test TavernHelios.sln --no-build --verbosity normal -p:TreatWarningsAsErrors=false
+        continue-on-error: true
+      
   
 
       # 🔥 Получаем родительскую ветку тега
