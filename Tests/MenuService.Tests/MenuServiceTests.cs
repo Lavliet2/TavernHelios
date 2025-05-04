@@ -119,34 +119,63 @@ namespace MenuService.Tests
             Assert.That(result.Menus[0].Dishes.Contains(dishId), Is.True);
         }
 
-        [Test, AutoData]
-        public async Task AddDishToMenu_MenuNotFound_ReturnsErrorReply(DishMenuMessage request)
+        [Test]
+        public async Task AddDishToMenu_MenuNotFound_ReturnsErrorReply()
         {
-            _menuRepositoryMock.Setup(x => x.GetByIdAsync(request.MenuId))
+            var testRequest = new DishMenuMessage { MenuId = "menu-123", DishId = "dish-456" };
+
+            _menuRepositoryMock.Setup(x => x.GetByIdAsync(testRequest.MenuId))
                 .ReturnsAsync((MenuEntity)null);
 
-            var result = await _service.AddDishToMenu(request, null);
+            var result = await _service.AddDishToMenu(testRequest, null);
 
             Assert.That(result.State, Is.EqualTo(ReplyState.Error));
             Assert.That(result.Messages.Any(m => m.Contains("не найдено")), Is.True);
         }
 
-        [Test, AutoData]
-        public async Task AddDishToMenu_DishAlreadyInMenu_ReturnsErrorReply(
-            string menuId,
-            string dishId)
-        {
-            var request = new DishMenuMessage { MenuId = menuId, DishId = dishId };
-            var menuEntity = new MenuEntity { Id = menuId, Dishes = new List<string> { dishId } };
+        //[Test, AutoData]
+        //public async Task AddDishToMenu_MenuNotFound_ReturnsErrorReply(DishMenuMessage request)
+        //{
+        //    _menuRepositoryMock.Setup(x => x.GetByIdAsync(request.MenuId))
+        //        .ReturnsAsync((MenuEntity)null);
 
-            _menuRepositoryMock.Setup(x => x.GetByIdAsync(menuId))
+        //    var result = await _service.AddDishToMenu(request, null);
+
+        //    Assert.That(result.State, Is.EqualTo(ReplyState.Error));
+        //    Assert.That(result.Messages.Any(m => m.Contains("не найдено")), Is.True);
+        //}
+
+        [Test]
+        public async Task AddDishToMenu_DishAlreadyInMenu_ReturnsErrorReply()
+        {
+            var testRequest = new DishMenuMessage { MenuId = "menu-abc", DishId = "dish-def" };
+            var menuEntity = new MenuEntity { Id = testRequest.MenuId, Dishes = new List<string> { testRequest.DishId } };
+
+            _menuRepositoryMock.Setup(x => x.GetByIdAsync(testRequest.MenuId))
                 .ReturnsAsync(menuEntity);
 
-            var result = await _service.AddDishToMenu(request, null);
+            var result = await _service.AddDishToMenu(testRequest, null);
 
             Assert.That(result.State, Is.EqualTo(ReplyState.Error));
             Assert.That(result.Messages.Any(m => m.Contains("уже содержит")), Is.True);
         }
+
+        //[Test, AutoData]
+        //public async Task AddDishToMenu_DishAlreadyInMenu_ReturnsErrorReply(
+        //    string menuId,
+        //    string dishId)
+        //{
+        //    var request = new DishMenuMessage { MenuId = menuId, DishId = dishId };
+        //    var menuEntity = new MenuEntity { Id = menuId, Dishes = new List<string> { dishId } };
+
+        //    _menuRepositoryMock.Setup(x => x.GetByIdAsync(menuId))
+        //        .ReturnsAsync(menuEntity);
+
+        //    var result = await _service.AddDishToMenu(request, null);
+
+        //    Assert.That(result.State, Is.EqualTo(ReplyState.Error));
+        //    Assert.That(result.Messages.Any(m => m.Contains("уже содержит")), Is.True);
+        //}
 
         #endregion
 
@@ -205,17 +234,31 @@ namespace MenuService.Tests
             Assert.That(result.MenusSchedules[0].Id, Is.EqualTo(request.Id));
         }
 
-        [Test, AutoData]
-        public async Task AddMenuSchedule_RepositoryReturnsNull_ReturnsErrorReply(MenuScheduleRequest request)
+        [Test]
+        public async Task AddMenuSchedule_RepositoryReturnsNull_ReturnsErrorReply()
         {
+            var testRequest = new MenuScheduleRequest { Id = "schedule1", MenuId = "menu-1" };
+
             _scheduleRepositoryMock.Setup(x => x.CreateAsync(It.IsAny<MenuScheduleEntity>()))
                 .ReturnsAsync((MenuScheduleEntity)null);
 
-            var result = await _service.AddMenuSchedule(request, null);
+            var result = await _service.AddMenuSchedule(testRequest, null);
 
             Assert.That(result.State, Is.EqualTo(ReplyState.Error));
             Assert.That(result.Messages.Any(m => m.Contains("Ошибка при добавлении")), Is.True);
         }
+
+        //[Test, AutoData]
+        //public async Task AddMenuSchedule_RepositoryReturnsNull_ReturnsErrorReply(MenuScheduleRequest request)
+        //{
+        //    _scheduleRepositoryMock.Setup(x => x.CreateAsync(It.IsAny<MenuScheduleEntity>()))
+        //        .ReturnsAsync((MenuScheduleEntity)null);
+
+        //    var result = await _service.AddMenuSchedule(request, null);
+
+        //    Assert.That(result.State, Is.EqualTo(ReplyState.Error));
+        //    Assert.That(result.Messages.Any(m => m.Contains("Ошибка при добавлении")), Is.True);
+        //}
 
         #endregion
 
@@ -235,17 +278,31 @@ namespace MenuService.Tests
             Assert.That(result.Id, Is.EqualTo(menuId));
         }
 
-        [Test, AutoData]
-        public async Task DeleteMenu_RepositoryReturnsNull_ReturnsErrorReply(IdRequest request)
+        [Test]
+        public async Task DeleteMenu_RepositoryReturnsNull_ReturnsErrorReply()
         {
-            _menuRepositoryMock.Setup(x => x.DeleteAsync(request.Id))
+            var testRequest = new IdRequest { Id = "menu-404" };
+
+            _menuRepositoryMock.Setup(x => x.DeleteAsync(testRequest.Id))
                 .ReturnsAsync((string)null);
 
-            var result = await _service.DeleteMenu(request, null);
+            var result = await _service.DeleteMenu(testRequest, null);
 
             Assert.That(result.State, Is.EqualTo(ReplyState.Error));
             Assert.That(result.Messages.Any(m => m.Contains("Ошибка при удалении")), Is.True);
         }
+
+        //[Test, AutoData]
+        //public async Task DeleteMenu_RepositoryReturnsNull_ReturnsErrorReply(IdRequest request)
+        //{
+        //    _menuRepositoryMock.Setup(x => x.DeleteAsync(request.Id))
+        //        .ReturnsAsync((string)null);
+
+        //    var result = await _service.DeleteMenu(request, null);
+
+        //    Assert.That(result.State, Is.EqualTo(ReplyState.Error));
+        //    Assert.That(result.Messages.Any(m => m.Contains("Ошибка при удалении")), Is.True);
+        //}
 
         #endregion
     }
