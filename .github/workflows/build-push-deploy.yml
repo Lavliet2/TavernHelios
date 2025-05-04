@@ -27,11 +27,8 @@ jobs:
       - name: Build solution
         run: dotnet build TavernHelios.sln --no-restore --configuration Debug
     
-      - name: Run tests without failing on warnings
-        run: dotnet test TavernHelios.sln --no-build --verbosity normal -p:TreatWarningsAsErrors=false
-        continue-on-error: true
-      
-  
+      - name: Run tests
+        run: dotnet test TavernHelios.sln --no-build --verbosity normal -p:TreatWarningsAsErrors=false --max-parallel-threads=4      
 
       # 🔥 Получаем родительскую ветку тега
       - name: Determine branch from tag
