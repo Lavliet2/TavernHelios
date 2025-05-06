@@ -62,6 +62,9 @@ const LayoutEditor: React.FC<LayoutEditorProps> = React.memo(
   const [isEditing, setIsEditing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const [selectedSeat, setSelectedSeat] = useState<{ seatNumber: number; tableName: string } | null>(null);
+
+
   const [reservedSeats, setReservedSeats] = useState<{
     seatNumber: number;
     tableName: string;
@@ -106,7 +109,14 @@ const LayoutEditor: React.FC<LayoutEditorProps> = React.memo(
     contextMenu,
     selectedObject,
     setContextMenu,
-  } = useCanvasInteractions(canvasRef, isEditing, objects, setObjects);
+  } = useCanvasInteractions(
+    canvasRef,
+    isEditing,
+    objects,
+    setObjects,
+    reservedSeats,
+    (seatNumber, tableName) => setSelectedSeat({ seatNumber, tableName }) 
+  );
 
   useLayoutLoader({
     selectedLayoutId,
@@ -124,6 +134,7 @@ const LayoutEditor: React.FC<LayoutEditorProps> = React.memo(
     backgroundImgRef,
     objects,
     reservedSeats,
+    selectedSeat,
     drawCanvas
   });
 
@@ -161,36 +172,6 @@ const LayoutEditor: React.FC<LayoutEditorProps> = React.memo(
         setReservedSeats([]);
       });
   }, [selectedTime, selectedLayoutId, selectionMode]);
-  // useEffect(() => {
-  //   if (!selectionMode || !selectedTime || !selectedLayoutId) return;
-  
-  //   const selectedDate = new Date();
-  //   const [hours, minutes] = selectedTime.split(":");
-  //   selectedDate.setHours(+hours, +minutes, 0, 0);
-  //   const isoString = selectedDate.toISOString();
-  
-  //   // const url = `https://localhost:5555/api/Reservation?IsDeleted=false&BeginDate=${encodeURIComponent(isoString)}&EndDate=${encodeURIComponent(isoString)}`;
-  //   const url = `https://localhost:5555/api/Reservation?IsDeleted=false`;
-  
-  //   fetch(url)
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       const relevant = data.filter(
-  //         (r: any) => r.layoutId === selectedLayoutId && r.seatNumber > 0
-  //       );
-  //       const seats = relevant.map((r: any) => ({
-  //         seatNumber: r.seatNumber,
-  //         tableName: r.tableName,
-  //       }));
-  //       setReservedSeats(seats);
-  //       console.log("Загруженные бронирования:", seats);
-  //       console.log("Данные из API:", data);
-  //     })
-  //     .catch((err) => {
-  //       console.error("Ошибка загрузки бронирований:", err);
-  //     });
-  // }, [selectedTime, selectedLayoutId, selectionMode]);
-
 
   if (loading) {
     return (

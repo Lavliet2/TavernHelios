@@ -9,7 +9,6 @@ interface UseLayoutLoaderParams {
   setObjects: (objects: DroppedObject[]) => void;
   resetTableState: () => void;
   backgroundImgRef: React.RefObject<HTMLImageElement | null>;
-  // canvasRef: RefObject<HTMLCanvasElement | null>; 
 }
 
 export const useLayoutLoader = ({
@@ -19,7 +18,6 @@ export const useLayoutLoader = ({
   setObjects,
   resetTableState,
   backgroundImgRef,
-  // canvasRef,
 }: UseLayoutLoaderParams) => {
   useEffect(() => {
     const layout = layouts.find((l) => l.id === selectedLayoutId);

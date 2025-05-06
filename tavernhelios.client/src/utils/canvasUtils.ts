@@ -5,7 +5,8 @@ export function drawCanvas(
   canvas: HTMLCanvasElement | null,
   backgroundImg: HTMLImageElement | null,
   objects: DroppedObject[],
-  reservedSeats: { seatNumber: number; tableName: string; personId: string }[] = []
+  reservedSeats: { seatNumber: number; tableName: string; personId: string }[] = [],
+  selectedSeat: { seatNumber: number; tableName: string } | null = null
 ) {
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
@@ -17,8 +18,8 @@ export function drawCanvas(
     ctx.drawImage(backgroundImg, 0, 0, canvas.width, canvas.height);
   }
 
-  // Создаём карту забронированных мест
-  const reservedMap = new Map<string, string>(); // key ➜ personId
+  // Карта: ключ — "table_seat" ➜ personId
+  const reservedMap = new Map<string, string>();
   reservedSeats.forEach((seat) => {
     const key = `${seat.tableName.trim().toLowerCase()}_${seat.seatNumber}`;
     reservedMap.set(key, seat.personId);
@@ -44,12 +45,15 @@ export function drawCanvas(
       const seatNumber = Number(obj.seatNumber);
       const key = `${tableName}_${seatNumber}`;
 
-      const person = reservedMap.get(key);
-      const isReserved = Boolean(person);
+      const personId = reservedMap.get(key);
+      const isReserved = Boolean(personId);
 
-      // console.log(`[CHECK] Стул ${seatNumber} у стола "${obj.name}" ➜ ключ "${key}" ➜`, isReserved ? `🔒 Занят (${person})` : "🟢 Свободен");
+      const isSelected = selectedSeat &&
+        selectedSeat.tableName.trim().toLowerCase() === tableName &&
+        Number(selectedSeat.seatNumber) === seatNumber;
 
-      ctx.fillStyle = isReserved ? "#999" : "green";
+      ctx.fillStyle = isReserved ? "#999" : isSelected ? "orange" : "green";
+
       ctx.beginPath();
       ctx.arc(x + radius, y + radius, radius, 0, Math.PI * 2);
       ctx.fill();

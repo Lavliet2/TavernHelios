@@ -12,11 +12,13 @@ interface UseCanvasRenderLoopParams {
   backgroundImgRef: React.RefObject<HTMLImageElement | null>;
   objects: DroppedObject[];
   reservedSeats: ReservedSeat[];
+  selectedSeat: { seatNumber: number; tableName: string } | null;
   drawCanvas: (
     canvas: HTMLCanvasElement,
     image: HTMLImageElement | null,
     objects: DroppedObject[],
-    reservedSeats: ReservedSeat[]
+    reservedSeats: ReservedSeat[],
+    selectedSeat?: { seatNumber: number; tableName: string } | null
   ) => void;
 }
 
@@ -25,6 +27,7 @@ export const useCanvasRenderLoop = ({
   backgroundImgRef,
   objects,
   reservedSeats,
+  selectedSeat,
   drawCanvas,
 }: UseCanvasRenderLoopParams) => {
   const animationRef = useRef<number>(0);
@@ -34,7 +37,7 @@ export const useCanvasRenderLoop = ({
       const canvas = canvasRef.current;
       const img = backgroundImgRef.current;
       if (canvas) {
-        drawCanvas(canvas, img, objects, reservedSeats);
+        drawCanvas(canvas, img, objects, reservedSeats, selectedSeat);
       }
       animationRef.current = requestAnimationFrame(render);
     };
@@ -46,5 +49,5 @@ export const useCanvasRenderLoop = ({
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [drawCanvas, objects, reservedSeats]);
+  }, [drawCanvas, objects, reservedSeats, selectedSeat]);
 };

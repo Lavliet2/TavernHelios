@@ -1,11 +1,19 @@
 import { RefObject, useState, useRef } from "react";
-import { DroppedObject } from "../../../types/DroppedObject";
+import { DroppedObject, DroppedObjectType } from "../../../types/DroppedObject";
+
+interface ReservedSeat {
+  seatNumber: number;
+  tableName: string;
+  personId: string;
+}
 
 export function useCanvasInteractions(
   canvasRef: RefObject<HTMLCanvasElement | null>,
   isEditing: boolean,
   objects: DroppedObject[],
-  setObjects: React.Dispatch<React.SetStateAction<DroppedObject[]>>
+  setObjects: React.Dispatch<React.SetStateAction<DroppedObject[]>>,
+  reservedSeats: ReservedSeat[] = [],
+  onSelectSeat?: (seatNumber: number, tableName: string) => void
 ) {
   const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
   const dragOffset = useRef({ x: 0, y: 0 });
@@ -14,7 +22,7 @@ export function useCanvasInteractions(
   const [selectedObject, setSelectedObject] = useState<DroppedObject | null>(null);
 
   const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!isEditing || !canvasRef.current) return;
+    if (!canvasRef.current) return;
     const rect = canvasRef.current.getBoundingClientRect();
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
@@ -23,9 +31,28 @@ export function useCanvasInteractions(
       const obj = objects[i];
       const w = "tableWidth" in obj ? obj.tableWidth : obj.chairRadius * 2;
       const h = "tableHeight" in obj ? obj.tableHeight : obj.chairRadius * 2;
-      if (mouseX >= obj.x && mouseX <= obj.x + w && mouseY >= obj.y && mouseY <= obj.y + h) {
-        setDraggingIndex(i);
-        dragOffset.current = { x: mouseX - obj.x, y: mouseY - obj.y };
+
+      const withinBounds =
+        mouseX >= obj.x && mouseX <= obj.x + w && mouseY >= obj.y && mouseY <= obj.y + h;
+
+      if (withinBounds) {
+        if (isEditing) {
+          setDraggingIndex(i);
+          dragOffset.current = { x: mouseX - obj.x, y: mouseY - obj.y };
+        } else if (obj.type === DroppedObjectType.CHAIR && onSelectSeat) {
+          const tableName = (obj.name ?? "").trim().toLowerCase();
+          const seatNumber = obj.seatNumber;
+
+          const isReserved = reservedSeats.some(
+            (r) =>
+              r.seatNumber === seatNumber &&
+              r.tableName.trim().toLowerCase() === tableName
+          );
+
+          if (!isReserved && seatNumber && obj.name) {
+            onSelectSeat(seatNumber, obj.name);
+          }
+        }
         return;
       }
     }
