@@ -1,40 +1,50 @@
 import { useEffect, useRef } from "react";
 import { DroppedObject } from "../../../types/DroppedObject";
 
+interface ReservedSeat {
+  seatNumber: number;
+  tableName: string;
+  personId: string;
+}
+
 interface UseCanvasRenderLoopParams {
   canvasRef: React.RefObject<HTMLCanvasElement | null>;
   backgroundImgRef: React.RefObject<HTMLImageElement | null>;
   objects: DroppedObject[];
+  reservedSeats: ReservedSeat[];
   drawCanvas: (
     canvas: HTMLCanvasElement,
     image: HTMLImageElement | null,
     objects: DroppedObject[],
-    reservedSeats?: { seatNumber: number; tableName: string; personId: string }[] 
+    reservedSeats: ReservedSeat[]
   ) => void;
-  reservedSeats: { seatNumber: number; tableName: string; personId: string }[]
-  // reservedSeats?: { seatNumber: number; tableName: string }[];
 }
-
 
 export const useCanvasRenderLoop = ({
   canvasRef,
   backgroundImgRef,
   objects,
+  reservedSeats,
   drawCanvas,
-  reservedSeats, // ← добавь сюда
 }: UseCanvasRenderLoopParams) => {
-  const animationRef = useRef<number | undefined>(undefined);
+  const animationRef = useRef<number>(0);
 
   useEffect(() => {
     const render = () => {
-      if (canvasRef.current) {
-        drawCanvas(canvasRef.current, backgroundImgRef.current, objects, reservedSeats);
+      const canvas = canvasRef.current;
+      const img = backgroundImgRef.current;
+      if (canvas) {
+        drawCanvas(canvas, img, objects, reservedSeats);
       }
       animationRef.current = requestAnimationFrame(render);
     };
 
-    animationRef.current = requestAnimationFrame(render);
-    return () => cancelAnimationFrame(animationRef.current!);
-  }, [canvasRef, backgroundImgRef, objects, drawCanvas, reservedSeats]);
-};
+    render();
 
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
+  }, [drawCanvas, objects, reservedSeats]);
+};

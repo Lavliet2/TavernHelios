@@ -1,4 +1,4 @@
-import { useEffect, RefObject  } from "react";
+import { useEffect, RefObject } from "react";
 import { Layout } from "../../../types/Layout";
 import { DroppedObject, DroppedObjectType } from "../../../types/DroppedObject";
 
@@ -9,8 +9,7 @@ interface UseLayoutLoaderParams {
   setObjects: (objects: DroppedObject[]) => void;
   resetTableState: () => void;
   backgroundImgRef: React.RefObject<HTMLImageElement | null>;
-  canvasRef: RefObject<HTMLCanvasElement | null>; 
-  drawCanvas: (canvas: HTMLCanvasElement, image: HTMLImageElement | null, objects: DroppedObject[]) => void;
+  // canvasRef: RefObject<HTMLCanvasElement | null>; 
 }
 
 export const useLayoutLoader = ({
@@ -20,8 +19,7 @@ export const useLayoutLoader = ({
   setObjects,
   resetTableState,
   backgroundImgRef,
-  canvasRef,
-  drawCanvas,
+  // canvasRef,
 }: UseLayoutLoaderParams) => {
   useEffect(() => {
     const layout = layouts.find((l) => l.id === selectedLayoutId);
@@ -61,8 +59,9 @@ export const useLayoutLoader = ({
     });
 
     setObjects(loadedObjects);
+
     if (selectedLayoutId) {
-        resetTableState();
+      resetTableState();
     }
 
     const img = new Image();
@@ -70,11 +69,9 @@ export const useLayoutLoader = ({
       img.src = layout.imageStr;
       img.onload = () => {
         backgroundImgRef.current = img;
-        if (canvasRef.current) drawCanvas(canvasRef.current, img, loadedObjects);
       };
     } else {
       backgroundImgRef.current = null;
-      if (canvasRef.current) drawCanvas(canvasRef.current, null, loadedObjects);
     }
   }, [selectedLayoutId, layouts]);
 };

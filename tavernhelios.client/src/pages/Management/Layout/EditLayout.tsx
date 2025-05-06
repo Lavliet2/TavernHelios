@@ -115,8 +115,8 @@ const LayoutEditor: React.FC<LayoutEditorProps> = React.memo(
     setObjects,
     resetTableState,
     backgroundImgRef,
-    canvasRef,
-    drawCanvas,
+    // canvasRef,
+    // drawCanvas,
   });
 
   useCanvasRenderLoop({
@@ -151,8 +151,10 @@ const LayoutEditor: React.FC<LayoutEditorProps> = React.memo(
     const dateOnly = new Date().toISOString().split("T")[0]; // Например: "2025-05-04"
     console.log("Selected date:", dateOnly, selectedTime, selectedLayoutId);
     fetchReservedSeatsForTime(dateOnly, selectedTime, selectedLayoutId)
-      .then((setReservedSeats) => {
-        console.log("Забронированные места:", setReservedSeats);
+    fetchReservedSeatsForTime(dateOnly, selectedTime, selectedLayoutId)
+      .then((seats) => {
+        console.log("Забронированные места:", seats);
+        setReservedSeats(seats); // ← ВОТ ЭТОГО НЕ ХВАТАЛО
       })
       .catch((err) => {
         console.error("Ошибка загрузки забронированных мест:", err);

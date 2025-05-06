@@ -17,11 +17,11 @@ export function drawCanvas(
     ctx.drawImage(backgroundImg, 0, 0, canvas.width, canvas.height);
   }
 
-  // Создаём Set для ускоренного поиска
-  const reservedKeys = new Set<string>();
+  // Создаём карту забронированных мест
+  const reservedMap = new Map<string, string>(); // key ➜ personId
   reservedSeats.forEach((seat) => {
-    const key = `${seat.tableName}`.trim().toLowerCase() + "_" + Number(seat.seatNumber);
-    reservedKeys.add(key);
+    const key = `${seat.tableName.trim().toLowerCase()}_${seat.seatNumber}`;
+    reservedMap.set(key, seat.personId);
   });
 
   for (const obj of objects) {
@@ -40,15 +40,14 @@ export function drawCanvas(
 
     else if (obj.type === DroppedObjectType.CHAIR) {
       const radius = height / 2;
-
-      const tableName = `${obj.name ?? ""}`.trim().toLowerCase();
+      const tableName = (obj.name ?? "").trim().toLowerCase();
       const seatNumber = Number(obj.seatNumber);
       const key = `${tableName}_${seatNumber}`;
 
-      const isReserved = reservedKeys.has(key);
+      const person = reservedMap.get(key);
+      const isReserved = Boolean(person);
 
-      // 🔍 Отладка: сравнение ключей
-      // console.log(`[CHECK] Стул ${seatNumber} у стола "${obj.name}" ➜ ключ "${key}" ➜ ${isReserved ? 'ЗАНЯТ' : 'свободен'}`);
+      // console.log(`[CHECK] Стул ${seatNumber} у стола "${obj.name}" ➜ ключ "${key}" ➜`, isReserved ? `🔒 Занят (${person})` : "🟢 Свободен");
 
       ctx.fillStyle = isReserved ? "#999" : "green";
       ctx.beginPath();
@@ -59,7 +58,7 @@ export function drawCanvas(
       ctx.font = "12px Arial";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      ctx.fillText(obj.seatNumber?.toString() || "", x + radius, y + radius);
+      ctx.fillText(seatNumber.toString(), x + radius, y + radius);
     }
   }
 }
