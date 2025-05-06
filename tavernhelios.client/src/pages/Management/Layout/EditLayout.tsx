@@ -115,7 +115,15 @@ const LayoutEditor: React.FC<LayoutEditorProps> = React.memo(
     objects,
     setObjects,
     reservedSeats,
-    (seatNumber, tableName) => setSelectedSeat({ seatNumber, tableName }) 
+    // onSelectSeat без layoutId — передаём только 2 аргумента
+    (seatNumber, tableName) => {
+      setSelectedSeat({ seatNumber, tableName });
+  
+      // layoutId добавляем здесь
+      if (selectionMode && onSelectSeat && selectedLayoutId) {
+        onSelectSeat(seatNumber, tableName, selectedLayoutId);
+      }
+    }
   );
 
   useLayoutLoader({

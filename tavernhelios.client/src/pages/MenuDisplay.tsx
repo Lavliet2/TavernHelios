@@ -191,6 +191,13 @@ const MenuDisplay: React.FC = () => {
             setIsSeatModalOpen(false);
           }}
         />
+        {selectedSeat && (
+          <Box sx={{ mt: 2, p: 2, border: '1px solid #ccc', borderRadius: 2, backgroundColor: '#f9f9f9' }}>
+            <Typography variant="body1">
+              🪑 Вы выбрали: стол <strong>{selectedSeat.tableName}</strong>, место <strong>{selectedSeat.seatNumber}</strong>
+            </Typography>
+          </Box>
+        )}
       </Box>
       <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
         <Button

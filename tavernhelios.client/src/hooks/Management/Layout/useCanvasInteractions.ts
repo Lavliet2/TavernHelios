@@ -48,8 +48,7 @@ export function useCanvasInteractions(
               r.seatNumber === seatNumber &&
               r.tableName.trim().toLowerCase() === tableName
           );
-
-          if (!isReserved && seatNumber && obj.name) {
+          if (!isReserved && seatNumber && obj.name && onSelectSeat) {
             onSelectSeat(seatNumber, obj.name);
           }
         }
