@@ -6,6 +6,9 @@ import { useSnackbar } from "../../useSnackbar";
 export const useLayoutManager = () => {
   const [layouts, setLayouts] = useState<Layout[]>([]);
   const [selectedLayoutId, setSelectedLayoutId] = useState<string>("");
+  // const [selectedLayoutId, setSelectedLayoutId] = useState<string | undefined>(undefined);
+  // const [selectedLayoutId, setSelectedLayoutId] = useState<string>("");
+
   const [loading, setLoading] = useState(true);
   const { showSnackbar } = useSnackbar();
 

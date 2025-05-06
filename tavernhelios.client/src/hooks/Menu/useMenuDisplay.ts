@@ -19,6 +19,11 @@ export const useMenuDisplay = () => {
   const username = localStorage.getItem("username") || "";
   const cardRefs = useRef<HTMLDivElement[]>([]);
 
+  const [selectedSeatNumber, setSelectedSeatNumber] = useState<number | null>(null);
+  const [selectedTableName, setSelectedTableName] = useState<string | null>(null);
+  const [selectedLayoutId, setSelectedLayoutId] = useState<string | null>(null);
+
+
   useEffect(() => {
     const loadSchedule = async () => {
       setLoadingMenu(true);
@@ -99,6 +104,13 @@ export const useMenuDisplay = () => {
     }));
   }, []);
 
+  // Бронируем место за столом
+  const handleSeatSelect = useCallback((seatNumber: number, tableName: string, layoutId: string) => {
+    setSelectedSeatNumber(seatNumber);
+    setSelectedTableName(tableName);
+    setSelectedLayoutId(layoutId);
+  }, []);
+
   // Создание бронирования
   const handleReservation = useCallback(async () => {
     if (!username.trim()) {
@@ -109,6 +121,11 @@ export const useMenuDisplay = () => {
     const selectedDishIds = Object.values(selectedDishes);
     if (selectedDishIds.length === 0) {
       alert("Выберите хотя бы одно блюдо!");
+      return;
+    }
+
+    if (selectedSeatNumber === null || !selectedTableName || !selectedLayoutId) {
+      alert("Пожалуйста, выберите место за столом.");
       return;
     }
 
@@ -124,6 +141,9 @@ export const useMenuDisplay = () => {
       personId: username,
       date: formattedDate,
       dishIds: selectedDishIds,
+      seatNumber: selectedSeatNumber,
+      tableName: selectedTableName,
+      layoutId: selectedLayoutId
     };
 
     console.log("Отправляем бронь:", reservationData);
@@ -135,7 +155,14 @@ export const useMenuDisplay = () => {
       } catch (error) {
         alert(`Ошибка: ${(error as Error).message || "Неизвестная ошибка"}`);
     }
-  }, [username, selectedDishes, selectedTime]);
+  }, [
+    username,
+    selectedDishes,
+    selectedTime,
+    selectedSeatNumber,
+    selectedTableName,
+    selectedLayoutId
+  ]);
 
   return {
     menu,
@@ -151,5 +178,10 @@ export const useMenuDisplay = () => {
     handleSelectionChange,
     setSelectedTime,
     addToCardRefs,
+
+    selectedSeatNumber,
+    selectedTableName,
+    selectedLayoutId,
+    handleSeatSelect
   };
 };

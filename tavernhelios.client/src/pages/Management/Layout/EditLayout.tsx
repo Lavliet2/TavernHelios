@@ -36,8 +36,18 @@ import { drawCanvas } from "../../../utils/canvasUtils";
 
 import { RenderLayoutModal } from "./LayoutModalRenderer";
 import { RenderContextMenu } from "./RenderContextMenu";
+import { fetchReservedSeatsForTime } from "../../../services/reservationService";
 
-const LayoutEditor: React.FC = React.memo(() => {
+
+interface LayoutEditorProps {
+  selectionMode?: boolean;
+  selectedTime?: string;
+  onSelectSeat?: (seatNumber: number, tableName: string, layoutId: string) => void;
+}
+
+const LayoutEditor: React.FC<LayoutEditorProps> = React.memo(
+  ({ selectionMode = false, selectedTime, onSelectSeat }) => {
+// const LayoutEditor: React.FC = React.memo(() => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const backgroundImgRef = useRef<HTMLImageElement>(null);
 
@@ -51,6 +61,12 @@ const LayoutEditor: React.FC = React.memo(() => {
   const [chairRadius, setChairRadius] = useState(DEFAULT_CHAIR_RADIUS);
   const [isEditing, setIsEditing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [reservedSeats, setReservedSeats] = useState<{
+    seatNumber: number;
+    tableName: string;
+    personId: string;
+  }[]>([]);
 
   const {
     layouts,
@@ -107,7 +123,8 @@ const LayoutEditor: React.FC = React.memo(() => {
     canvasRef,
     backgroundImgRef,
     objects,
-    drawCanvas,
+    reservedSeats,
+    drawCanvas
   });
 
   const [, dropRef] = useDropHandler(
@@ -127,6 +144,52 @@ const LayoutEditor: React.FC = React.memo(() => {
     loadLayouts();
   }, [loadLayouts]);
 
+
+  useEffect(() => {
+    if (!selectionMode || !selectedTime || !selectedLayoutId) return;
+  
+    const dateOnly = new Date().toISOString().split("T")[0]; // Например: "2025-05-04"
+    console.log("Selected date:", dateOnly, selectedTime, selectedLayoutId);
+    fetchReservedSeatsForTime(dateOnly, selectedTime, selectedLayoutId)
+      .then((setReservedSeats) => {
+        console.log("Забронированные места:", setReservedSeats);
+      })
+      .catch((err) => {
+        console.error("Ошибка загрузки забронированных мест:", err);
+        setReservedSeats([]);
+      });
+  }, [selectedTime, selectedLayoutId, selectionMode]);
+  // useEffect(() => {
+  //   if (!selectionMode || !selectedTime || !selectedLayoutId) return;
+  
+  //   const selectedDate = new Date();
+  //   const [hours, minutes] = selectedTime.split(":");
+  //   selectedDate.setHours(+hours, +minutes, 0, 0);
+  //   const isoString = selectedDate.toISOString();
+  
+  //   // const url = `https://localhost:5555/api/Reservation?IsDeleted=false&BeginDate=${encodeURIComponent(isoString)}&EndDate=${encodeURIComponent(isoString)}`;
+  //   const url = `https://localhost:5555/api/Reservation?IsDeleted=false`;
+  
+  //   fetch(url)
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       const relevant = data.filter(
+  //         (r: any) => r.layoutId === selectedLayoutId && r.seatNumber > 0
+  //       );
+  //       const seats = relevant.map((r: any) => ({
+  //         seatNumber: r.seatNumber,
+  //         tableName: r.tableName,
+  //       }));
+  //       setReservedSeats(seats);
+  //       console.log("Загруженные бронирования:", seats);
+  //       console.log("Данные из API:", data);
+  //     })
+  //     .catch((err) => {
+  //       console.error("Ошибка загрузки бронирований:", err);
+  //     });
+  // }, [selectedTime, selectedLayoutId, selectionMode]);
+
+
   if (loading) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
@@ -137,6 +200,7 @@ const LayoutEditor: React.FC = React.memo(() => {
 
   return (
     <Box sx={{ display: "flex", height: "100vh" }}>
+      {!selectionMode && (
       <Sidebar
         layouts={layouts}
         selectedLayoutId={selectedLayoutId}
@@ -160,6 +224,7 @@ const LayoutEditor: React.FC = React.memo(() => {
         setTableHeight={setTableHeight}
         setChairRadius={setChairRadius}
       />
+      )}
 
       <LayoutCanvas
         canvasRef={canvasRef}

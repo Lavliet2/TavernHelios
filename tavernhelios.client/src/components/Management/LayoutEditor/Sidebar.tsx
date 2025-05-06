@@ -87,7 +87,8 @@ const Sidebar: React.FC<SidebarProps> = ({
       <Button
         variant="outlined"
         color="error"
-        onClick={() => onDeleteClick(selectedLayoutId)}
+        onClick={() => selectedLayoutId && onDeleteClick(selectedLayoutId)}        
+        // onClick={() => onDeleteClick(selectedLayoutId)}
       >
         Удалить схему
       </Button>

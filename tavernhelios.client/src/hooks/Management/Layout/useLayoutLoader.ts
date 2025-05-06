@@ -55,6 +55,7 @@ export const useLayoutLoader = ({
           chairRadius: seat.radius,
           name: table.name,
           description: seat.description,
+          seatNumber: seat.number,
         });
       });
     });

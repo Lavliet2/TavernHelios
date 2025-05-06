@@ -1,4 +1,5 @@
 import React from 'react';
+import {useState} from 'react';
 import { Container, Typography, Card, CardMedia, CardContent,
   CircularProgress, FormControl, RadioGroup, FormControlLabel,
   Radio, Box, Button
@@ -10,6 +11,7 @@ import { useMenuDisplay } from "../hooks/Menu/useMenuDisplay";
 
 import ReservationList from "../components/Menu/ReservationList";
 import dishTypes from "../constants/dishTypes";
+import TableLayoutModal from "../components/Management/LayoutEditor/TableLayoutModal";
 
 
 const MenuDisplay: React.FC = () => {
@@ -30,6 +32,12 @@ const MenuDisplay: React.FC = () => {
   } = useMenuDisplay();
 
   const navigate = useNavigate(); //MAV delete
+  const [isSeatModalOpen, setIsSeatModalOpen] = useState(false);
+  const [selectedSeat, setSelectedSeat] = useState<{
+    seatNumber: number;
+    tableName: string;
+    layoutId: string;
+  } | null>(null);
 
   if (loadingMenu) {
     return (
@@ -164,6 +172,25 @@ const MenuDisplay: React.FC = () => {
             <FormControlLabel value="13:00" control={<Radio />} label="13:00" />
           </RadioGroup>
         </FormControl>
+      </Box>
+      <Box sx={{ textAlign: 'center', mt: 2 }}>
+        <Button
+          variant="outlined"
+          color="secondary"
+          size="medium"
+          onClick={() => setIsSeatModalOpen(true)}
+        >
+          Выбрать место за столом
+        </Button>
+        <TableLayoutModal
+          open={isSeatModalOpen}
+          onClose={() => setIsSeatModalOpen(false)}
+          selectedTime={selectedTime}
+          onSelectSeat={(seatNumber, tableName, layoutId) => {
+            setSelectedSeat({ seatNumber, tableName, layoutId });
+            setIsSeatModalOpen(false);
+          }}
+        />
       </Box>
       <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
         <Button

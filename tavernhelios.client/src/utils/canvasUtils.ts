@@ -4,7 +4,8 @@ import { getBoundingBox } from "./objectUtils";
 export function drawCanvas(
   canvas: HTMLCanvasElement | null,
   backgroundImg: HTMLImageElement | null,
-  objects: DroppedObject[]
+  objects: DroppedObject[],
+  reservedSeats: { seatNumber: number; tableName: string; personId: string }[] = []
 ) {
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
@@ -15,6 +16,13 @@ export function drawCanvas(
   if (backgroundImg) {
     ctx.drawImage(backgroundImg, 0, 0, canvas.width, canvas.height);
   }
+
+  // Создаём Set для ускоренного поиска
+  const reservedKeys = new Set<string>();
+  reservedSeats.forEach((seat) => {
+    const key = `${seat.tableName}`.trim().toLowerCase() + "_" + Number(seat.seatNumber);
+    reservedKeys.add(key);
+  });
 
   for (const obj of objects) {
     const { x, y, width, height } = getBoundingBox(obj);
@@ -28,9 +36,21 @@ export function drawCanvas(
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText(obj.name || "", x + width / 2, y + height / 2);
-    } else if (obj.type === DroppedObjectType.CHAIR) {
+    }
+
+    else if (obj.type === DroppedObjectType.CHAIR) {
       const radius = height / 2;
-      ctx.fillStyle = "green";
+
+      const tableName = `${obj.name ?? ""}`.trim().toLowerCase();
+      const seatNumber = Number(obj.seatNumber);
+      const key = `${tableName}_${seatNumber}`;
+
+      const isReserved = reservedKeys.has(key);
+
+      // 🔍 Отладка: сравнение ключей
+      // console.log(`[CHECK] Стул ${seatNumber} у стола "${obj.name}" ➜ ключ "${key}" ➜ ${isReserved ? 'ЗАНЯТ' : 'свободен'}`);
+
+      ctx.fillStyle = isReserved ? "#999" : "green";
       ctx.beginPath();
       ctx.arc(x + radius, y + radius, radius, 0, Math.PI * 2);
       ctx.fill();
@@ -39,7 +59,7 @@ export function drawCanvas(
       ctx.font = "12px Arial";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      ctx.fillText(obj.name || "", x + radius, y + radius);
+      ctx.fillText(obj.seatNumber?.toString() || "", x + radius, y + radius);
     }
   }
 }

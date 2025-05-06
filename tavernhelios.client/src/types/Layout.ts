@@ -47,7 +47,8 @@ export interface Layout {
 
 export interface SidebarProps {
   layouts: Layout[];
-  selectedLayoutId: string;
+  selectedLayoutId: string | undefined;
+  // selectedLayoutId: string;
   isEditing: boolean;
 
   onSelectLayout: (id: string) => void;
