@@ -4,6 +4,7 @@ import { fetchTodaySchedule } from "../../services/scheduleService";
 import { fetchDish } from "../../services/dishService";
 import { createReservation } from "../../services/reservationService";
 import { Menu, Dish } from "../../types/Management";
+import { useUser } from "../../contexts/UserContext";
 
 
 export const useMenuDisplay = () => {
@@ -16,13 +17,15 @@ export const useMenuDisplay = () => {
   const [maxCardHeight, setMaxCardHeight] = useState<number | null>(null);
   const [selectedTime, setSelectedTime] = useState<string>("12:00");
   const [refreshKey, setRefreshKey] = useState<number>(0);
-  const username = localStorage.getItem("username") || "";
+  const userContext = useUser();
+  // const username = userContext?.user?.username || "";
+  // const username = localStorage.getItem("username") || "";
   const cardRefs = useRef<HTMLDivElement[]>([]);
 
   const [selectedSeatNumber, setSelectedSeatNumber] = useState<number | null>(null);
   const [selectedTableName, setSelectedTableName] = useState<string | null>(null);
   const [selectedLayoutId, setSelectedLayoutId] = useState<string | null>(null);
-
+  // console.log("username", username);
 
   useEffect(() => {
     const loadSchedule = async () => {
@@ -113,7 +116,8 @@ export const useMenuDisplay = () => {
 
   // Создание бронирования
   const handleReservation = useCallback(async () => {
-    if (!username.trim()) {
+    const currentUsername = userContext?.user?.fullName;
+    if (!currentUsername.trim()) {
       alert("Введите имя перед бронированием!");
       return;
     }
@@ -125,6 +129,7 @@ export const useMenuDisplay = () => {
     }
 
     if (selectedSeatNumber === null || !selectedTableName || !selectedLayoutId) {
+      console.log("selectedSeatNumber", selectedSeatNumber, "selectedTableName", selectedTableName, "selectedLayoutId", selectedLayoutId);
       alert("Пожалуйста, выберите место за столом.");
       return;
     }
@@ -138,12 +143,13 @@ export const useMenuDisplay = () => {
       .padStart(2, "0")}:${String(localDate.getMinutes()).padStart(2, "0")}:${String(localDate.getSeconds()).padStart(2, "0")}`;
 
     const reservationData = {
-      personId: username,
+      personId: currentUsername,
       date: formattedDate,
       dishIds: selectedDishIds,
       seatNumber: selectedSeatNumber,
       tableName: selectedTableName,
-      layoutId: selectedLayoutId
+      layoutId: selectedLayoutId,
+      isDeleted: false
     };
 
     console.log("Отправляем бронь:", reservationData);
@@ -156,7 +162,7 @@ export const useMenuDisplay = () => {
         alert(`Ошибка: ${(error as Error).message || "Неизвестная ошибка"}`);
     }
   }, [
-    username,
+    userContext?.user,
     selectedDishes,
     selectedTime,
     selectedSeatNumber,

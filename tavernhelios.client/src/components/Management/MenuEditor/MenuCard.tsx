@@ -16,8 +16,6 @@ const MenuCard: React.FC<MenuCardProps> = ({ menu }) => {
     const loadDishes = async () => {
       setLoading(true);
       try {
-        console.log("menu.dishes:", menu.dishes);
-
         if (!menu.dishes || menu.dishes.length === 0) {
           console.warn("Нет блюд для загрузки.");
           setDishes({});
@@ -26,16 +24,11 @@ const MenuCard: React.FC<MenuCardProps> = ({ menu }) => {
         }
 
         const dishPromises = menu.dishes.map((id) => {
-          console.log("Fetching dish:", id);
           return fetchDishById(id);
         });
 
         const dishResults = await Promise.all(dishPromises);
-        console.log("Loaded dishes:", dishResults);
-
         const dishMap = Object.fromEntries(dishResults.filter(dish => dish).map((dish) => [dish.id, dish]));
-        console.log("Mapped dishes:", dishMap);
-
         setDishes(dishMap);
       } catch (error) {
         console.error("Ошибка загрузки блюд:", error);
@@ -61,7 +54,6 @@ const MenuCard: React.FC<MenuCardProps> = ({ menu }) => {
         ) : (
           dishTypes.map((category) => {
             const categoryDishes = Object.values(dishes).filter((dish) => dish && dish.dishType === category.value);
-            console.log(`Filtered dishes for ${category.label}:`, categoryDishes);
 
             if (categoryDishes.length === 0) return null;
 

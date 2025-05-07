@@ -29,6 +29,7 @@ const MenuDisplay: React.FC = () => {
     handleSelectionChange,
     setSelectedTime,
     addToCardRefs,
+    handleSeatSelect
   } = useMenuDisplay();
 
   const navigate = useNavigate(); //MAV delete
@@ -188,6 +189,7 @@ const MenuDisplay: React.FC = () => {
           selectedTime={selectedTime}
           onSelectSeat={(seatNumber, tableName, layoutId) => {
             setSelectedSeat({ seatNumber, tableName, layoutId });
+            handleSeatSelect(seatNumber, tableName, layoutId);
             setIsSeatModalOpen(false);
           }}
         />

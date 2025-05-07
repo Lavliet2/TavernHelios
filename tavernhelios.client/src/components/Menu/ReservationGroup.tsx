@@ -9,6 +9,7 @@ interface Reservation {
   personId: string;
   date: string;
   dishIds: string[];
+  tableName: string;
 }
 
 interface Dish {
@@ -32,7 +33,6 @@ const ReservationGroup: React.FC<Props> = ({ title, reservations, dishes }) => {
       return acc;
     }, {} as Record<string, { name: string; type: number }>);
   }, [dishes]);
-
   return (
     <Paper sx={{ p: 2, mb: 3 }}>
       <Typography variant="h5" gutterBottom>{title}</Typography>
@@ -46,6 +46,7 @@ const ReservationGroup: React.FC<Props> = ({ title, reservations, dishes }) => {
             <TableHead>
               <TableRow>
                 <TableCell><strong>Имя</strong></TableCell>
+                <TableCell align="center"><strong>Стол</strong></TableCell>
                 {dishTypes.map(type => (
                   <TableCell key={type.value} align="center"><strong>{type.label}</strong></TableCell>
                 ))}
@@ -66,6 +67,9 @@ const ReservationGroup: React.FC<Props> = ({ title, reservations, dishes }) => {
                 return (
                   <TableRow key={reservation.id}>
                     <TableCell>{reservation.personId}</TableCell>
+                    <TableCell align="center">
+                      {reservation.tableName ? reservation.tableName : "—"}
+                    </TableCell>
                     {dishTypes.map(type => (
                       <TableCell key={type.value} align="center">
                         {dishByType[type.value].length > 0 ? dishByType[type.value].join(", ") : "—"}
