@@ -12,10 +12,16 @@ import { useMenuDisplay } from "../hooks/Menu/useMenuDisplay";
 import ReservationList from "../components/Menu/ReservationList";
 import dishTypes from "../constants/dishTypes";
 import TableLayoutModal from "../components/Management/LayoutEditor/TableLayoutModal";
+// import Snackbar from "@mui/material/Snackbar";
+import { useSnackbar } from "../../hooks/useSnackbar";
 
 
 const MenuDisplay: React.FC = () => {
   const {
+    snackbarMessage,
+    snackbarOpen,
+    setSnackbarOpen,
+    
     menu,
     groupedDishes,
     loadingMenu,
@@ -29,7 +35,8 @@ const MenuDisplay: React.FC = () => {
     handleSelectionChange,
     setSelectedTime,
     addToCardRefs,
-    handleSeatSelect
+    handleSeatSelect,
+    alreadyReserved
   } = useMenuDisplay();
 
   const navigate = useNavigate(); //MAV delete
@@ -59,6 +66,12 @@ const MenuDisplay: React.FC = () => {
 
   return (
     <Container maxWidth="xl" sx={{ mt: 4 }}>
+      {/* <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={4000}
+        onClose={() => setSnackbarOpen(false)}
+        message={snackbarMessage}
+      /> */}
       <Typography variant="h4" align="center" gutterBottom>
         {menu?.name}
       </Typography>
@@ -161,63 +174,75 @@ const MenuDisplay: React.FC = () => {
           ))}
         </Grid>
       )}
-      <Box sx={{ textAlign: 'center', mt: 2 }}>
-        <Typography variant="h6" gutterBottom>Выберите время бронирования:</Typography>
-        <FormControl component="fieldset">
-          <RadioGroup
-            row
-            value={selectedTime}
-            onChange={(e) => setSelectedTime(e.target.value)}
-          >
-            <FormControlLabel value="12:00" control={<Radio />} label="12:00" />
-            <FormControlLabel value="13:00" control={<Radio />} label="13:00" />
-          </RadioGroup>
-        </FormControl>
-      </Box>
-      <Box sx={{ textAlign: 'center', mt: 2 }}>
-        <Button
-          variant="outlined"
-          color="secondary"
-          size="medium"
-          onClick={() => setIsSeatModalOpen(true)}
-        >
-          Выбрать место за столом
-        </Button>
-        <TableLayoutModal
-          open={isSeatModalOpen}
-          onClose={() => setIsSeatModalOpen(false)}
-          selectedTime={selectedTime}
-          onSelectSeat={(seatNumber, tableName, layoutId) => {
-            setSelectedSeat({ seatNumber, tableName, layoutId });
-            handleSeatSelect(seatNumber, tableName, layoutId);
-            setIsSeatModalOpen(false);
-          }}
-        />
-        {selectedSeat && (
-          <Box sx={{ mt: 2, p: 2, border: '1px solid #ccc', borderRadius: 2, backgroundColor: '#f9f9f9' }}>
-            <Typography variant="body1">
-              🪑 Вы выбрали: стол <strong>{selectedSeat.tableName}</strong>, место <strong>{selectedSeat.seatNumber}</strong>
-            </Typography>
+      {alreadyReserved ? (
+        <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
+          <Typography variant="h6" sx={{ mt: 2, color: "green" }}>
+            ✅ Вы уже заказали обед на сегодня.
+          </Typography>
+        </Box>
+      ) : (
+        <>
+          <Box sx={{ textAlign: 'center', mt: 2 }}>
+            <Typography variant="h6" gutterBottom>Выберите время бронирования:</Typography>
+            <FormControl component="fieldset">
+              <RadioGroup
+                row
+                value={selectedTime}
+                onChange={(e) => setSelectedTime(e.target.value)}
+              >
+                <FormControlLabel value="12:00" control={<Radio />} label="12:00" />
+                <FormControlLabel value="13:00" control={<Radio />} label="13:00" />
+              </RadioGroup>
+            </FormControl>
           </Box>
-        )}
-      </Box>
-      <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
-        <Button
-          variant="contained"
-          color="primary"
-          size="large"
-          onClick={handleReservation}
-          sx={{
-            borderRadius: 2,  
-            px: 4,            
-            py: 1,             
-            textTransform: 'none',
-            boxShadow: 3      
-          }}
-        >
-          Забронировать
-        </Button>       
-      </Box>
+
+          <Box sx={{ textAlign: 'center', mt: 2 }}>
+            <Button
+              variant="outlined"
+              color="secondary"
+              size="medium"
+              onClick={() => setIsSeatModalOpen(true)}
+            >
+              Выбрать место за столом
+            </Button>
+            <TableLayoutModal
+              open={isSeatModalOpen}
+              onClose={() => setIsSeatModalOpen(false)}
+              selectedTime={selectedTime}
+              onSelectSeat={(seatNumber, tableName, layoutId) => {
+                setSelectedSeat({ seatNumber, tableName, layoutId });
+                handleSeatSelect(seatNumber, tableName, layoutId);
+                setIsSeatModalOpen(false);
+              }}
+            />
+            {selectedSeat && (
+              <Box sx={{ mt: 2, p: 2, border: '1px solid #ccc', borderRadius: 2, backgroundColor: '#f9f9f9' }}>
+                <Typography variant="body1">
+                  🪑 Вы выбрали: стол <strong>{selectedSeat.tableName}</strong>, место <strong>{selectedSeat.seatNumber}</strong>
+                </Typography>
+              </Box>
+            )}
+          </Box>
+
+          <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
+            <Button
+              variant="contained"
+              color="primary"
+              size="large"
+              onClick={handleReservation}
+              sx={{
+                borderRadius: 2,
+                px: 4,
+                py: 1,
+                textTransform: 'none',
+                boxShadow: 3
+              }}
+            >
+              Забронировать
+            </Button>
+          </Box>
+        </>
+      )}
       <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
         <Container maxWidth="lg" sx={{ mt: 4 }}>
           <ReservationList key={refreshKey}/>

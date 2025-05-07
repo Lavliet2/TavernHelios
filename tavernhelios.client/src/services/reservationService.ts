@@ -22,7 +22,7 @@ export const fetchReservations = async (date: string): Promise<Reservation[]> =>
     const beginDate = encodeURIComponent(`${date}T00:00:00Z`);
     const endDate = encodeURIComponent(`${date}T23:59:59Z`);
 
-    const response = await fetch(`${API_BASE_URL}/api/Reservation?BeginDate=${beginDate}&EndDate=${endDate}`);
+    const response = await fetch(`${API_BASE_URL}/api/Reservation?IsDeleted=false&BeginDate=${beginDate}&EndDate=${endDate}`);
     if (!response.ok) throw new Error("Ошибка при загрузке броней");
 
     return response.json();

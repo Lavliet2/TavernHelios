@@ -2,9 +2,10 @@ import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 
 import { fetchTodaySchedule } from "../../services/scheduleService"; 
 import { fetchDish } from "../../services/dishService";
-import { createReservation } from "../../services/reservationService";
+import { createReservation, fetchReservations  } from "../../services/reservationService";
 import { Menu, Dish } from "../../types/Management";
 import { useUser } from "../../contexts/UserContext";
+import { useSnackbar } from "../../hooks/useSnackbar";
 
 
 export const useMenuDisplay = () => {
@@ -18,14 +19,14 @@ export const useMenuDisplay = () => {
   const [selectedTime, setSelectedTime] = useState<string>("12:00");
   const [refreshKey, setRefreshKey] = useState<number>(0);
   const userContext = useUser();
-  // const username = userContext?.user?.username || "";
-  // const username = localStorage.getItem("username") || "";
   const cardRefs = useRef<HTMLDivElement[]>([]);
 
   const [selectedSeatNumber, setSelectedSeatNumber] = useState<number | null>(null);
   const [selectedTableName, setSelectedTableName] = useState<string | null>(null);
   const [selectedLayoutId, setSelectedLayoutId] = useState<string | null>(null);
-  // console.log("username", username);
+  const [alreadyReserved, setAlreadyReserved] = useState<boolean>(false);
+
+  const { showSnackbar } = useSnackbar();
 
   useEffect(() => {
     const loadSchedule = async () => {
@@ -46,8 +47,30 @@ export const useMenuDisplay = () => {
     };
     loadSchedule();
   }, []);
-  
 
+  useEffect(() => {
+    const checkExistingReservation = async () => {
+      const username = userContext?.user?.fullName;
+      if (!username) return;
+  
+      try {
+        const today = new Date();
+        const formattedDate = today.toISOString().split("T")[0]; 
+        const reservations = await fetchReservations(formattedDate);
+        const hasReservation = reservations.some(
+          (r) => r.personId === username
+        );
+        setAlreadyReserved(hasReservation);
+      } catch (err) {
+        console.error("Ошибка проверки брони:", err);
+      }
+    };
+  
+    if (userContext?.user?.fullName) {
+      checkExistingReservation();
+    }
+  }, [userContext?.user?.fullName, refreshKey]);
+  
   // Загрузка блюд
   useEffect(() => {
     const fetchDishes = async () => {
@@ -74,7 +97,6 @@ export const useMenuDisplay = () => {
     fetchDishes();
   }, [menu]);
   
-
   // Рассчитываем максимальную высоту карточек
   useEffect(() => {
     if (!loadingDishes && cardRefs.current.length > 0) {
@@ -118,19 +140,22 @@ export const useMenuDisplay = () => {
   const handleReservation = useCallback(async () => {
     const currentUsername = userContext?.user?.fullName;
     if (!currentUsername.trim()) {
-      alert("Введите имя перед бронированием!");
+      showSnackbar("Введите имя перед бронированием!");
+      // alert("Введите имя перед бронированием!");
       return;
     }
 
     const selectedDishIds = Object.values(selectedDishes);
     if (selectedDishIds.length === 0) {
-      alert("Выберите хотя бы одно блюдо!");
+      showSnackbar("Выберите хотя бы одно блюдо!");
+      // alert("Выберите хотя бы одно блюдо!");
       return;
     }
 
     if (selectedSeatNumber === null || !selectedTableName || !selectedLayoutId) {
       console.log("selectedSeatNumber", selectedSeatNumber, "selectedTableName", selectedTableName, "selectedLayoutId", selectedLayoutId);
-      alert("Пожалуйста, выберите место за столом.");
+      showSnackbar("Пожалуйста, выберите место за столом.");
+      // alert("Пожалуйста, выберите место за столом.");
       return;
     }
 
@@ -156,10 +181,12 @@ export const useMenuDisplay = () => {
 
     try {
         await createReservation(reservationData);
-        alert("Бронь успешно создана!");
+        showSnackbar("Бронь успешно создана!", "success");
+        // alert("Бронь успешно создана!");
         setRefreshKey((prev) => prev + 1);
       } catch (error) {
-        alert(`Ошибка: ${(error as Error).message || "Неизвестная ошибка"}`);
+        showSnackbar(`Ошибка: ${(error as Error).message || "Неизвестная ошибка"}`);
+        // alert(`Ошибка: ${(error as Error).message || "Неизвестная ошибка"}`);
     }
   }, [
     userContext?.user,
@@ -188,6 +215,7 @@ export const useMenuDisplay = () => {
     selectedSeatNumber,
     selectedTableName,
     selectedLayoutId,
-    handleSeatSelect
+    handleSeatSelect,
+    alreadyReserved,
   };
 };
