@@ -17,6 +17,7 @@ const useSchedule = () => {
   const [snackbarMessage, setSnackbarMessage] = useState<{ text: string; type: "success" | "error" | "warning" | "info" } | null>(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [isMouseDown, setIsMouseDown] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const getMonthDays = () => {
     const firstDayIndex = new Date(currentYear, currentMonth, 1).getDay();
@@ -81,7 +82,7 @@ const useSchedule = () => {
       showSnackbar("Выберите меню перед добавлением!", "warning");
       return;
     }
-  
+    setIsSubmitting(true);
     try {
       await Promise.all(selectedDates.map((date) => addSchedule(date, selectedMenu)));
   
@@ -91,6 +92,8 @@ const useSchedule = () => {
       showSnackbar("Меню успешно добавлено!", "success");
     } catch (error) {
       showSnackbar("Ошибка при добавлении меню");
+    } finally {
+      setIsSubmitting(false);
     }
   }, [selectedMenu, selectedDates, loadSchedule, showSnackbar]);
 
@@ -104,14 +107,15 @@ const useSchedule = () => {
         showSnackbar("Нет записей для удаления", "error");
         return;
       }
-
       await Promise.all(idsToDelete.map(id => deleteSchedule(id)));
 
       await loadSchedule();
       setSelectedDates([]);
-      showSnackbar("Расписание успешно удалено!");
+      showSnackbar("Расписание успешно удалено!", "success");
     } catch (error) {
-      showSnackbar("Ошибка при удалении расписания");
+      showSnackbar("Ошибка при удалении расписания", "error");
+    } finally {
+      setIsSubmitting(false);
     }
   }, [selectedDates, scheduleData, loadSchedule, showSnackbar]);
 
@@ -157,6 +161,7 @@ const useSchedule = () => {
     handleMouseDown,
     handleMouseEnter, 
     handleMouseUp,
+    isSubmitting,
   };
 };
 

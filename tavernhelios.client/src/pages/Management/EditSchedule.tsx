@@ -25,7 +25,8 @@ const EditSchedule: React.FC = () => {
     setSnackbarOpen,
     handleMouseDown,
     handleMouseEnter,
-    handleMouseUp
+    handleMouseUp,
+    isSubmitting,
   } = useSchedule();
 
   return (
@@ -59,7 +60,7 @@ const EditSchedule: React.FC = () => {
           sx={{ mx: 1 }} 
           onClick={() => setIsModalOpen(true)}
           disabled={
-            selectedDates.length === 0 || 
+            isSubmitting || selectedDates.length === 0 || 
             selectedDates.some(date => scheduleData.some(s => s.dateTime.startsWith(date))) 
           }
         >
@@ -71,7 +72,7 @@ const EditSchedule: React.FC = () => {
           sx={{ mx: 1 }} 
           onClick={handleDeleteSchedule}
           disabled={
-            selectedDates.length === 0 || 
+            isSubmitting || selectedDates.length === 0 || 
             !selectedDates.some(date => scheduleData.some(s => s.dateTime.startsWith(date))) 
           }
         >
@@ -85,6 +86,7 @@ const EditSchedule: React.FC = () => {
         selectedMenu={selectedMenu}
         setSelectedMenu={setSelectedMenu}
         handleAddMenuToSchedule={handleAddMenuToSchedule}
+        isSubmitting={isSubmitting}
       />
       <Snackbar
         open={snackbarOpen}

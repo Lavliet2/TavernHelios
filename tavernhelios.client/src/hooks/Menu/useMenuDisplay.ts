@@ -9,6 +9,9 @@ import { useSnackbar } from "../../hooks/useSnackbar";
 
 
 export const useMenuDisplay = () => {
+  const { showSnackbar } = useSnackbar();
+  const userContext = useUser();
+
   const [menu, setMenu] = useState<Menu | null>(null);
   const [dishes, setDishes] = useState<Dish[]>([]);
   const [loadingMenu, setLoadingMenu] = useState<boolean>(true);
@@ -18,15 +21,15 @@ export const useMenuDisplay = () => {
   const [maxCardHeight, setMaxCardHeight] = useState<number | null>(null);
   const [selectedTime, setSelectedTime] = useState<string>("12:00");
   const [refreshKey, setRefreshKey] = useState<number>(0);
-  const userContext = useUser();
   const cardRefs = useRef<HTMLDivElement[]>([]);
 
   const [selectedSeatNumber, setSelectedSeatNumber] = useState<number | null>(null);
   const [selectedTableName, setSelectedTableName] = useState<string | null>(null);
   const [selectedLayoutId, setSelectedLayoutId] = useState<string | null>(null);
   const [alreadyReserved, setAlreadyReserved] = useState<boolean>(false);
+  const [isBooking, setIsBooking] = useState(false);
 
-  const { showSnackbar } = useSnackbar();
+  
 
   useEffect(() => {
     const loadSchedule = async () => {
@@ -138,24 +141,23 @@ export const useMenuDisplay = () => {
 
   // Создание бронирования
   const handleReservation = useCallback(async () => {
+    if (isBooking) return;
+    setIsBooking(true);
     const currentUsername = userContext?.user?.fullName;
     if (!currentUsername.trim()) {
       showSnackbar("Введите имя перед бронированием!");
-      // alert("Введите имя перед бронированием!");
       return;
     }
 
     const selectedDishIds = Object.values(selectedDishes);
     if (selectedDishIds.length === 0) {
       showSnackbar("Выберите хотя бы одно блюдо!");
-      // alert("Выберите хотя бы одно блюдо!");
       return;
     }
 
     if (selectedSeatNumber === null || !selectedTableName || !selectedLayoutId) {
       console.log("selectedSeatNumber", selectedSeatNumber, "selectedTableName", selectedTableName, "selectedLayoutId", selectedLayoutId);
       showSnackbar("Пожалуйста, выберите место за столом.");
-      // alert("Пожалуйста, выберите место за столом.");
       return;
     }
 
@@ -180,13 +182,13 @@ export const useMenuDisplay = () => {
     console.log("Отправляем бронь:", reservationData);
 
     try {
-        await createReservation(reservationData);
-        showSnackbar("Бронь успешно создана!", "success");
-        // alert("Бронь успешно создана!");
-        setRefreshKey((prev) => prev + 1);
-      } catch (error) {
-        showSnackbar(`Ошибка: ${(error as Error).message || "Неизвестная ошибка"}`);
-        // alert(`Ошибка: ${(error as Error).message || "Неизвестная ошибка"}`);
+      await createReservation(reservationData);
+      showSnackbar("Бронь успешно создана!", "success");
+      setRefreshKey((prev) => prev + 1);
+    } catch (error) {
+      showSnackbar(`Ошибка: ${(error as Error).message || "Неизвестная ошибка"}`);
+    } finally {
+      setIsBooking(false);
     }
   }, [
     userContext?.user,
@@ -217,5 +219,6 @@ export const useMenuDisplay = () => {
     selectedLayoutId,
     handleSeatSelect,
     alreadyReserved,
+    isBooking,
   };
 };

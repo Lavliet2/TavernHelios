@@ -13,14 +13,14 @@ import ReservationList from "../components/Menu/ReservationList";
 import dishTypes from "../constants/dishTypes";
 import TableLayoutModal from "../components/Management/LayoutEditor/TableLayoutModal";
 // import Snackbar from "@mui/material/Snackbar";
-import { useSnackbar } from "../../hooks/useSnackbar";
+// import { useSnackbar } from "../../hooks/useSnackbar";
 
 
 const MenuDisplay: React.FC = () => {
   const {
-    snackbarMessage,
-    snackbarOpen,
-    setSnackbarOpen,
+    // snackbarMessage,
+    // snackbarOpen,
+    // setSnackbarOpen,
     
     menu,
     groupedDishes,
@@ -36,7 +36,8 @@ const MenuDisplay: React.FC = () => {
     setSelectedTime,
     addToCardRefs,
     handleSeatSelect,
-    alreadyReserved
+    alreadyReserved,
+    isBooking,
   } = useMenuDisplay();
 
   const navigate = useNavigate(); //MAV delete
@@ -238,7 +239,7 @@ const MenuDisplay: React.FC = () => {
                 boxShadow: 3
               }}
             >
-              Забронировать
+              {isBooking ? "⏳ Бронирование..." : "Забронировать"}
             </Button>
           </Box>
         </>
