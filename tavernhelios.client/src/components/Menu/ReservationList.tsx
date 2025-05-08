@@ -10,21 +10,23 @@ const getUTCDateString = (date: Date) => {
 const ReservationList: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<string>(getUTCDateString(new Date()));
   const { reservations12, reservations13, dishes, loading, exportReservations, error } = useReservations(selectedDate);
-  const [loadingExport, setLoadingExport] = useState(false); // Новое состояние
+  const [loadingPdf, setLoadingPdf] = useState(false);
+  const [loadingExcel, setLoadingExcel] = useState(false);
 
   const handleDateChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => setSelectedDate(e.target.value),
     []
   );
 
-  const handleExport = async () => {
+  const handleExport = async (format: "pdf" | "excel") => {
+    const setLoading = format === "pdf" ? setLoadingPdf : setLoadingExcel;
     try {
-      setLoadingExport(true);
-      await exportReservations(); // Предполагаем, что это промис
+      setLoading(true);
+      await exportReservations(format);
     } catch (e) {
       console.error("Ошибка экспорта:", e);
     } finally {
-      setLoadingExport(false);
+      setLoading(false);
     }
   };
 
@@ -38,11 +40,10 @@ const ReservationList: React.FC = () => {
         label="Выберите дату"
         type="date"
         value={selectedDate}
-        onChange={handleDateChange} 
+        onChange={handleDateChange}
         fullWidth
         sx={{ mb: 3 }}
-        InputLabelProps={{ shrink: true }}
-        disabled={loadingExport}
+        slotProps={{ inputLabel: { shrink: true } }}
       />
 
       {loading ? (
@@ -59,17 +60,32 @@ const ReservationList: React.FC = () => {
           <ReservationGroup title="Брони на 13:00" reservations={reservations13} dishes={dishes} />
         </>
       )}
-      <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
-        <Button 
-          variant="contained" 
-          color="primary"
-          onClick={handleExport}
-          size="small"
-          sx={{ px: 2, py: 1 }}
-          disabled={loadingExport}
-        >
-          {loadingExport ? "⏳ Скачивание..." : "📄 Скачать отчет"}
-        </Button>
+
+      <Box sx={{ mt: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+        <Typography variant="h6">Скачать отчёт</Typography>
+        <Box sx={{ display: 'flex', gap: 2 }}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => handleExport("pdf")}
+            size="small"
+            sx={{ px: 2, py: 1, minWidth: 120 }}
+            disabled={loadingPdf}
+          >
+            {loadingPdf ? "⏳ PDF..." : "PDF"}
+          </Button>
+
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => handleExport("excel")}
+            size="small"
+            sx={{ px: 2, py: 1, minWidth: 120 }}
+            disabled={loadingExcel}
+          >
+            {loadingExcel ? "⏳ Excel..." : "Excel"}
+          </Button>
+        </Box>
       </Box>
     </Container>
   );

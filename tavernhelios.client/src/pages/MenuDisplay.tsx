@@ -5,23 +5,17 @@ import { Container, Typography, Card, CardMedia, CardContent,
   Radio, Box, Button
 } from '@mui/material';
 import Grid from '@mui/material/Grid2';
-import { useNavigate } from "react-router-dom"; //MAV delete
+// import { useNavigate } from "react-router-dom"; //MAV delete
 
 import { useMenuDisplay } from "../hooks/Menu/useMenuDisplay";
 
 import ReservationList from "../components/Menu/ReservationList";
 import dishTypes from "../constants/dishTypes";
 import TableLayoutModal from "../components/Management/LayoutEditor/TableLayoutModal";
-// import Snackbar from "@mui/material/Snackbar";
-// import { useSnackbar } from "../../hooks/useSnackbar";
 
 
 const MenuDisplay: React.FC = () => {
-  const {
-    // snackbarMessage,
-    // snackbarOpen,
-    // setSnackbarOpen,
-    
+  const { 
     menu,
     groupedDishes,
     loadingMenu,
@@ -40,7 +34,7 @@ const MenuDisplay: React.FC = () => {
     isBooking,
   } = useMenuDisplay();
 
-  const navigate = useNavigate(); //MAV delete
+  // const navigate = useNavigate(); //MAV delete
   const [isSeatModalOpen, setIsSeatModalOpen] = useState(false);
   const [selectedSeat, setSelectedSeat] = useState<{
     seatNumber: number;
@@ -250,7 +244,8 @@ const MenuDisplay: React.FC = () => {
         </Container>
       </Box>
       <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
-        <Button
+        {/* MAV! Пока не удалять. НРадо подумать будем ли мы делать редактор */}
+        {/* <Button
             variant="outlined"
             color="secondary"
             size="large"
@@ -265,7 +260,7 @@ const MenuDisplay: React.FC = () => {
             }}
           >
             Посмотреть брони
-        </Button> 
+        </Button>  */}
       </Box>
     </Container>
   );

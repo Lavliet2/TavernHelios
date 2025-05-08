@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="OfficeOpenXml.Core.ExcelPackage" Version="1.0.0" />
+    <PackageReference Include="ClosedXML" Version="0.104.2" />
     <PackageReference Include="QuestPDF" Version="2025.4.3" />
 	<None Include="Reports/fonts/arial.ttf">
 		<CopyToOutputDirectory>Always</CopyToOutputDirectory>

@@ -54,9 +54,9 @@ export const useReservations = (date: string) => {
     return resDate.getUTCHours() === 13;
   });
 
-  const exportReservations = async () => {
+  const exportReservations = async (format: "pdf" | "excel" = "pdf") => {
     try {
-      await exportReservationsFile(date);
+      await exportReservationsFile(date, format);
     } catch (err) {
       console.error("Ошибка экспорта бронирований:", err);
     }

@@ -63,22 +63,23 @@ export const fetchReservedSeatsForTime = async (
   }
 };
 
-export const exportReservationsFile = async (date: string) => {
-    const url = `${API_BASE_URL}/api/reservation/export?date=${date}&format=pdf`;
-  
-    try {
-      const response = await fetch(url);
-      if (!response.ok) throw new Error("Ошибка при загрузке отчета");
-  
-      const blob = await response.blob();
-      const link = document.createElement("a");
-      link.href = window.URL.createObjectURL(blob);
-      link.download = `Reservations_${date}.pdf`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } catch (error) {
-      console.error("Ошибка экспорта бронирований:", error);
-      throw error;
-    }
-  };
+export const exportReservationsFile = async (date: string, format: "pdf" | "excel" = "pdf") => {
+  const url = `${API_BASE_URL}/api/reservation/export?date=${date}&format=${format}`;
+
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error("Ошибка при загрузке отчета");
+
+    const blob = await response.blob();
+    const link = document.createElement("a");
+    link.href = window.URL.createObjectURL(blob);
+    link.download = `Reservations_${date}.${format === "excel" ? "xlsx" : "pdf"}`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  } catch (error) {
+    console.error("Ошибка экспорта бронирований:", error);
+    throw error;
+  }
+};
+
