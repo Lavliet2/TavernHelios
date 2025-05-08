@@ -12,6 +12,8 @@ import { useMenuDisplay } from "../hooks/Menu/useMenuDisplay";
 import ReservationList from "../components/Menu/ReservationList";
 import dishTypes from "../constants/dishTypes";
 import TableLayoutModal from "../components/Management/LayoutEditor/TableLayoutModal";
+import { Skeleton } from "@mui/material";
+
 
 
 const MenuDisplay: React.FC = () => {
@@ -115,19 +117,26 @@ const MenuDisplay: React.FC = () => {
                                 transform: 'scale(1.02)',
                                 boxShadow: 3
                               },
-                              // display: 'flex',
                               flexDirection: 'column',
                               // Если maxCardHeight найден, устанавливаем его:
                               height: maxCardHeight ? maxCardHeight : 'auto'
                             }}
                           >
                             <Box sx={{ position: 'relative', flexGrow: 1 }}>
-                              {dish.imageBase64 && (
+                              {!dish.imageBase64 ? (
+                                <Skeleton variant="rectangular" height={140} />
+                              ) : (
                                 <CardMedia
                                   component="img"
-                                  height="140"
+                                  loading="lazy"
+                                  // height="140"
                                   image={dish.imageBase64}
                                   alt={dish.name}
+                                  sx={{
+                                    height: 140,
+                                    opacity: dish.imageBase64 ? 1 : 0,
+                                    transition: "opacity 0.3s ease-in"
+                                  }}
                                 />
                               )}
                               <Box
