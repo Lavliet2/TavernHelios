@@ -48,12 +48,13 @@ namespace TavernHelios.Server.Services
             var reservationsAt12 = reservations.Where(r => r.Date.Hour == 12).ToList();
             var reservationsAt13 = reservations.Where(r => r.Date.Hour == 13).ToList();
 
-            var headers = new List<string> { "Сотрудник", "Суп", "Горячее", "Салаты", "Напитки" };
+            var headers = new List<string> { "Сотрудник","Стол", "Суп", "Горячее", "Салаты", "Напитки" };
 
             List<List<string>> tableData12 = reservationsAt12.Select(res =>
                 new List<string>
                 {
             res.PersonId,
+            res.TableName ?? "—",
             GetDishByType(dishData, res.DishIds, DishType.Soup),
             GetDishByType(dishData, res.DishIds, DishType.HotDish),
             GetDishByType(dishData, res.DishIds, DishType.Salad),
@@ -64,6 +65,7 @@ namespace TavernHelios.Server.Services
                 new List<string>
                 {
             res.PersonId,
+            res.TableName ?? "—",
             GetDishByType(dishData, res.DishIds, DishType.Soup),
             GetDishByType(dishData, res.DishIds, DishType.HotDish),
             GetDishByType(dishData, res.DishIds, DishType.Salad),
@@ -72,12 +74,21 @@ namespace TavernHelios.Server.Services
 
             var reportGenerator = ReportFactory.CreateReportGenerator(format, $"Брони на {date:yyyy-MM-dd}", headers);
 
-            return reportGenerator.GenerateMultiTableReport(
-                new List<(string, List<List<string>>)>
-                {
-            ("Брони на 12:00", tableData12),
-            ("Брони на 13:00", tableData13)
-                });
+            var tables = new List<(string, List<List<string>>)>();
+
+            if (tableData12.Any())
+                tables.Add(("Брони на 12:00", tableData12));
+            if (tableData13.Any())
+                tables.Add(("Брони на 13:00", tableData13));
+
+            return reportGenerator.GenerateMultiTableReport(tables);
+
+            //return reportGenerator.GenerateMultiTableReport(
+            //    new List<(string, List<List<string>>)>
+            //    {
+            //("Брони на 12:00", tableData12),
+            //("Брони на 13:00", tableData13)
+            //    });
         }
 
 

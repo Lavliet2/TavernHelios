@@ -53,7 +53,7 @@ namespace TavernHelios.Utils.Reports
                     doc.Add(new Paragraph("\n"));
 
                     var table = new PdfPTable(_headers.Count) { WidthPercentage = 100 };
-                    table.SetWidths(new float[] { 2, 2, 2, 2, 2 });
+                    table.SetWidths(Enumerable.Repeat(2f, _headers.Count).ToArray());
 
                     foreach (var header in _headers)
                     {
@@ -106,7 +106,7 @@ namespace TavernHelios.Utils.Reports
                         doc.Add(new Paragraph("\n"));
 
                         var table = new PdfPTable(_headers.Count) { WidthPercentage = 100 };
-                        table.SetWidths(new float[] { 2, 2, 2, 2, 2 });
+                        table.SetWidths(Enumerable.Repeat(2f, _headers.Count).ToArray());
 
                         foreach (var header in _headers)
                         {
