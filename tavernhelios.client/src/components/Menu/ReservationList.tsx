@@ -10,12 +10,23 @@ const getUTCDateString = (date: Date) => {
 const ReservationList: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<string>(getUTCDateString(new Date()));
   const { reservations12, reservations13, dishes, loading, exportReservations, error } = useReservations(selectedDate);
+  const [loadingExport, setLoadingExport] = useState(false); // Новое состояние
 
-  // Оптимизированный обработчик изменения даты
   const handleDateChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => setSelectedDate(e.target.value),
     []
   );
+
+  const handleExport = async () => {
+    try {
+      setLoadingExport(true);
+      await exportReservations(); // Предполагаем, что это промис
+    } catch (e) {
+      console.error("Ошибка экспорта:", e);
+    } finally {
+      setLoadingExport(false);
+    }
+  };
 
   return (
     <Container maxWidth="md" sx={{ mt: 4 }}>
@@ -23,7 +34,6 @@ const ReservationList: React.FC = () => {
         Брони на выбранную дату
       </Typography>
 
-      {/* Поле выбора даты */}
       <TextField
         label="Выберите дату"
         type="date"
@@ -32,6 +42,7 @@ const ReservationList: React.FC = () => {
         fullWidth
         sx={{ mb: 3 }}
         InputLabelProps={{ shrink: true }}
+        disabled={loadingExport}
       />
 
       {loading ? (
@@ -52,11 +63,12 @@ const ReservationList: React.FC = () => {
         <Button 
           variant="contained" 
           color="primary"
-          onClick={exportReservations}
+          onClick={handleExport}
           size="small"
-          sx={{ px: 2, py: 1 }} 
+          sx={{ px: 2, py: 1 }}
+          disabled={loadingExport}
         >
-          📄 Скачать отчет
+          {loadingExport ? "⏳ Скачивание..." : "📄 Скачать отчет"}
         </Button>
       </Box>
     </Container>
