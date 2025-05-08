@@ -53,23 +53,23 @@ namespace TavernHelios.Server.Services
             List<List<string>> tableData12 = reservationsAt12.Select(res =>
                 new List<string>
                 {
-            res.PersonId,
-            res.TableName ?? "—",
-            GetDishByType(dishData, res.DishIds, DishType.Soup),
-            GetDishByType(dishData, res.DishIds, DishType.HotDish),
-            GetDishByType(dishData, res.DishIds, DishType.Salad),
-            GetDishByType(dishData, res.DishIds, DishType.Drink)
+                    res.PersonId,
+                    res.TableName ?? "—",
+                    GetDishByType(dishData, res.DishIds, DishType.Soup),
+                    GetDishByType(dishData, res.DishIds, DishType.HotDish),
+                    GetDishByType(dishData, res.DishIds, DishType.Salad),
+                    GetDishByType(dishData, res.DishIds, DishType.Drink)
                 }).ToList();
 
             List<List<string>> tableData13 = reservationsAt13.Select(res =>
                 new List<string>
                 {
-            res.PersonId,
-            res.TableName ?? "—",
-            GetDishByType(dishData, res.DishIds, DishType.Soup),
-            GetDishByType(dishData, res.DishIds, DishType.HotDish),
-            GetDishByType(dishData, res.DishIds, DishType.Salad),
-            GetDishByType(dishData, res.DishIds, DishType.Drink)
+                    res.PersonId,
+                    res.TableName ?? "—",
+                    GetDishByType(dishData, res.DishIds, DishType.Soup),
+                    GetDishByType(dishData, res.DishIds, DishType.HotDish),
+                    GetDishByType(dishData, res.DishIds, DishType.Salad),
+                    GetDishByType(dishData, res.DishIds, DishType.Drink)
                 }).ToList();
 
             var reportGenerator = ReportFactory.CreateReportGenerator(format, $"Брони на {date:yyyy-MM-dd}", headers);
@@ -82,13 +82,6 @@ namespace TavernHelios.Server.Services
                 tables.Add(("Брони на 13:00", tableData13));
 
             return reportGenerator.GenerateMultiTableReport(tables);
-
-            //return reportGenerator.GenerateMultiTableReport(
-            //    new List<(string, List<List<string>>)>
-            //    {
-            //("Брони на 12:00", tableData12),
-            //("Брони на 13:00", tableData13)
-            //    });
         }
 
 

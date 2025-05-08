@@ -5,6 +5,7 @@ using TavernHelios.Server.Middleware;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using TavernHelios.Server.Exceptions;
 using TavernHelios.Server.Services;
+using QuestPDF.Infrastructure;
 
 namespace TavernHelios.Server
 {
@@ -14,9 +15,9 @@ namespace TavernHelios.Server
         {
             // Добавляем поддержку кодировок, включая windows-1252 для iTextSharp
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+            QuestPDF.Settings.License = LicenseType.Community;
 
             var builder = WebApplication.CreateBuilder(args);
-
             // ��������� CORS
             builder.Services.AddCors(options =>
             {
