@@ -42,7 +42,7 @@ export const deleteSchedule = async (id: string): Promise<void> => {
     const response = await axios.delete(
       `${API_BASE_URL}/api/MenuSchedule`,
       {
-        data: { id },
+        data: JSON.stringify(id),
         headers: { "Content-Type": "application/json" }
       }
     );

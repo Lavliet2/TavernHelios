@@ -1,44 +1,70 @@
-﻿//using OfficeOpenXml;
-//using OfficeOpenXml.Core.ExcelPackage;
-//using System;
-//using System.Collections.Generic;
-//using System.IO;
+﻿using ClosedXML.Excel;
+using System.Collections.Generic;
+using System.IO;
 
-//namespace TavernHelios.Utils.Reports
-//{
-//    public class ExcelReportGenerator<T> : IReportGenerator<T>
-//    {
-//        private readonly string _sheetName;
-//        private readonly List<string> _headers;
-//        private readonly List<Func<T, string>> _columnSelectors;
+namespace TavernHelios.Utils.Reports
+{
+    public class ExcelReportGenerator : IReportGenerator
+    {
+        private readonly string _title;
+        private readonly List<string> _headers;
 
-//        public ExcelReportGenerator(string sheetName, List<string> headers, List<Func<T, string>> columnSelectors)
-//        {
-//            _sheetName = sheetName;
-//            _headers = headers;
-//            _columnSelectors = columnSelectors;
-//        }
+        public ExcelReportGenerator(string title, List<string> headers)
+        {
+            _title = title;
+            _headers = headers;
+        }
 
-//        public MemoryStream GenerateReport(List<T> data)
-//        {
-//            using var package = new ExcelPackage();
-//            var sheet = package.Workbook.Worksheets.Add(_sheetName);
+        public MemoryStream GenerateReport(List<List<string>> data)
+        {
+            return GenerateMultiTableReport(new List<(string, List<List<string>>)> { (_title, data) });
+        }
 
-//            // Заголовки
-//            for (int i = 0; i < _headers.Count; i++)
-//                sheet.Cells[1, i + 1].Value = _headers[i];
+        public MemoryStream GenerateMultiTableReport(List<(string Title, List<List<string>> Data)> tables)
+        {
+            var stream = new MemoryStream();
+            using var workbook = new XLWorkbook();
 
-//            // Данные
-//            for (int row = 0; row < data.Count; row++)
-//                for (int col = 0; col < _columnSelectors.Count; col++)
-//                    sheet.Cells[row + 2, col + 1].Value = _columnSelectors[col](data[row]);
+            foreach (var (title, data) in tables)
+            {
+                var safeTitle = SanitizeSheetName(title);
+                var worksheet = workbook.Worksheets.Add(safeTitle);
 
-//            var stream = new MemoryStream(package.GetAsByteArray());
-//            stream.Position = 0;
-//            return stream;
-//        }
+                // Заголовки
+                for (int i = 0; i < _headers.Count; i++)
+                {
+                    worksheet.Cell(1, i + 1).Value = _headers[i];
+                    worksheet.Cell(1, i + 1).Style.Font.Bold = true;
+                    worksheet.Cell(1, i + 1).Style.Fill.BackgroundColor = XLColor.LightGray;
+                }
 
-//        public string GetFileExtension() => "xlsx";
-//        public string GetMimeType() => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-//    }
-//}
+                // Данные
+                for (int row = 0; row < data.Count; row++)
+                {
+                    for (int col = 0; col < _headers.Count; col++)
+                    {
+                        worksheet.Cell(row + 2, col + 1).Value = data[row][col];
+                    }
+                }
+
+                worksheet.Columns().AdjustToContents();
+            }
+
+            workbook.SaveAs(stream);
+            stream.Position = 0;
+            return stream;
+        }
+
+        private string SanitizeSheetName(string name)
+        {
+            var invalidChars = new[] { ':', '\\', '/', '?', '*', '[', ']' };
+            foreach (var ch in invalidChars)
+                name = name.Replace(ch, '-');
+
+            return name.Length > 31 ? name.Substring(0, 31) : name;
+        }
+
+        public string GetFileExtension() => "xlsx";
+        public string GetMimeType() => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+    }
+}

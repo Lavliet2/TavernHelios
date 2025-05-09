@@ -11,7 +11,7 @@ namespace TavernHelios.Utils.Reports
             return format.ToLower() switch
             {
                 "pdf" => new PdfReportGenerator(title, headers),
-                //"excel" => new ExcelReportGenerator(title, headers),
+                "excel" => new ExcelReportGenerator(title, headers),
                 _ => throw new ArgumentException($"Формат '{format}' не поддерживается.")
             };
         }

@@ -1,4 +1,5 @@
 import { Container, Typography, Box, Button, Snackbar, Alert  } from "@mui/material";
+import HourglassTopIcon from "@mui/icons-material/HourglassTop";
 import monthNames from "../../constants/monthNames"
 import useSchedule from "../../hooks/Management/useSchedule";
 import CalendarTable from "../../components/Management/ScheduleEditor/CalendarTable";
@@ -25,7 +26,9 @@ const EditSchedule: React.FC = () => {
     setSnackbarOpen,
     handleMouseDown,
     handleMouseEnter,
-    handleMouseUp
+    handleMouseUp,
+    isAdding,
+    isDeleting
   } = useSchedule();
 
   return (
@@ -59,7 +62,7 @@ const EditSchedule: React.FC = () => {
           sx={{ mx: 1 }} 
           onClick={() => setIsModalOpen(true)}
           disabled={
-            selectedDates.length === 0 || 
+            isAdding || selectedDates.length === 0 || 
             selectedDates.some(date => scheduleData.some(s => s.dateTime.startsWith(date))) 
           }
         >
@@ -70,12 +73,14 @@ const EditSchedule: React.FC = () => {
           color="error" 
           sx={{ mx: 1 }} 
           onClick={handleDeleteSchedule}
+          startIcon={isDeleting ? <HourglassTopIcon /> : undefined}
           disabled={
-            selectedDates.length === 0 || 
+            isDeleting || selectedDates.length === 0 || 
             !selectedDates.some(date => scheduleData.some(s => s.dateTime.startsWith(date))) 
           }
         >
-          Удалить расписание
+          {/* Удалить расписание */}
+          {isDeleting ? "Удаление..." : "Удалить расписание"}
         </Button>
       </Box>
       <MenuAddScheduleModal
@@ -85,6 +90,7 @@ const EditSchedule: React.FC = () => {
         selectedMenu={selectedMenu}
         setSelectedMenu={setSelectedMenu}
         handleAddMenuToSchedule={handleAddMenuToSchedule}
+        isAdding={isAdding}
       />
       <Snackbar
         open={snackbarOpen}

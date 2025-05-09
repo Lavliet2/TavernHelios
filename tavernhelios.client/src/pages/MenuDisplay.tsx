@@ -1,19 +1,24 @@
 import React from 'react';
+import {useState} from 'react';
 import { Container, Typography, Card, CardMedia, CardContent,
   CircularProgress, FormControl, RadioGroup, FormControlLabel,
   Radio, Box, Button
 } from '@mui/material';
+import HourglassTopIcon from '@mui/icons-material/HourglassTop';
+
 import Grid from '@mui/material/Grid2';
-import { useNavigate } from "react-router-dom"; //MAV delete
+// import { useNavigate } from "react-router-dom"; //MAV delete
 
 import { useMenuDisplay } from "../hooks/Menu/useMenuDisplay";
 
 import ReservationList from "../components/Menu/ReservationList";
 import dishTypes from "../constants/dishTypes";
+import TableLayoutModal from "../components/Management/LayoutEditor/TableLayoutModal";
+import { Skeleton } from "@mui/material";
 
 
 const MenuDisplay: React.FC = () => {
-  const {
+  const { 
     menu,
     groupedDishes,
     loadingMenu,
@@ -27,9 +32,18 @@ const MenuDisplay: React.FC = () => {
     handleSelectionChange,
     setSelectedTime,
     addToCardRefs,
+    handleSeatSelect,
+    alreadyReserved,
+    isBooking,
   } = useMenuDisplay();
 
-  const navigate = useNavigate(); //MAV delete
+  // const navigate = useNavigate(); //MAV delete
+  const [isSeatModalOpen, setIsSeatModalOpen] = useState(false);
+  const [selectedSeat, setSelectedSeat] = useState<{
+    seatNumber: number;
+    tableName: string;
+    layoutId: string;
+  } | null>(null);
 
   if (loadingMenu) {
     return (
@@ -98,19 +112,26 @@ const MenuDisplay: React.FC = () => {
                                 transform: 'scale(1.02)',
                                 boxShadow: 3
                               },
-                              // display: 'flex',
                               flexDirection: 'column',
                               // Если maxCardHeight найден, устанавливаем его:
                               height: maxCardHeight ? maxCardHeight : 'auto'
                             }}
                           >
                             <Box sx={{ position: 'relative', flexGrow: 1 }}>
-                              {dish.imageBase64 && (
+                              {!dish.imageBase64 ? (
+                                <Skeleton variant="rectangular" height={140} />
+                              ) : (
                                 <CardMedia
                                   component="img"
-                                  height="140"
+                                  loading="lazy"
+                                  // height="140"
                                   image={dish.imageBase64}
                                   alt={dish.name}
+                                  sx={{
+                                    height: 140,
+                                    opacity: dish.imageBase64 ? 1 : 0,
+                                    transition: "opacity 0.3s ease-in"
+                                  }}
                                 />
                               )}
                               <Box
@@ -152,43 +173,85 @@ const MenuDisplay: React.FC = () => {
           ))}
         </Grid>
       )}
-      <Box sx={{ textAlign: 'center', mt: 2 }}>
-        <Typography variant="h6" gutterBottom>Выберите время бронирования:</Typography>
-        <FormControl component="fieldset">
-          <RadioGroup
-            row
-            value={selectedTime}
-            onChange={(e) => setSelectedTime(e.target.value)}
-          >
-            <FormControlLabel value="12:00" control={<Radio />} label="12:00" />
-            <FormControlLabel value="13:00" control={<Radio />} label="13:00" />
-          </RadioGroup>
-        </FormControl>
-      </Box>
-      <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
-        <Button
-          variant="contained"
-          color="primary"
-          size="large"
-          onClick={handleReservation}
-          sx={{
-            borderRadius: 2,  
-            px: 4,            
-            py: 1,             
-            textTransform: 'none',
-            boxShadow: 3      
-          }}
-        >
-          Забронировать
-        </Button>       
-      </Box>
+      {alreadyReserved ? (
+        <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
+          <Typography variant="h6" sx={{ mt: 2, color: "green" }}>
+            ✅ Вы уже заказали обед на сегодня.
+          </Typography>
+        </Box>
+      ) : (
+        <>
+          <Box sx={{ textAlign: 'center', mt: 2 }}>
+            <Typography variant="h6" gutterBottom>Выберите время бронирования:</Typography>
+            <FormControl component="fieldset">
+              <RadioGroup
+                row
+                value={selectedTime}
+                onChange={(e) => setSelectedTime(e.target.value)}
+              >
+                <FormControlLabel value="12:00" control={<Radio />} label="12:00" />
+                <FormControlLabel value="13:00" control={<Radio />} label="13:00" />
+              </RadioGroup>
+            </FormControl>
+          </Box>
+
+          <Box sx={{ textAlign: 'center', mt: 2 }}>
+            <Button
+              variant="outlined"
+              color="secondary"
+              size="medium"
+              onClick={() => setIsSeatModalOpen(true)}
+            >
+              Выбрать место за столом
+            </Button>
+            <TableLayoutModal
+              open={isSeatModalOpen}
+              onClose={() => setIsSeatModalOpen(false)}
+              selectedTime={selectedTime}
+              onSelectSeat={(seatNumber, tableName, layoutId) => {
+                setSelectedSeat({ seatNumber, tableName, layoutId });
+                handleSeatSelect(seatNumber, tableName, layoutId);
+                setIsSeatModalOpen(false);
+              }}
+            />
+            {selectedSeat && (
+              <Box sx={{ mt: 2, p: 2, border: '1px solid #ccc', borderRadius: 2, backgroundColor: '#f9f9f9' }}>
+                <Typography variant="body1">
+                  🪑 Вы выбрали: стол <strong>{selectedSeat.tableName}</strong>, место <strong>{selectedSeat.seatNumber}</strong>
+                </Typography>
+              </Box>
+            )}
+          </Box>
+
+          <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
+            <Button
+              variant="contained"
+              color="primary"
+              size="large"
+              onClick={handleReservation}
+              disabled={isBooking}     
+              startIcon={isBooking ? <HourglassTopIcon /> : undefined}       
+              sx={{
+                borderRadius: 2,
+                px: 4,
+                py: 1,
+                textTransform: 'none',
+                boxShadow: 3
+              }}
+            >
+              Забронировать
+            </Button>
+          </Box>
+        </>
+      )}
       <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
         <Container maxWidth="lg" sx={{ mt: 4 }}>
           <ReservationList key={refreshKey}/>
         </Container>
       </Box>
       <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
-        <Button
+        {/* MAV! Пока не удалять. НРадо подумать будем ли мы делать редактор */}
+        {/* <Button
             variant="outlined"
             color="secondary"
             size="large"
@@ -203,7 +266,7 @@ const MenuDisplay: React.FC = () => {
             }}
           >
             Посмотреть брони
-        </Button> 
+        </Button>  */}
       </Box>
     </Container>
   );

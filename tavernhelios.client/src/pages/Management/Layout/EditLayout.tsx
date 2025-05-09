@@ -36,8 +36,17 @@ import { drawCanvas } from "../../../utils/canvasUtils";
 
 import { RenderLayoutModal } from "./LayoutModalRenderer";
 import { RenderContextMenu } from "./RenderContextMenu";
+import { fetchReservedSeatsForTime } from "../../../services/reservationService";
 
-const LayoutEditor: React.FC = React.memo(() => {
+
+interface LayoutEditorProps {
+  selectionMode?: boolean;
+  selectedTime?: string;
+  onSelectSeat?: (seatNumber: number, tableName: string, layoutId: string) => void;
+}
+
+const LayoutEditor: React.FC<LayoutEditorProps> = React.memo(
+  ({ selectionMode = false, selectedTime, onSelectSeat }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const backgroundImgRef = useRef<HTMLImageElement>(null);
 
@@ -51,6 +60,15 @@ const LayoutEditor: React.FC = React.memo(() => {
   const [chairRadius, setChairRadius] = useState(DEFAULT_CHAIR_RADIUS);
   const [isEditing, setIsEditing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [selectedSeat, setSelectedSeat] = useState<{ seatNumber: number; tableName: string } | null>(null);
+
+
+  const [reservedSeats, setReservedSeats] = useState<{
+    seatNumber: number;
+    tableName: string;
+    personId: string;
+  }[]>([]);
 
   const {
     layouts,
@@ -90,7 +108,21 @@ const LayoutEditor: React.FC = React.memo(() => {
     contextMenu,
     selectedObject,
     setContextMenu,
-  } = useCanvasInteractions(canvasRef, isEditing, objects, setObjects);
+  } = useCanvasInteractions(
+    canvasRef,
+    isEditing,
+    objects,
+    setObjects,
+    reservedSeats,
+    (seatNumber, tableName) => {
+      setSelectedSeat({ seatNumber, tableName });
+  
+      // layoutId добавляем здесь
+      if (selectionMode && onSelectSeat && selectedLayoutId) {
+        onSelectSeat(seatNumber, tableName, selectedLayoutId);
+      }
+    }
+  );
 
   useLayoutLoader({
     selectedLayoutId,
@@ -99,15 +131,15 @@ const LayoutEditor: React.FC = React.memo(() => {
     setObjects,
     resetTableState,
     backgroundImgRef,
-    canvasRef,
-    drawCanvas,
   });
 
   useCanvasRenderLoop({
     canvasRef,
     backgroundImgRef,
     objects,
-    drawCanvas,
+    reservedSeats,
+    selectedSeat,
+    drawCanvas
   });
 
   const [, dropRef] = useDropHandler(
@@ -127,6 +159,30 @@ const LayoutEditor: React.FC = React.memo(() => {
     loadLayouts();
   }, [loadLayouts]);
 
+
+  useEffect(() => {
+    if (!selectionMode || !selectedTime || !selectedLayoutId) return;
+  
+    const dateOnly = new Date().toISOString().split("T")[0]; 
+    console.log("Selected date:", dateOnly, selectedTime, selectedLayoutId);
+    fetchReservedSeatsForTime(dateOnly, selectedTime, selectedLayoutId)
+    fetchReservedSeatsForTime(dateOnly, selectedTime, selectedLayoutId)
+      .then((seats) => {
+        console.log("Забронированные места:", seats);
+        setReservedSeats(seats);
+      })
+      .catch((err) => {
+        console.error("Ошибка загрузки забронированных мест:", err);
+        setReservedSeats([]);
+      });
+  }, [selectedTime, selectedLayoutId, selectionMode]);
+
+  useEffect(() => {
+    if (isEditing) {
+      setSelectedSeat(null);
+    }
+  }, [isEditing]);
+
   if (loading) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
@@ -137,6 +193,7 @@ const LayoutEditor: React.FC = React.memo(() => {
 
   return (
     <Box sx={{ display: "flex", height: "100vh" }}>
+      {!selectionMode && (
       <Sidebar
         layouts={layouts}
         selectedLayoutId={selectedLayoutId}
@@ -160,6 +217,7 @@ const LayoutEditor: React.FC = React.memo(() => {
         setTableHeight={setTableHeight}
         setChairRadius={setChairRadius}
       />
+      )}
 
       <LayoutCanvas
         canvasRef={canvasRef}

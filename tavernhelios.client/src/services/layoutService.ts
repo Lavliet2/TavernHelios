@@ -4,7 +4,7 @@ import { Layout } from "../types/Layout";
 export const fetchLayouts = async (): Promise<Layout[]> => {
   try {
     const response = await fetch(`${API_BASE_URL}/api/Layout?IsDeleted=false`);
-    console.log('Service fetchLayout', response);
+    // console.log('Service fetchLayout', response);
     if (!response.ok) {
       throw new Error("Ошибка при получении схем зала");
     }

@@ -15,7 +15,6 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
   const { i18n } = useTranslation();
 
   const changeLanguage = (lang: string) => {
-    console.log("Switching language to:", lang);
     i18n.changeLanguage(lang);
   };
 

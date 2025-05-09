@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import HourglassTopIcon from "@mui/icons-material/HourglassTop";
 import { Box, Typography, Button, Modal } from "@mui/material";
 import MenuCard from "../MenuEditor/MenuCard";
 import { Menu } from "../../../types/Management";
@@ -10,6 +11,7 @@ interface MenuAddScheduleModalProps {
   selectedMenu: string | null;
   setSelectedMenu: (id: string) => void;
   handleAddMenuToSchedule: () => void;
+  isAdding: boolean;
 }
 
 const MenuAddScheduleModal: React.FC<MenuAddScheduleModalProps> = ({
@@ -19,6 +21,7 @@ const MenuAddScheduleModal: React.FC<MenuAddScheduleModalProps> = ({
   selectedMenu,
   setSelectedMenu,
   handleAddMenuToSchedule,
+  isAdding,
 }) => {
   const [expandedMenu, setExpandedMenu] = useState<Menu | null>(null);
 
@@ -41,8 +44,8 @@ const MenuAddScheduleModal: React.FC<MenuAddScheduleModalProps> = ({
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          maxHeight: "90vh",
-          overflowY: "auto",
+          // maxHeight: "90vh",
+          // overflowY: "auto",
         }}
       >
         <Typography variant="h6" align="center" sx={{ mb: 2 }}>
@@ -68,8 +71,14 @@ const MenuAddScheduleModal: React.FC<MenuAddScheduleModalProps> = ({
         )}
 
         <Box sx={{ textAlign: "center", mt: 2 }}>
-          <Button variant="contained" color="success" onClick={handleAddMenuToSchedule}>
-            Добавить
+          <Button 
+            variant="contained" 
+            color="success" 
+            onClick={handleAddMenuToSchedule}
+            startIcon={isAdding ? <HourglassTopIcon /> : undefined}
+            disabled={isAdding || !selectedMenu}
+          >
+            {isAdding ? "Добавление..." : "Добавить"}
           </Button>
           <Button variant="contained" color="secondary" sx={{ ml: 2 }} onClick={onClose}>
             Отмена
@@ -78,8 +87,14 @@ const MenuAddScheduleModal: React.FC<MenuAddScheduleModalProps> = ({
 
         {/* Блок с карточкой блюд, который отображается под кнопками */}
         {expandedMenu && (
-          <Box sx={{ mt: 3, width: "100%", border: "1px solid #ddd", borderRadius: 2, p: 2, bgcolor: "#f9f9f9",
-            maxHeight: "300px", overflowY: "auto", 
+          <Box sx={{ 
+            mt: 3, 
+            p: 2, 
+            width: "100%", 
+            border: "1px solid #ddd", 
+            borderRadius: 2, 
+            bgcolor: "#f9f9f9", 
+            overflowY: "auto", 
            }}>
             <MenuCard menu={expandedMenu} />
           </Box>

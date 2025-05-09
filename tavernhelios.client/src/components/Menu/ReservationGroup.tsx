@@ -1,14 +1,17 @@
-import React from "react";
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import React, { useState, useMemo } from "react";
+import {
+  Paper, Table, TableBody, TableCell, TableContainer,
+  TableHead, TableRow, Typography, TableSortLabel
+} from "@mui/material";
 
 import dishTypes from "../../constants/dishTypes";
-
 
 interface Reservation {
   id: string;
   personId: string;
   date: string;
   dishIds: string[];
+  tableName: string;
 }
 
 interface Dish {
@@ -24,9 +27,27 @@ interface Props {
   dishes: Dish[];
 }
 
+type Order = "asc" | "desc";
+
 const ReservationGroup: React.FC<Props> = ({ title, reservations, dishes }) => {
-  // Создаем объект { dishId: { name, type } } для быстрого поиска
-  const dishesMap = React.useMemo(() => {
+  const [orderBy, setOrderBy] = useState<"personId" | "tableName">("personId");
+  const [order, setOrder] = useState<Order>("asc");
+
+  const handleSort = (property: "personId" | "tableName") => {
+    const isAsc = orderBy === property && order === "asc";
+    setOrder(isAsc ? "desc" : "asc");
+    setOrderBy(property);
+  };
+
+  const sortedReservations = useMemo(() => {
+    return [...reservations].sort((a, b) => {
+      const aVal = a[orderBy] || "";
+      const bVal = b[orderBy] || "";
+      return aVal.localeCompare(bVal, "ru", { sensitivity: "base" }) * (order === "asc" ? 1 : -1);
+    });
+  }, [reservations, orderBy, order]);
+
+  const dishesMap = useMemo(() => {
     return dishes.reduce((acc, dish) => {
       acc[dish.id] = { name: dish.name, type: dish.dishType };
       return acc;
@@ -36,24 +57,41 @@ const ReservationGroup: React.FC<Props> = ({ title, reservations, dishes }) => {
   return (
     <Paper sx={{ p: 2, mb: 3 }}>
       <Typography variant="h5" gutterBottom>{title}</Typography>
-      
-      {reservations.length === 0 ? (
+
+      {sortedReservations.length === 0 ? (
         <Typography variant="body1" align="center">Нет бронирований.</Typography>
       ) : (
         <TableContainer>
           <Table>
-            {/* Заголовок таблицы */}
             <TableHead>
               <TableRow>
-                <TableCell><strong>Имя</strong></TableCell>
+                <TableCell>
+                  <TableSortLabel
+                    active={orderBy === "personId"}
+                    direction={orderBy === "personId" ? order : "asc"}
+                    onClick={() => handleSort("personId")}
+                  >
+                    <strong>Имя</strong>
+                  </TableSortLabel>
+                </TableCell>
+                <TableCell align="center">
+                  <TableSortLabel
+                    active={orderBy === "tableName"}
+                    direction={orderBy === "tableName" ? order : "asc"}
+                    onClick={() => handleSort("tableName")}
+                  >
+                    <strong>Стол</strong>
+                  </TableSortLabel>
+                </TableCell>
                 {dishTypes.map(type => (
-                  <TableCell key={type.value} align="center"><strong>{type.label}</strong></TableCell>
+                  <TableCell key={type.value} align="center">
+                    <strong>{type.label}</strong>
+                  </TableCell>
                 ))}
               </TableRow>
             </TableHead>
             <TableBody>
-              {reservations.map(reservation => {
-                // Заполняем массив блюд по категориям
+              {sortedReservations.map(reservation => {
                 const dishByType: Record<number, string[]> = { 0: [], 1: [], 2: [], 3: [] };
 
                 reservation.dishIds.forEach(dishId => {
@@ -66,9 +104,12 @@ const ReservationGroup: React.FC<Props> = ({ title, reservations, dishes }) => {
                 return (
                   <TableRow key={reservation.id}>
                     <TableCell>{reservation.personId}</TableCell>
+                    <TableCell align="center">{reservation.tableName || "—"}</TableCell>
                     {dishTypes.map(type => (
                       <TableCell key={type.value} align="center">
-                        {dishByType[type.value].length > 0 ? dishByType[type.value].join(", ") : "—"}
+                        {dishByType[type.value].length > 0
+                          ? dishByType[type.value].join(", ")
+                          : "—"}
                       </TableCell>
                     ))}
                   </TableRow>
