@@ -27,8 +27,9 @@ namespace TavernHelios.Server.Services
 
         public async Task<Stream> ExportReservationsAsync(DateTime date, string format)
         {
-            string formattedDate = date.ToString("yyyy-MM-dd");
-            var response = await _httpClient.GetAsync($"{_reservationServiceBaseUrl}/api/Reservation/by-date?date={formattedDate}");
+            string isoBegin = date.ToString("yyyy-MM-ddT00:00:00Z");
+            string isoEnd = date.ToString("yyyy-MM-ddT23:59:59Z");
+            var response = await _httpClient.GetAsync($"{_reservationServiceBaseUrl}/api/Reservation?IsDeleted=false&BeginDate={isoBegin}&EndDate={isoEnd}");
 
             if (!response.IsSuccessStatusCode)
             {

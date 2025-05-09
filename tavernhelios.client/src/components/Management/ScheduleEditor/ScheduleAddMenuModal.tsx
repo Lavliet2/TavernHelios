@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import HourglassTopIcon from "@mui/icons-material/HourglassTop";
 import { Box, Typography, Button, Modal } from "@mui/material";
 import MenuCard from "../MenuEditor/MenuCard";
 import { Menu } from "../../../types/Management";
@@ -10,7 +11,7 @@ interface MenuAddScheduleModalProps {
   selectedMenu: string | null;
   setSelectedMenu: (id: string) => void;
   handleAddMenuToSchedule: () => void;
-  isSubmitting: boolean;
+  isAdding: boolean;
 }
 
 const MenuAddScheduleModal: React.FC<MenuAddScheduleModalProps> = ({
@@ -20,7 +21,7 @@ const MenuAddScheduleModal: React.FC<MenuAddScheduleModalProps> = ({
   selectedMenu,
   setSelectedMenu,
   handleAddMenuToSchedule,
-  isSubmitting,
+  isAdding,
 }) => {
   const [expandedMenu, setExpandedMenu] = useState<Menu | null>(null);
 
@@ -74,9 +75,10 @@ const MenuAddScheduleModal: React.FC<MenuAddScheduleModalProps> = ({
             variant="contained" 
             color="success" 
             onClick={handleAddMenuToSchedule}
-            disabled={isSubmitting || !selectedMenu}
+            startIcon={isAdding ? <HourglassTopIcon /> : undefined}
+            disabled={isAdding || !selectedMenu}
           >
-            {isSubmitting ? "Добавление..." : "Добавить"}
+            {isAdding ? "Добавление..." : "Добавить"}
           </Button>
           <Button variant="contained" color="secondary" sx={{ ml: 2 }} onClick={onClose}>
             Отмена

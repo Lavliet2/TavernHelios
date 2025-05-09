@@ -142,7 +142,6 @@ export const useMenuDisplay = () => {
   // Создание бронирования
   const handleReservation = useCallback(async () => {
     if (isBooking) return;
-    setIsBooking(true);
     const currentUsername = userContext?.user?.fullName;
     if (!currentUsername.trim()) {
       showSnackbar("Введите имя перед бронированием!");
@@ -182,6 +181,7 @@ export const useMenuDisplay = () => {
     console.log("Отправляем бронь:", reservationData);
 
     try {
+      setIsBooking(true);
       await createReservation(reservationData);
       showSnackbar("Бронь успешно создана!", "success");
       setRefreshKey((prev) => prev + 1);

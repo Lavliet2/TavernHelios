@@ -1,4 +1,4 @@
-import { useEffect, RefObject } from "react";
+import { useEffect } from "react";
 import { Layout } from "../../../types/Layout";
 import { DroppedObject, DroppedObjectType } from "../../../types/DroppedObject";
 

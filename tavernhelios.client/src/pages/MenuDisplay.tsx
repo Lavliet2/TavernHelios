@@ -4,6 +4,8 @@ import { Container, Typography, Card, CardMedia, CardContent,
   CircularProgress, FormControl, RadioGroup, FormControlLabel,
   Radio, Box, Button
 } from '@mui/material';
+import HourglassTopIcon from '@mui/icons-material/HourglassTop';
+
 import Grid from '@mui/material/Grid2';
 // import { useNavigate } from "react-router-dom"; //MAV delete
 
@@ -13,7 +15,6 @@ import ReservationList from "../components/Menu/ReservationList";
 import dishTypes from "../constants/dishTypes";
 import TableLayoutModal from "../components/Management/LayoutEditor/TableLayoutModal";
 import { Skeleton } from "@mui/material";
-
 
 
 const MenuDisplay: React.FC = () => {
@@ -63,12 +64,6 @@ const MenuDisplay: React.FC = () => {
 
   return (
     <Container maxWidth="xl" sx={{ mt: 4 }}>
-      {/* <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={4000}
-        onClose={() => setSnackbarOpen(false)}
-        message={snackbarMessage}
-      /> */}
       <Typography variant="h4" align="center" gutterBottom>
         {menu?.name}
       </Typography>
@@ -234,6 +229,8 @@ const MenuDisplay: React.FC = () => {
               color="primary"
               size="large"
               onClick={handleReservation}
+              disabled={isBooking}     
+              startIcon={isBooking ? <HourglassTopIcon /> : undefined}       
               sx={{
                 borderRadius: 2,
                 px: 4,
@@ -242,7 +239,7 @@ const MenuDisplay: React.FC = () => {
                 boxShadow: 3
               }}
             >
-              {isBooking ? "⏳ Бронирование..." : "Забронировать"}
+              Забронировать
             </Button>
           </Box>
         </>

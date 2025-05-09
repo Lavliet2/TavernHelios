@@ -27,13 +27,14 @@ import {
   
     const chairs: DroppedChair[] =
       layout.tables?.flatMap((table) =>
-        table.seats?.map((seat) => ({
+        table.seats?.map((seat, index) => ({
           type: DroppedObjectType.CHAIR,
           x: seat.center.x - seat.radius,
           y: seat.center.y - seat.radius,
           chairRadius: seat.radius,
           name: table.name,
           description: seat.description,
+          seatNumber: seat.number ?? index + 1,
         })) ?? []
       ) ?? [];
   

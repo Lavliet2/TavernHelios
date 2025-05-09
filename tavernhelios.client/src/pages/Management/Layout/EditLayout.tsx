@@ -47,7 +47,6 @@ interface LayoutEditorProps {
 
 const LayoutEditor: React.FC<LayoutEditorProps> = React.memo(
   ({ selectionMode = false, selectedTime, onSelectSeat }) => {
-// const LayoutEditor: React.FC = React.memo(() => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const backgroundImgRef = useRef<HTMLImageElement>(null);
 
@@ -115,7 +114,6 @@ const LayoutEditor: React.FC<LayoutEditorProps> = React.memo(
     objects,
     setObjects,
     reservedSeats,
-    // onSelectSeat без layoutId — передаём только 2 аргумента
     (seatNumber, tableName) => {
       setSelectedSeat({ seatNumber, tableName });
   
@@ -133,8 +131,6 @@ const LayoutEditor: React.FC<LayoutEditorProps> = React.memo(
     setObjects,
     resetTableState,
     backgroundImgRef,
-    // canvasRef,
-    // drawCanvas,
   });
 
   useCanvasRenderLoop({

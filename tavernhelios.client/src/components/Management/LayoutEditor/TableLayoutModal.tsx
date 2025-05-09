@@ -31,7 +31,7 @@ const TableLayoutModal: React.FC<TableLayoutModalProps> = ({
           <CloseIcon />
         </IconButton>
       </DialogTitle>
-      <DialogContent>
+      <DialogContent sx={{ paddingBottom: '100px', position: 'relative' }}>
         <LayoutEditor
           selectionMode={true}
           selectedTime={selectedTime}
@@ -40,7 +40,19 @@ const TableLayoutModal: React.FC<TableLayoutModalProps> = ({
           }}
         />
 
-        <Box sx={{ mt: 2, textAlign: 'center' }}>
+        <Box
+          sx={{
+            position: 'fixed',
+            bottom: 0,
+            left: 0,
+            width: '100%',
+            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+            borderTop: '1px solid #ccc',
+            p: 2,
+            textAlign: 'center',
+            zIndex: 10,
+          }}
+        >
           {tempSeat ? (
             <Typography variant="body1" gutterBottom>
               Вы выбрали: стол <strong>{tempSeat.tableName}</strong>, место <strong>{tempSeat.seatNumber}</strong>
