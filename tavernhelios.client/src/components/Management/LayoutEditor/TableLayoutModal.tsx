@@ -39,7 +39,6 @@ const TableLayoutModal: React.FC<TableLayoutModalProps> = ({
             setTempSeat({ seatNumber, tableName, layoutId });
           }}
         />
-
         <Box
           sx={{
             position: 'fixed',
@@ -53,10 +52,15 @@ const TableLayoutModal: React.FC<TableLayoutModalProps> = ({
             zIndex: 10,
           }}
         >
+          <Typography variant="body2" color="text.secondary" gutterBottom>
+            Дата: <strong>{new Date().toLocaleDateString()}</strong>, время: <strong>{selectedTime}</strong>
+          </Typography>
           {tempSeat ? (
-            <Typography variant="body1" gutterBottom>
-              Вы выбрали: стол <strong>{tempSeat.tableName}</strong>, место <strong>{tempSeat.seatNumber}</strong>
-            </Typography>
+            <>
+              <Typography variant="body1" gutterBottom>
+                Вы выбрали: стол <strong>{tempSeat.tableName}</strong>, место <strong>{tempSeat.seatNumber}</strong>
+              </Typography>
+            </>
           ) : (
             <Typography variant="body2" gutterBottom color="text.secondary">
               Выберите свободное место, чтобы продолжить

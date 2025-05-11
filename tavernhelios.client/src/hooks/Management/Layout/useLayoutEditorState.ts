@@ -12,8 +12,44 @@ export const useLayoutEditorState = () => {
   }, []);
 
   const addObject = useCallback((object: DroppedObject) => {
-    setObjects((prev) => [...prev, object]);
+    setObjects((prev) => {
+      if (object.type === DroppedObjectType.CHAIR) {
+        const tableName = object.name?.trim().toLowerCase();
+        if (!tableName) return prev;
+  
+        const chairSeatNumbers = prev
+          .filter(
+            (o) =>
+              o.type === DroppedObjectType.CHAIR &&
+              o.name?.trim().toLowerCase() === tableName
+          )
+          .map((o) => o.seatNumber)
+          .filter((n): n is number => typeof n === "number")
+          .sort((a, b) => a - b);
+  
+        // Найдём минимальный свободный номер
+        let seatNumber = 1;
+        for (let i = 0; i < chairSeatNumbers.length; i++) {
+          if (chairSeatNumbers[i] !== i + 1) {
+            seatNumber = i + 1;
+            break;
+          }
+          seatNumber = chairSeatNumbers.length + 1;
+        }
+  
+        return [
+          ...prev,
+          {
+            ...object,
+            seatNumber,
+          },
+        ];
+      }
+  
+      return [...prev, object];
+    });
   }, []);
+  
 
   const removeObject = useCallback((object: DroppedObject) => {
     setObjects((prev) => prev.filter((obj) => obj !== object));
