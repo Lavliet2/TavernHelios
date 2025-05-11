@@ -15,6 +15,14 @@ export function useCanvasInteractions(
   reservedSeats: ReservedSeat[] = [],
   onSelectSeat?: (seatNumber: number, tableName: string) => void
 ) {
+  const [hoveredSeat, setHoveredSeat] = useState<{
+    seatNumber: number;
+    tableName: string;
+    x: number;
+    y: number;
+    personId: string;
+  } | null>(null);
+
   const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
   const dragOffset = useRef({ x: 0, y: 0 });
 
@@ -33,7 +41,8 @@ export function useCanvasInteractions(
       const h = "tableHeight" in obj ? obj.tableHeight : obj.chairRadius * 2;
 
       const withinBounds =
-        mouseX >= obj.x && mouseX <= obj.x + w && mouseY >= obj.y && mouseY <= obj.y + h;
+        mouseX >= obj.x && mouseX <= obj.x + w &&
+        mouseY >= obj.y && mouseY <= obj.y + h;
 
       if (withinBounds) {
         if (isEditing) {
@@ -48,6 +57,7 @@ export function useCanvasInteractions(
               r.seatNumber === seatNumber &&
               r.tableName.trim().toLowerCase() === tableName
           );
+
           if (!isReserved && seatNumber && obj.name && onSelectSeat) {
             onSelectSeat(seatNumber, obj.name);
           }
@@ -58,10 +68,48 @@ export function useCanvasInteractions(
   };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!isEditing || draggingIndex === null || !canvasRef.current) return;
+    if (!canvasRef.current) return;
     const rect = canvasRef.current.getBoundingClientRect();
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
+
+    let found = false;
+
+    for (let i = objects.length - 1; i >= 0; i--) {
+      const obj = objects[i];
+      if (obj.type !== DroppedObjectType.CHAIR) continue;
+
+      const r = obj.chairRadius;
+      const within =
+        mouseX >= obj.x && mouseX <= obj.x + 2 * r &&
+        mouseY >= obj.y && mouseY <= obj.y + 2 * r;
+
+      if (within) {
+        const reserved = reservedSeats.find(
+          (r) =>
+            r.seatNumber === obj.seatNumber &&
+            r.tableName.trim().toLowerCase() === (obj.name || "").trim().toLowerCase()
+        );
+
+        if (reserved) {
+          setHoveredSeat({
+            seatNumber: obj.seatNumber!,
+            tableName: obj.name!,
+            x: e.clientX,
+            y: e.clientY,
+            personId: reserved.personId,
+          });
+          found = true;
+          break;
+        }
+      }
+    }
+
+    if (!found) {
+      setHoveredSeat(null);
+    }
+
+    if (!isEditing || draggingIndex === null) return;
 
     setObjects((prev) =>
       prev.map((obj, i) =>
@@ -105,5 +153,6 @@ export function useCanvasInteractions(
     selectedObject,
     setContextMenu,
     setSelectedObject,
+    hoveredSeat,
   };
 }
