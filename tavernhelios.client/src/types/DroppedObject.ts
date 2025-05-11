@@ -10,7 +10,7 @@ export enum DroppedObjectType {
     name?: string;
     description?: string;
     //
-    // seatNumber?: number;
+    seatNumber?: number;
   }
   
   export interface DroppedTable extends DroppedObjectBase {
