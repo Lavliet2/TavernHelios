@@ -81,6 +81,7 @@ const ReservationGroup: React.FC<Props> = ({ title, reservations, dishes }) => {
                     direction={orderBy === "tableName" ? order : "asc"}
                     onClick={() => handleSort("tableName")}
                   >
+                    <strong>Стол</strong>
                   </TableSortLabel>
                 </TableCell>
                 <TableCell align="center">
