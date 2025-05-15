@@ -12,6 +12,7 @@ interface Reservation {
   date: string;
   dishIds: string[];
   tableName: string;
+  seatNumber?: number;
 }
 
 interface Dish {
@@ -80,8 +81,10 @@ const ReservationGroup: React.FC<Props> = ({ title, reservations, dishes }) => {
                     direction={orderBy === "tableName" ? order : "asc"}
                     onClick={() => handleSort("tableName")}
                   >
-                    <strong>Стол</strong>
                   </TableSortLabel>
+                </TableCell>
+                <TableCell align="center">
+                  <strong>Место</strong>
                 </TableCell>
                 {dishTypes.map(type => (
                   <TableCell key={type.value} align="center">
@@ -105,6 +108,9 @@ const ReservationGroup: React.FC<Props> = ({ title, reservations, dishes }) => {
                   <TableRow key={reservation.id}>
                     <TableCell>{reservation.personId}</TableCell>
                     <TableCell align="center">{reservation.tableName || "—"}</TableCell>
+                    <TableCell align="center">
+                      {reservation.seatNumber !== undefined ? reservation.seatNumber : "—"}
+                    </TableCell>
                     {dishTypes.map(type => (
                       <TableCell key={type.value} align="center">
                         {dishByType[type.value].length > 0

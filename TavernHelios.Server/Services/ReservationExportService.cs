@@ -49,13 +49,14 @@ namespace TavernHelios.Server.Services
             var reservationsAt12 = reservations.Where(r => r.Date.Hour == 12).ToList();
             var reservationsAt13 = reservations.Where(r => r.Date.Hour == 13).ToList();
 
-            var headers = new List<string> { "Сотрудник","Стол", "Суп", "Горячее", "Салаты", "Напитки" };
+            var headers = new List<string> { "Сотрудник","Стол", "Место", "Суп", "Горячее", "Салаты", "Напитки" };
 
             List<List<string>> tableData12 = reservationsAt12.Select(res =>
                 new List<string>
                 {
                     res.PersonId,
                     res.TableName ?? "—",
+                    res.SeatNumber.ToString() ?? "—",
                     GetDishByType(dishData, res.DishIds, DishType.Soup),
                     GetDishByType(dishData, res.DishIds, DishType.HotDish),
                     GetDishByType(dishData, res.DishIds, DishType.Salad),
@@ -67,6 +68,7 @@ namespace TavernHelios.Server.Services
                 {
                     res.PersonId,
                     res.TableName ?? "—",
+                    res.SeatNumber.ToString() ?? "—",
                     GetDishByType(dishData, res.DishIds, DishType.Soup),
                     GetDishByType(dishData, res.DishIds, DishType.HotDish),
                     GetDishByType(dishData, res.DishIds, DishType.Salad),
