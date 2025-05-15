@@ -145,70 +145,73 @@ jobs:
           tags: |
             ghcr.io/lavliet2/adminservice:${{ env.BRANCH }}-${{ github.ref_name }}
             ghcr.io/lavliet2/adminservice:latest
-
-
+ 
       - name: Add SSH key
         uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }} 
 
+      # **Деплой на сервер через SSH**
       - name: Deploy to Kubernetes via SSH
         env:
-          DEPLOY_BRANCH: ${{ env.BRANCH }} 
+          DEPLOY_BRANCH: ${{ env.BRANCH }}
         run: |
-          ssh -o StrictHostKeyChecking=no -p 2222 lavliet@178.72.83.217 << EOF          
-          set -e  # Остановить выполнение при ошибке
-
-          echo "🚀 Deploying from branch: $DEPLOY_BRANCH"
-
-          # Если BRANCH пустая, fallback на main
-          if [[ -z "$DEPLOY_BRANCH" ]]; then
-            echo "⚠️  Ветка не найдена, деплоим main!"
-            DEPLOY_BRANCH="main"
-          fi
-      
-          # Удаляем старую версию
-          rm -rf /home/lavliet/heliostavern-app
-          
-          echo "📥 Клонируем ветку: $DEPLOY_BRANCH"
-          git clone --branch "$DEPLOY_BRANCH" --depth 1 https://github.com/Lavliet2/TavernHelios.git /home/lavliet/heliostavern-app            
-          cd /home/lavliet/heliostavern-app || exit 1
-          
-          echo "✅ Репозиторий успешно клонирован. Запускаем деплой..."
-      
-          # Деплой в Kubernetes
-          ## Статичные поды
-          kubectl apply -f .k8s/tavernhelios-ingress.yaml || exit 1
-          kubectl apply -f .k8s/mongoMenuService-deployment.yaml || exit 1
-          kubectl apply -f .k8s/mongoLayoutService-deployment.yaml || exit 1
-          kubectl apply -f .k8s/postgresReservation-deployment.yaml || exit 1
-          kubectl apply -f .k8s/postgresAuth-deployment.yaml || exit 1
-          ### Мониторинг и Админка
-          kubectl apply -f .k8s/clickhouse-monitoring-deployment.yaml || exit 1
-          kubectl apply -f .k8s/rabbitmq-monitoring-deployment.yaml || exit 1
-          kubectl apply -f .k8s/prometheus-monitoring-deployment.yaml || exit 1
-          kubectl apply -f .k8s/grafana-monitoring-deployment.yaml || exit 1
-
-          ## наши поды
-          kubectl apply -f .k8s/menuService-deployment.yaml || exit 1
-          kubectl apply -f .k8s/reservationService-deployment.yaml || exit 1
-          kubectl apply -f .k8s/layoutService-deployment.yaml || exit 1
-          kubectl apply -f .k8s/authService-deployment.yaml || exit 1
-          kubectl apply -f .k8s/adminService-deployment.yaml || exit 1
-          kubectl apply -f .k8s/tavernhelios-server-deployment.yaml || exit 1
-          kubectl apply -f .k8s/tavernhelios-client-deployment.yaml || exit 1
-      
-          # Принудительный рестарт подов (не уверен может и не надо так делать)
-          echo "🔄 Перезапускаем поды..."
-          kubectl rollout restart deployment menuservice || exit 1
-          kubectl rollout restart deployment reservationservice || exit 1
-          kubectl rollout restart deployment layoutservice || exit 1
-          kubectl rollout restart deployment authservice || exit 1
-          kubectl rollout restart deployment adminservice || exit 1
-          kubectl rollout restart deployment tavernhelios-server || exit 1
-          kubectl rollout restart deployment tavernhelios-client || exit 1
-      
-          echo "✅ Деплой успешно завершён!"
+          echo "::group::🚀 Start remote deploy over SSH"
+          ssh -tt -o StrictHostKeyChecking=no -p 2222 lavliet@178.72.83.217 << EOF
+          DEPLOY_BRANCH="${{ env.BRANCH }}"
+          set -e
+          ...
+          echo "::notice::✅ Deploy completed successfully"
           exit 0
           EOF
-  
+          RETVAL=$?
+          echo "::endgroup::"
+          if [ $RETVAL -ne 0 ]; then
+            echo "::error::❌ SSH deploy step failed with code $RETVAL"
+            exit $RETVAL
+          fi
+
+          echo "::notice::📥 Cloning branch: \$DEPLOY_BRANCH"
+          rm -rf /home/lavliet/heliostavern-app
+          git clone --branch "\$DEPLOY_BRANCH" --depth 1 https://github.com/Lavliet2/TavernHelios.git /home/lavliet/heliostavern-app
+
+          cd /home/lavliet/heliostavern-app || exit 1
+          echo "::notice::✅ Repository cloned successfully."
+
+          echo "::group::📦 Applying static manifests"
+          kubectl apply -f .k8s/tavernhelios-ingress.yaml
+          kubectl apply -f .k8s/mongoMenuService-deployment.yaml
+          kubectl apply -f .k8s/mongoLayoutService-deployment.yaml
+          kubectl apply -f .k8s/postgresReservation-deployment.yaml
+          kubectl apply -f .k8s/postgresAuth-deployment.yaml
+          kubectl apply -f .k8s/clickhouse-monitoring-deployment.yaml
+          kubectl apply -f .k8s/rabbitmq-monitoring-deployment.yaml
+          kubectl apply -f .k8s/prometheus-monitoring-deployment.yaml
+          kubectl apply -f .k8s/grafana-monitoring-deployment.yaml
+          echo "::endgroup::"
+
+          echo "::group::⚙️ Deploying services"
+          kubectl apply -f .k8s/menuService-deployment.yaml
+          kubectl apply -f .k8s/reservationService-deployment.yaml
+          kubectl apply -f .k8s/layoutService-deployment.yaml
+          kubectl apply -f .k8s/authService-deployment.yaml
+          kubectl apply -f .k8s/adminService-deployment.yaml
+          kubectl apply -f .k8s/tavernhelios-server-deployment.yaml
+          kubectl apply -f .k8s/tavernhelios-client-deployment.yaml
+          echo "::endgroup::"
+
+          echo "::group::🔄 Restarting pods"
+          kubectl rollout restart deployment menuservice
+          kubectl rollout restart deployment reservationservice
+          kubectl rollout restart deployment layoutservice
+          kubectl rollout restart deployment authservice
+          kubectl rollout restart deployment adminservice
+          kubectl rollout restart deployment tavernhelios-server
+          kubectl rollout restart deployment tavernhelios-client
+          echo "::endgroup::"
+
+          echo "::notice::✅ Deploy completed successfully"
+          exit 0
+          EOF
+
+          echo "::endgroup::"
