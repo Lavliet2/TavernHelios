@@ -209,6 +209,5 @@ jobs:
           kubectl rollout restart deployment tavernhelios-client || exit 1
       
           echo "✅ Деплой успешно завершён!"
-          exit 0
           EOF
   
