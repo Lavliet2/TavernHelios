@@ -89,6 +89,8 @@ namespace TavernHelios.Server
                 app.UseSwagger();
                 app.UseSwaggerUI();
 
+            app.UseMiddleware<LoggingMiddleware>();
+
             app.UseHttpsRedirection();
             app.UseCors("AllowFrontend");
             app.UseExceptionHandler(options =>
@@ -98,7 +100,6 @@ namespace TavernHelios.Server
             app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();
-            app.UseMiddleware<LoggingMiddleware>();
             app.MapFallbackToFile("/index.html");
 
             app.Run();
