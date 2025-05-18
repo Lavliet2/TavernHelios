@@ -171,4 +171,5 @@ jobs:
             exit $RETVAL
           else
             echo "::notice::✅ Deploy script finished successfully"
+            exit 0
           fi
