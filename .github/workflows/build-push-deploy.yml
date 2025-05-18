@@ -78,8 +78,10 @@ jobs:
             ghcr.io/lavliet2/heliostavern-backend:${{ env.BRANCH }}-${{ github.ref_name }}
             ghcr.io/lavliet2/heliostavern-backend:latest 
           
-      # - name: Export version to .env.production
-      #   run: echo "VITE_APP_VERSION=${GITHUB_REF_NAME#v}" > ./tavernhelios.client/.env.production
+      - name: Prepare cleaned version (without 'v')
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          echo "CLEANED_VERSION=$VERSION" >> $GITHUB_ENV
 
       # **Сборка и публикация контейнера с фронтендом**
       - name: Build and push frontend image
@@ -89,7 +91,7 @@ jobs:
           file: ./tavernhelios.client/Dockerfile
           push: true
           build-args: |
-            VITE_APP_VERSION=${{ github.ref_name }}
+            VITE_APP_VERSION=${{ env.CLEANED_VERSION }}
           tags: |
             ghcr.io/lavliet2/heliostavern-frontend:${{ env.BRANCH }}-${{ github.ref_name }}
             ghcr.io/lavliet2/heliostavern-frontend:latest
