@@ -25,7 +25,7 @@ i18n.use(initReactI18next).init({
         companyStory: "The legend says that in a magical corner of the world, where beer is always pouring and the smell of grilled meat lingers, the idea was born to create an app that simplifies and makes the process of registering employees for corporate lunches a delightful and convenient journey. Inspired by this goal, we gathered a team of developers and created Tavern Helios.",
         ourTeam: "Our team",
         alex: "Alex",
-        alexRole: "Senior programmist fullstack",
+        alexRole: "Senior Full-Stack Developer",
         alexSkills: "Web, CI/CD",
         elvira: "Elvira",
         elviraRole: "Creator of business logic",
