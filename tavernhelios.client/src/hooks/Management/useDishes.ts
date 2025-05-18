@@ -2,13 +2,11 @@ import { useEffect, useState } from "react";
 import { Dish } from "../../types/Management";
 import { fetchDish, addDish, deleteDish, updateDish } from "../../services/dishService";
 import dishTypes from "../../constants/dishTypes";
-
+import { useSnackbar } from "../../hooks/useSnackbar";
 const useDishes = () => {
   const [DishData, setDishData] = useState<Dish[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [snackbarMessage, setSnackbarMessage] = useState<string | null>(null);
-  const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
   const [editingDish, setEditingDish] = useState<Dish | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
@@ -20,14 +18,17 @@ const useDishes = () => {
     imageBase64: "",
   });
 
+  const { showSnackbar } = useSnackbar(); 
+
   useEffect(() => {
     const loadDish = async () => {
       try {
         setLoading(true);
         const data = await fetchDish();
         setDishData(data);
-      } catch (error) {
+      } catch {
         setError("Ошибка загрузки меню");
+        showSnackbar("Ошибка загрузки меню", "error");
       } finally {
         setLoading(false);
       }
@@ -35,37 +36,23 @@ const useDishes = () => {
     loadDish();
   }, []);
 
-  const showSnackbar = (message: string) => {
-    setSnackbarMessage(message);
-    setSnackbarOpen(true);
-  };
-
   const handleAddDish = async () => {
     if (!newDish.name.trim()) {
-      showSnackbar("Название блюда обязательно!");
-      return;
+      throw new Error("Название блюда обязательно!");
     }
-    try {
-      const createdDish = await addDish(newDish);
-      setDishData((prev) => [...prev, createdDish]);
-      setIsAddModalOpen(false);
-      setNewDish({ id: "", name: "", description: "", dishType: dishTypes[0].value, imageBase64: "" });
-      showSnackbar("Блюдо добавлено!");
-    } catch (error) {
-      showSnackbar("Ошибка при добавлении блюда");
-    }
+
+    const createdDish = await addDish(newDish);
+    setDishData((prev) => [...prev, createdDish]);
+    setIsAddModalOpen(false);
+    setNewDish({ id: "", name: "", description: "", dishType: dishTypes[0].value, imageBase64: "" });
   };
 
   const handleDelete = async (dishId: string) => {
-    if (!window.confirm("Вы уверены, что хотите удалить это блюдо?")) return;
+    const confirmed = window.confirm("Вы уверены, что хотите удалить это блюдо?");
+    if (!confirmed) return;
 
-    try {
-      await deleteDish(dishId);
-      setDishData((prev) => prev.filter((dish) => dish.id !== dishId));
-      showSnackbar("Блюдо удалено!");
-    } catch (error) {
-      showSnackbar("Ошибка при удалении блюда");
-    }
+    await deleteDish(dishId);
+    setDishData((prev) => prev.filter((dish) => dish.id !== dishId));
   };
 
   const handleEdit = (dish: Dish) => {
@@ -75,20 +62,14 @@ const useDishes = () => {
 
   const handleEditSave = async () => {
     if (!editingDish || !editingDish.name.trim()) {
-      showSnackbar("Название блюда не может быть пустым!");
-      return;
+      throw new Error("Название блюда не может быть пустым!");
     }
 
-    try {
-      await updateDish(editingDish);
-      setDishData((prev) =>
-        prev.map((dish) => (dish.id === editingDish.id ? editingDish : dish))
-      );
-      setIsEditModalOpen(false);
-      showSnackbar("Блюдо обновлено!");
-    } catch (error) {
-      showSnackbar("Ошибка при обновлении блюда");
-    }
+    await updateDish(editingDish);
+    setDishData((prev) =>
+      prev.map((dish) => (dish.id === editingDish.id ? editingDish : dish))
+    );
+    setIsEditModalOpen(false);
   };
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>, isNew: boolean) => {
@@ -132,10 +113,6 @@ const useDishes = () => {
     editingDish,
     isEditModalOpen,
     isAddModalOpen,
-    snackbarMessage,
-    snackbarOpen,
-    setSnackbarOpen,
-    setSnackbarMessage,
     handleAddDish,
     handleDelete,
     handleEdit,
