@@ -155,24 +155,22 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
                       
       - name: Deploy to Kubernetes via SSH
-        env:
-          DEPLOY_BRANCH: ${{ env.BRANCH }}
         run: |
           echo "::group::🚀 Start remote deploy over SSH"
-          
-          ssh -tt -o StrictHostKeyChecking=no -p 2222 lavliet@178.72.83.217 "bash -s" <<EOF
+
+          ssh -tt -o StrictHostKeyChecking=no -p 2222 lavliet@178.72.83.217 "DEPLOY_BRANCH=${{ env.BRANCH }} bash -s" <<'EOF'
             set -e
 
             echo "🚀 Deploying from branch: $DEPLOY_BRANCH"
-            if [ -z "$DEPLOY_BRANCH" ]; then
+            if [[ -z "$DEPLOY_BRANCH" ]]; then
               echo "⚠️  BRANCH not set, defaulting to main"
               DEPLOY_BRANCH="main"
             fi
 
+            echo "📥 Клонируем ветку: $DEPLOY_BRANCH"
             rm -rf /home/lavliet/heliostavern-app
-            echo "📥 Клонируем ветку: \$DEPLOY_BRANCH"
-            git clone --branch "\$DEPLOY_BRANCH" --depth 1 https://github.com/Lavliet2/TavernHelios.git /home/lavliet/heliostavern-app
-            cd /home/lavliet/heliostavern-app || exit 1
+            git clone --branch "$DEPLOY_BRANCH" --depth 1 https://github.com/Lavliet2/TavernHelios.git /home/lavliet/heliostavern-app
+            cd /home/lavliet/heliostavern-app
 
             echo "✅ Репозиторий успешно клонирован. Запускаем деплой..."
 
