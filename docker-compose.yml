@@ -273,6 +273,7 @@ services:
       args:
         NODE_ENV: "development"
         VITE_API_URL: "https://localhost:5555"
+        VITE_APP_VERSION: "develop"
     environment:
       NODE_ENV: "development"
       VITE_API_URL: "https://localhost:5555"
