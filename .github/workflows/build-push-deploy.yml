@@ -160,4 +160,15 @@ jobs:
           ssh -p 2222 -o StrictHostKeyChecking=no lavliet@178.72.83.217 "chmod +x /home/lavliet/heliostavern-app/deploy.sh"
 
       - name: Run remote deploy script
-        run: ssh -p 2222 -o StrictHostKeyChecking=no lavliet@178.72.83.217 "/home/lavliet/heliostavern-app/deploy.sh '${{ env.BRANCH }}'"
+        run: |
+          echo "::group::🚀 Run remote deploy"
+          ssh -p 2222 -o StrictHostKeyChecking=no lavliet@178.72.83.217 "/home/lavliet/heliostavern-app/deploy.sh '${{ env.BRANCH }}'"
+          RETVAL=$?
+          echo "::endgroup::"
+          
+          if [ $RETVAL -ne 0 ]; then
+            echo "::error::❌ Deploy script failed with exit code $RETVAL"
+            exit $RETVAL
+          else
+            echo "::notice::✅ Deploy script finished successfully"
+          fi
