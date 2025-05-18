@@ -78,6 +78,9 @@ jobs:
             ghcr.io/lavliet2/heliostavern-backend:${{ env.BRANCH }}-${{ github.ref_name }}
             ghcr.io/lavliet2/heliostavern-backend:latest 
           
+      - name: Export version to .env.production
+        run: echo "VITE_APP_VERSION=${GITHUB_REF_NAME#v}" > ./tavernhelios.client/.env.production
+
       # **Сборка и публикация контейнера с фронтендом**
       - name: Build and push frontend image
         uses: docker/build-push-action@v4
@@ -209,5 +212,12 @@ jobs:
           kubectl rollout restart deployment tavernhelios-client || exit 1
       
           echo "✅ Деплой успешно завершён!"
+          exit 0
           EOF
+          echo "::endgroup::"
+
+          if [ $RET -ne 0 ]; then
+            echo "::error::❌ SSH deployment failed"
+            exit $RET
+          fi
   
