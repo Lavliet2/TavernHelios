@@ -202,6 +202,16 @@ jobs:
             kubectl rollout restart deployment tavernhelios-client
 
             echo "✅ Деплой успешно завершён!"
-          EOF
+            EOF
 
+          RETVAL=$?
           echo "::endgroup::"
+
+          if [ $RETVAL -ne 0 ]; then
+            echo "::error::❌ SSH завершился с ошибкой $RETVAL"
+            exit $RETVAL
+          else
+            echo "::notice::✅ SSH завершился успешно"
+            exit 0
+          fi
+
