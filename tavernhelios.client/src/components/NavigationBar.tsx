@@ -23,7 +23,7 @@ const NavigationBar: React.FC = () => {
   const navigate = useNavigate();
   const appVersion = import.meta.env.VITE_APP_VERSION || 'Unknown Version';
   const userContext = useUser();
-  console.log("App Version:", import.meta.env.VITE_APP_VERSION);
+  console.log("App Version:", appVersion, );
   const flags = {
     ru: ruFlag,
     us: usFlag,
