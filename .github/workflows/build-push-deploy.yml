@@ -149,6 +149,11 @@ jobs:
             ghcr.io/lavliet2/adminservice:${{ env.BRANCH }}-${{ github.ref_name }}
             ghcr.io/lavliet2/adminservice:latest
 
+        - name: Add SSH key
+          uses: webfactory/ssh-agent@v0.5.3
+          with:
+            ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+                        
       - name: Deploy to Kubernetes via SSH
         env:
           DEPLOY_BRANCH: ${{ env.BRANCH }}
