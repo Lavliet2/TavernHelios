@@ -29,6 +29,10 @@ namespace TavernHelios.Server.Middleware
                 var controllerName = routeData.Values["controller"]?.ToString();
                 var actionName = routeData.Values["action"]?.ToString();
 
+                string text = "HTTP Response: Method: {Method}, Path: {Path}, Request Body: {RequestBody}, " +
+                    "Status Code: {StatusCode}, Response Body: {ResponseBody}, " +
+                    "Controller: {Controller}, Action: {Action}, User: {User}";
+
                 // Копируем тело ответа для логирования
                 var originalBodyStream = context.Response.Body;
                 using (var responseBody = new MemoryStream())
@@ -42,12 +46,17 @@ namespace TavernHelios.Server.Middleware
 
                         // Логируем информацию о ответе, включая данные запроса
                         var responseBodyText = await FormatResponse(context.Response);
-                        if (context.Response.StatusCode == 200)
+                        switch (context.Response.StatusCode)
                         {
-                            Log.Information(
-                                "HTTP Response: Method: {Method}, Path: {Path}, Request Body: {RequestBody}, " +
-                                "Status Code: {StatusCode}, Response Body: {ResponseBody}, " +
-                                "Controller: {Controller}, Action: {Action}, User: {User}",
+                            // OK
+                            case 200:
+                            // Created
+                            case 201:
+                            // NoContent (удаление)
+                            case 204:
+                            {
+                                Log.Information(
+                                text,
                                 context.Request.Method,
                                 context.Request.Path,
                                 requestBody,
@@ -55,24 +64,25 @@ namespace TavernHelios.Server.Middleware
                                 responseBodyText,
                                 controllerName,
                                 actionName,
-                                username
-                            );
-                        }
-                        else
-                        {
-                            Log.Error(
-                                "HTTP Response: Method: {Method}, Path: {Path}, Request Body: {RequestBody}, " +
-                                "Status Code: {StatusCode}, Response Body: {ResponseBody}, " +
-                                "Controller: {Controller}, Action: {Action}, User: {User}",
-                                context.Request.Method,
-                                context.Request.Path,
-                                requestBody,
-                                context.Response.StatusCode,
-                                responseBodyText,
-                                controllerName,
-                                actionName,
-                                username
-                            );
+                                username);
+                                break;
+                            }
+
+                            default:
+                            {
+                                Log.Error(
+                                    text,
+                                    context.Request.Method,
+                                    context.Request.Path,
+                                    requestBody,
+                                    context.Response.StatusCode,
+                                    responseBodyText,
+                                    controllerName,
+                                    actionName,
+                                    username
+                                );
+                                break;
+                            }
                         }
                     }
                     catch (Exception ex)
@@ -80,17 +90,15 @@ namespace TavernHelios.Server.Middleware
                         // Логируем исключения с уровнем Verbose
                         Log.Verbose(
                             ex,
-                            "HTTP Exception: Method: {Method}, Path: {Path}, Request Body: {RequestBody}, " +
-                                "Status Code: {StatusCode}, Response Body: {ResponseBody}, " +
-                                "Controller: {Controller}, Action: {Action}, User: {User}",
-                                context.Request.Method,
-                                context.Request.Path,
-                                requestBody,
-                                context.Response.StatusCode,
-                                "",
-                                controllerName,
-                                actionName,
-                                username
+                            text,
+                            context.Request.Method,
+                            context.Request.Path,
+                            requestBody,
+                            context.Response.StatusCode,
+                            "",
+                            controllerName,
+                            actionName,
+                            username
                         );
 
                         // Пробрасываем исключение дальше

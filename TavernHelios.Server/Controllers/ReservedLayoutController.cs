@@ -1,12 +1,7 @@
-﻿
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 using Swashbuckle.AspNetCore.Annotations;
-using static GrpcContract.LayoutService.LayoutService;
-
-using GrpcContract.LayoutService;
-using TavernHelios.LayoutService.APICore.DTOValues.Layout;
-using TavernHelios.LayoutService.APICore.Extensions;
+using System.ComponentModel;
 using TavernHelios.Server.Services.ReservedLayoutService;
 
 namespace TavernHelios.Server.Controllers
@@ -52,10 +47,13 @@ namespace TavernHelios.Server.Controllers
         }
     }
 
+    [Description("Запрос для получения информации о забронированных местах на конкретную дату и схему")]
     public class ReservedLayoutRequest
     {
+        [Description("Дата и время бронирования для фильтрации")]
         public DateTime ReservationDateTime { get; set; } = DateTime.MinValue;
 
+        [Description("Идентификатор схемы зала, для которой запрашиваются данные")]
         public string LayoutId { get; set; } = string.Empty;
     }
 }

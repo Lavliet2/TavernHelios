@@ -1,12 +1,9 @@
-
-using Microsoft.AspNetCore.Mvc;
-
-using Swashbuckle.AspNetCore.Annotations;
-using static GrpcContract.LayoutService.LayoutService;
-
 using GrpcContract.LayoutService;
+using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 using TavernHelios.LayoutService.APICore.DTOValues.Layout;
 using TavernHelios.LayoutService.APICore.Extensions;
+using static GrpcContract.LayoutService.LayoutService;
 
 namespace TavernHelios.Server.Controllers
 {
@@ -94,7 +91,7 @@ namespace TavernHelios.Server.Controllers
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [SwaggerOperation("Удалить схуму зала")]
+        [SwaggerOperation("Удалить схему зала")]
         public async Task<IActionResult> DeleteLayoutAsync([FromBody] string LayoutId)
         {
             var LayoutResult = await _grpcClient.DeleteLayoutAsync(new GrpcContract.IdRequest() { Id = LayoutId });
