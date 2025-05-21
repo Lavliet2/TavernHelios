@@ -33,6 +33,7 @@
     <ProjectReference Include="..\MenuService\APICore\TavernHelios.MenuService.APICore.csproj" />
     <ProjectReference Include="..\ReservationService\TavernHelios.ReservationService.APICore\TavernHelios.ReservationService.APICore.csproj" />
     <ProjectReference Include="..\TavernHelios.RabbitMq\TavernHelios.RabbitMq.csproj" />
+    <ProjectReference Include="..\WeatherService\TavernHelios.WeatherService.APICore\TavernHelios.WeatherService.APICore.csproj" />
     <!--<ProjectReference Include="..\tavernhelios.client\tavernhelios.client.esproj">
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>-->

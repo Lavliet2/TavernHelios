@@ -5,14 +5,12 @@ import {
   TextField, Button, CircularProgress
 } from '@mui/material';
 import { useSnackbar } from "../hooks/useSnackbar";
-import { API_BASE_URL } from "../config";
-
 
 interface WeatherEntry {
   label: string;
   temperatureC: number;
   condition: string;
-  bold?: boolean;
+  bold?: boolean; 
 }
 
 interface WeatherSummary {
@@ -20,19 +18,7 @@ interface WeatherSummary {
   condition: string;
 }
 
-interface WeatherReply {
-  city: string;
-  todayDate: string;
-  tomorrowDate: string;
-  afterTomorrowDate: string;
-  today: WeatherEntry[];
-  tomorrow: WeatherEntry[];
-  afterTomorrow: WeatherEntry[];
-  tomorrowSummary: WeatherSummary | null;
-  afterTomorrowSummary: WeatherSummary | null;
-  state: number;
-  messages: string[];
-}
+const API_KEY = '25696eaa04a54bdd8cc132631251805';
 
 function WeatherForecast() {
   const [todayData, setTodayData] = useState<WeatherEntry[]>([]);
@@ -64,24 +50,90 @@ function WeatherForecast() {
   const fetchWeather = async (query: string) => {
     try {
       setLoading(true);
-      const response = await fetch(`${API_BASE_URL}/api/weather?city=${encodeURIComponent(query)}`);
+      const response = await fetch(`https://api.weatherapi.com/v1/forecast.json?key=${API_KEY}&q=${query}&days=3&lang=ru`);
 
       if (!response.ok) {
-        const err = await response.json();
-        throw new Error(err?.[0] || 'Ошибка загрузки');
+        if ([400, 403, 404].includes(response.status)) {
+          throw new Error('Город не найден или доступ запрещён');
+        }
+        throw new Error('Ошибка загрузки данных');
       }
 
-      const data: WeatherReply = await response.json();
+      const data = await response.json();
 
-      setCity(data.city);
-      setTodayDate(data.todayDate);
-      setTomorrowDate(data.tomorrowDate);
-      setAfterTomorrowDate(data.afterTomorrowDate);
-      setTodayData(data.today || []);
-      setTomorrowData(data.tomorrow || []);
-      setTomorrowSummary(data.tomorrowSummary || null);
-      setAfterTomorrowData(data.afterTomorrow || []);
-      setAfterTomorrowSummary(data.afterTomorrowSummary || null);
+      setCity(data.location.name);
+
+      const forecast = data.forecast.forecastday;
+      const today = forecast[0];
+      const tomorrow = forecast[1];
+      const afterTomorrow = forecast[2];
+
+      setTodayDate(formatDate(today.date));
+      setTomorrowDate(formatDate(tomorrow.date));
+      setAfterTomorrowDate(formatDate(afterTomorrow.date));
+
+      // Today
+      const hour12Today = today.hour.find((h: any) => h.time.includes('12:00'));
+      const hour13Today = today.hour.find((h: any) => h.time.includes('13:00'));
+
+      setTodayData([
+        {
+          label: 'Сейчас',
+          temperatureC: data.current.temp_c,
+          condition: data.current.condition.text,
+          bold: true 
+        },
+        {
+          label: 'Сегодня в 12:00',
+          temperatureC: hour12Today?.temp_c ?? 0,
+          condition: hour12Today?.condition.text ?? 'Нет данных'
+        },
+        {
+          label: 'Сегодня в 13:00',
+          temperatureC: hour13Today?.temp_c ?? 0,
+          condition: hour13Today?.condition.text ?? 'Нет данных'
+        }
+      ]);
+
+      // Tomorrow
+      const hour12Tomorrow = tomorrow.hour.find((h: any) => h.time.includes('12:00'));
+      const hour13Tomorrow = tomorrow.hour.find((h: any) => h.time.includes('13:00'));
+      setTomorrowSummary({
+        avgTempC: tomorrow.day.avgtemp_c,
+        condition: tomorrow.day.condition.text
+      });
+      setTomorrowData([
+        {
+          label: 'Завтра в 12:00',
+          temperatureC: hour12Tomorrow?.temp_c ?? 0,
+          condition: hour12Tomorrow?.condition.text ?? 'Нет данных'
+        },
+        {
+          label: 'Завтра в 13:00',
+          temperatureC: hour13Tomorrow?.temp_c ?? 0,
+          condition: hour13Tomorrow?.condition.text ?? 'Нет данных'
+        }
+      ]);
+
+      // After tomorrow
+      const hour12AfterTomorrow = afterTomorrow.hour.find((h: any) => h.time.includes('12:00'));
+      const hour13AfterTomorrow = afterTomorrow.hour.find((h: any) => h.time.includes('13:00'));
+      setAfterTomorrowSummary({
+        avgTempC: afterTomorrow.day.avgtemp_c,
+        condition: afterTomorrow.day.condition.text
+      });
+      setAfterTomorrowData([
+        {
+          label: 'Послезавтра в 12:00',
+          temperatureC: hour12AfterTomorrow?.temp_c ?? 0,
+          condition: hour12AfterTomorrow?.condition.text ?? 'Нет данных'
+        },
+        {
+          label: 'Послезавтра в 13:00',
+          temperatureC: hour13AfterTomorrow?.temp_c ?? 0,
+          condition: hour13AfterTomorrow?.condition.text ?? 'Нет данных'
+        }
+      ]);
     } catch (error: any) {
       showSnackbar(error.message || 'Ошибка загрузки', 'error');
     } finally {
@@ -100,6 +152,11 @@ function WeatherForecast() {
     if (e.key === 'Enter') {
       handleCitySubmit();
     }
+  };
+
+  const formatDate = (dateStr: string) => {
+    const [yyyy, mm, dd] = dateStr.split('-');
+    return `${dd}.${mm}.${yyyy}`;
   };
 
   const renderTable = (
@@ -141,7 +198,7 @@ function WeatherForecast() {
 
   return (
     <Box sx={{ padding: 2, maxWidth: 800, mx: 'auto' }}>
-      <Typography variant="h5" align="center">Погода в городе "{city}"</Typography>
+      <Typography variant="h5" align="center">Погода  "{city}"</Typography>
 
       <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mt: 2 }}>
         <TextField
