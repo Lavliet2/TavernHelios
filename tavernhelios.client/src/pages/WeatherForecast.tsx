@@ -17,6 +17,10 @@ interface WeatherEntry {
 
 interface WeatherSummary {
   avgTempC: number;
+  maxTempC: number;
+  minTempC: number;
+  humidity: number;
+  windKph: number;
   condition: string;
 }
 
@@ -27,6 +31,7 @@ interface WeatherReply {
   afterTomorrowDate: string;
   today: WeatherEntry[];
   tomorrow: WeatherEntry[];
+  todaySummary: WeatherSummary | null;
   afterTomorrow: WeatherEntry[];
   tomorrowSummary: WeatherSummary | null;
   afterTomorrowSummary: WeatherSummary | null;
@@ -39,6 +44,7 @@ function WeatherForecast() {
   const [tomorrowData, setTomorrowData] = useState<WeatherEntry[]>([]);
   const [afterTomorrowData, setAfterTomorrowData] = useState<WeatherEntry[]>([]);
 
+  const [todaySummary, setTodaySummary] = useState<WeatherSummary | null>(null);
   const [tomorrowSummary, setTomorrowSummary] = useState<WeatherSummary | null>(null);
   const [afterTomorrowSummary, setAfterTomorrowSummary] = useState<WeatherSummary | null>(null);
 
@@ -79,6 +85,7 @@ function WeatherForecast() {
       setAfterTomorrowDate(data.afterTomorrowDate);
       setTodayData(data.today || []);
       setTomorrowData(data.tomorrow || []);
+      setTodaySummary(data.todaySummary || null);
       setTomorrowSummary(data.tomorrowSummary || null);
       setAfterTomorrowData(data.afterTomorrow || []);
       setAfterTomorrowSummary(data.afterTomorrowSummary || null);
@@ -102,42 +109,50 @@ function WeatherForecast() {
     }
   };
 
-  const renderTable = (
-    title: string,
-    data: WeatherEntry[],
-    summary?: WeatherSummary
-  ) => (
-    <Box sx={{ marginTop: 4 }}>
-      <Typography variant="h6" gutterBottom>{title}</Typography>
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
+const renderTable = (
+  title: string,
+  data: WeatherEntry[],
+  summary?: WeatherSummary
+) => (
+  <Box sx={{ marginTop: 4 }}>
+    <Typography variant="h6" gutterBottom>{title}</Typography>
+    <TableContainer component={Paper}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell sx={{ width: '40%' }}>Время</TableCell>
+            <TableCell sx={{ width: '30%' }}>Температура (°C)</TableCell>
+            <TableCell sx={{ width: '30%' }}>Погода</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {summary && (
             <TableRow>
-              <TableCell sx={{ width: '40%' }}>Время</TableCell>
-              <TableCell sx={{ width: '30%' }}>Температура (°C)</TableCell>
-              <TableCell sx={{ width: '30%' }}>Погода</TableCell>
+              <TableCell><strong>Среднесуточная</strong></TableCell>
+              <TableCell>{summary.avgTempC}</TableCell>
+              <TableCell>{summary.condition}</TableCell>
             </TableRow>
-          </TableHead>
-          <TableBody>
-            {summary && (
-              <TableRow>
-                <TableCell><strong>Среднесуточная</strong></TableCell>
-                <TableCell>{summary.avgTempC}</TableCell>
-                <TableCell>{summary.condition}</TableCell>
-              </TableRow>
-            )}
-            {data.map((entry, idx) => (
-              <TableRow key={idx}>
-                <TableCell>{entry.bold ? <strong>{entry.label}</strong> : entry.label}</TableCell>
-                <TableCell>{entry.temperatureC}</TableCell>
-                <TableCell>{entry.condition}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </Box>
-  );
+          )}
+          {data.map((entry, idx) => (
+            <TableRow key={idx}>
+              <TableCell>{entry.bold ? <strong>{entry.label}</strong> : entry.label}</TableCell>
+              <TableCell>{entry.temperatureC}</TableCell>
+              <TableCell>{entry.condition}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+    {summary && (
+      <Box sx={{ mt: 1, ml: 1 }}>
+        <Typography variant="body2">🌡 Макс: {summary.maxTempC}°C | Мин: {summary.minTempC}°C</Typography>
+        <Typography variant="body2">💧 Влажность: {summary.humidity}% | 💨 Ветер: {summary.windKph} км/ч</Typography>
+      </Box>
+    )}
+  </Box>
+);
+
+
 
   return (
     <Box sx={{ padding: 2, maxWidth: 800, mx: 'auto' }}>
@@ -162,7 +177,7 @@ function WeatherForecast() {
         </Box>
       ) : (
         <>
-          {todayData.length > 0 && renderTable(`Сегодня (${todayDate})`, todayData)}
+          {todayData.length > 0 && renderTable(`Сегодня (${todayDate})`, todayData, todaySummary!)}
           {tomorrowData.length > 0 && renderTable(`Завтра (${tomorrowDate})`, tomorrowData, tomorrowSummary!)}
           {afterTomorrowData.length > 0 && renderTable(`Послезавтра (${afterTomorrowDate})`, afterTomorrowData, afterTomorrowSummary!)}
         </>

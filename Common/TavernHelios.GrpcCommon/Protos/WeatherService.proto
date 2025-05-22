@@ -23,8 +23,12 @@ message WeatherEntry {
 }
 
 message WeatherSummary {
-  double AvgTempC = 1;
-  string Condition = 2;
+  double avgTempC = 1;
+  string condition = 2;
+  double maxTempC = 3;
+  double minTempC = 4;
+  double humidity = 5;
+  double windKph = 6;
 }
 
 message WeatherReply {
@@ -40,6 +44,7 @@ message WeatherReply {
   repeated WeatherEntry AfterTomorrow = 8;
   WeatherSummary AfterTomorrowSummary = 9;
 
-  ReplyState State = 10;
-  repeated string Messages = 11;
+  WeatherSummary TodaySummary = 10;
+  ReplyState State = 11;
+  repeated string Messages = 12;
 }
