@@ -30,7 +30,6 @@ public class WeatherService : GrpcContract.WeatherService.WeatherService.Weather
         var currentKey = $"weather:current:{city}";
         var forecastKey = $"weather:forecast:{city}";
 
-        // Пытаемся собрать оба куска из кэша
         var currentJson = await _cache.GetStringAsync(currentKey);
         var forecastJson = await _cache.GetStringAsync(forecastKey);
 
@@ -41,7 +40,6 @@ public class WeatherService : GrpcContract.WeatherService.WeatherService.Weather
             var current = JsonSerializer.Deserialize<WeatherReplyDto>(currentJson)!;
             var forecast = JsonSerializer.Deserialize<WeatherReplyDto>(forecastJson)!;
 
-            // Объединяем current + forecast в один ответ
             var reply = forecast.ToGrpc();
             if (current.Today.Any())
             {
@@ -71,10 +69,9 @@ public class WeatherService : GrpcContract.WeatherService.WeatherService.Weather
             var now = DateTimeOffset.Now;
             var midnight = now.Date.AddDays(1);
 
-            // Текущая погода — 30 мин
             var currentDto = new WeatherReplyDto
             {
-                Today = new List<WeatherEntry> { weather.Today[0] }, // только "Сейчас"
+                Today = new List<WeatherEntry> { weather.Today[0] },
                 State = ReplyState.Ok
             };
 
@@ -86,9 +83,8 @@ public class WeatherService : GrpcContract.WeatherService.WeatherService.Weather
                     AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30)
                 });
 
-            // Прогноз (без current) — до конца суток
             var forecastOnly = weather.ToDto();
-            forecastOnly.Today = forecastOnly.Today.Skip(1).ToList(); // убираем "Сейчас"
+            forecastOnly.Today = forecastOnly.Today.Skip(1).ToList();
 
             await _cache.SetStringAsync(
                 forecastKey,
@@ -97,7 +93,6 @@ public class WeatherService : GrpcContract.WeatherService.WeatherService.Weather
                 {
                     AbsoluteExpiration = midnight
                 });
-
 
             return weather;
         }
@@ -121,25 +116,56 @@ public class WeatherService : GrpcContract.WeatherService.WeatherService.Weather
         var forecast = root.GetProperty("forecast").GetProperty("forecastday");
 
         string GetDate(JsonElement day) => day.GetProperty("date").GetString() ?? "";
-
         string GetCondition(JsonElement el) => el.GetProperty("condition").GetProperty("text").GetString() ?? "";
 
-        WeatherEntry FindHour(JsonElement day, string hourLabel, string timeStr)
+        WeatherEntry? FindHour(JsonElement day, string label, string timeStr)
         {
             var hour = day.GetProperty("hour").EnumerateArray()
                 .FirstOrDefault(h => h.GetProperty("time").GetString()!.EndsWith(timeStr));
-            return new WeatherEntry
-            {
-                Label = hourLabel,
-                TemperatureC = hour.GetProperty("temp_c").GetDouble(),
-                Condition = GetCondition(hour),
-                IconUrl = hour.GetProperty("condition").GetProperty("icon").GetString() ?? ""
-            };
+            return hour.ValueKind != JsonValueKind.Undefined
+                ? new WeatherEntry
+                {
+                    Label = label,
+                    TemperatureC = hour.GetProperty("temp_c").GetDouble(),
+                    Condition = GetCondition(hour),
+                    IconUrl = hour.GetProperty("condition").GetProperty("icon").GetString() ?? ""
+                }
+                : null;
         }
 
         var today = forecast[0];
         var tomorrow = forecast.GetArrayLength() > 1 ? forecast[1] : today;
         var afterTomorrow = forecast.GetArrayLength() > 2 ? forecast[2] : today;
+
+        List<WeatherEntry> BuildDayEntries(JsonElement day)
+        {
+            var list = new List<WeatherEntry>();
+            var morning = FindHour(day, "Утром", "08:00");
+            var noon = FindHour(day, "В 12:00", "12:00");
+            var afternoon = FindHour(day, "В 13:00", "13:00");
+            var evening = FindHour(day, "Вечером", "18:00");
+
+
+            if (morning != null) list.Add(morning);
+            if (noon != null) list.Add(noon);
+            if (afternoon != null) list.Add(afternoon);
+            if (evening != null) list.Add(evening);
+            return list;
+        }
+
+        var todayEntries = new List<WeatherEntry>
+        {
+            new WeatherEntry
+            {
+                Label = "Сейчас",
+                TemperatureC = root.GetProperty("current").GetProperty("temp_c").GetDouble(),
+                Condition = GetCondition(root.GetProperty("current")),
+                IconUrl = root.GetProperty("current").GetProperty("condition").GetProperty("icon").GetString() ?? "",
+                Bold = true
+            }
+        };
+        todayEntries.AddRange(BuildDayEntries(today));
+
         return new WeatherReply
         {
             City = location.GetProperty("name").GetString() ?? "",
@@ -147,17 +173,10 @@ public class WeatherService : GrpcContract.WeatherService.WeatherService.Weather
             TomorrowDate = GetDate(tomorrow),
             AfterTomorrowDate = GetDate(afterTomorrow),
 
-            Today = {
-                new WeatherEntry {
-                    Label = "Сейчас",
-                    TemperatureC = root.GetProperty("current").GetProperty("temp_c").GetDouble(),
-                    Condition = GetCondition(root.GetProperty("current")),
-                    IconUrl = root.GetProperty("current").GetProperty("condition").GetProperty("icon").GetString() ?? "",
-                    Bold = true
-                },
-                FindHour(today, "Сегодня в 12:00", "12:00"),
-                FindHour(today, "Сегодня в 13:00", "13:00")
-            },
+            Today = { todayEntries },
+            Tomorrow = { BuildDayEntries(tomorrow) },
+            AfterTomorrow = { BuildDayEntries(afterTomorrow) },
+
             TodaySummary = new WeatherSummary
             {
                 AvgTempC = today.GetProperty("day").GetProperty("avgtemp_c").GetDouble(),
@@ -168,10 +187,6 @@ public class WeatherService : GrpcContract.WeatherService.WeatherService.Weather
                 Condition = GetCondition(today.GetProperty("day")),
                 IconUrl = today.GetProperty("day").GetProperty("condition").GetProperty("icon").GetString() ?? ""
             },
-            Tomorrow = {
-                FindHour(tomorrow, "Завтра в 12:00", "12:00"),
-                FindHour(tomorrow, "Завтра в 13:00", "13:00")
-            },
             TomorrowSummary = new WeatherSummary
             {
                 AvgTempC = tomorrow.GetProperty("day").GetProperty("avgtemp_c").GetDouble(),
@@ -180,11 +195,7 @@ public class WeatherService : GrpcContract.WeatherService.WeatherService.Weather
                 Humidity = tomorrow.GetProperty("day").GetProperty("avghumidity").GetDouble(),
                 WindKph = tomorrow.GetProperty("day").GetProperty("maxwind_kph").GetDouble(),
                 Condition = GetCondition(tomorrow.GetProperty("day")),
-                IconUrl = today.GetProperty("day").GetProperty("condition").GetProperty("icon").GetString() ?? ""
-            },
-            AfterTomorrow = {
-                FindHour(afterTomorrow, "Послезавтра в 12:00", "12:00"),
-                FindHour(afterTomorrow, "Послезавтра в 13:00", "13:00")
+                IconUrl = tomorrow.GetProperty("day").GetProperty("condition").GetProperty("icon").GetString() ?? ""
             },
             AfterTomorrowSummary = new WeatherSummary
             {
@@ -194,11 +205,9 @@ public class WeatherService : GrpcContract.WeatherService.WeatherService.Weather
                 Humidity = afterTomorrow.GetProperty("day").GetProperty("avghumidity").GetDouble(),
                 WindKph = afterTomorrow.GetProperty("day").GetProperty("maxwind_kph").GetDouble(),
                 Condition = GetCondition(afterTomorrow.GetProperty("day")),
-                IconUrl = today.GetProperty("day").GetProperty("condition").GetProperty("icon").GetString() ?? ""
+                IconUrl = afterTomorrow.GetProperty("day").GetProperty("condition").GetProperty("icon").GetString() ?? ""
             },
             State = ReplyState.Ok
         };
-
-
     }
 }

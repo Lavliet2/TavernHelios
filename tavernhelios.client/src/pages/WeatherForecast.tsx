@@ -59,6 +59,15 @@ function WeatherForecast() {
 
   const { showSnackbar } = useSnackbar();
 
+  const sortEntries = (entries: WeatherEntry[]): WeatherEntry[] => {
+    const order = ['Сейчас', 'Утром', 'В 12:00', 'В 13:00', 'Вечером'];
+    return entries.slice().sort((a, b) => {
+      const idxA = order.indexOf(a.label);
+      const idxB = order.indexOf(b.label);
+      return (idxA === -1 ? 999 : idxA) - (idxB === -1 ? 999 : idxB);
+    });
+  };
+
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(async (position) => {
       const lat = position.coords.latitude;
@@ -133,7 +142,8 @@ function WeatherForecast() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map((entry, idx) => (
+            {/* {data.map((entry, idx) => ( */}
+            {sortEntries(data).map((entry, idx) => (
               <TableRow key={idx}>
                 <TableCell>{entry.bold ? <strong>{entry.label}</strong> : entry.label}</TableCell>
                 <TableCell>{entry.temperatureC}</TableCell>
@@ -168,7 +178,7 @@ function WeatherForecast() {
       )}
     </Box>
   );
-  
+
   return (
     <Box sx={{ padding: 2, maxWidth: 800, mx: 'auto' }}>
       <Typography variant="h5" align="center">Погода в городе "{city}"</Typography>
