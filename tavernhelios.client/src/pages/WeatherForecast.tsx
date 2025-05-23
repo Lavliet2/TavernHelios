@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import {
   Box, Typography, Table, TableBody, TableCell,
   TableContainer, TableHead, TableRow, Paper,
@@ -12,6 +12,7 @@ interface WeatherEntry {
   label: string;
   temperatureC: number;
   condition: string;
+  iconUrl?: string;
   bold?: boolean;
 }
 
@@ -22,6 +23,7 @@ interface WeatherSummary {
   humidity: number;
   windKph: number;
   condition: string;
+  iconUrl?: string;
 }
 
 interface WeatherReply {
@@ -67,7 +69,8 @@ function WeatherForecast() {
     });
   }, []);
 
-  const fetchWeather = async (query: string) => {
+
+  const fetchWeather = useCallback(async (query: string) => {
     try {
       setLoading(true);
       const response = await fetch(`${API_BASE_URL}/api/weather?city=${encodeURIComponent(query)}`);
@@ -80,6 +83,9 @@ function WeatherForecast() {
       const data: WeatherReply = await response.json();
 
       setCity(data.city);
+      if (data.state !== 0 && data.messages?.length) {
+        showSnackbar(data.messages.join('\n'), 'error');
+      }
       setTodayDate(data.todayDate);
       setTomorrowDate(data.tomorrowDate);
       setAfterTomorrowDate(data.afterTomorrowDate);
@@ -94,7 +100,8 @@ function WeatherForecast() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [showSnackbar]);
+
 
   const handleCitySubmit = () => {
     if (customCity.trim()) {
@@ -109,51 +116,59 @@ function WeatherForecast() {
     }
   };
 
-const renderTable = (
-  title: string,
-  data: WeatherEntry[],
-  summary?: WeatherSummary
-) => (
-  <Box sx={{ marginTop: 4 }}>
-    <Typography variant="h6" gutterBottom>{title}</Typography>
-    <TableContainer component={Paper}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell sx={{ width: '40%' }}>Время</TableCell>
-            <TableCell sx={{ width: '30%' }}>Температура (°C)</TableCell>
-            <TableCell sx={{ width: '30%' }}>Погода</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {summary && (
+  const renderTable = (
+    title: string,
+    data: WeatherEntry[],
+    summary?: WeatherSummary
+  ) => (
+    <Box sx={{ marginTop: 4 }}>
+      <Typography variant="h6" gutterBottom>{title}</Typography>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
             <TableRow>
-              <TableCell><strong>Среднесуточная</strong></TableCell>
-              <TableCell>{summary.avgTempC}</TableCell>
-              <TableCell>{summary.condition}</TableCell>
+              <TableCell sx={{ width: '40%' }}>Время</TableCell>
+              <TableCell sx={{ width: '30%' }}>Температура (°C)</TableCell>
+              <TableCell sx={{ width: '30%' }}>Погода</TableCell>
             </TableRow>
-          )}
-          {data.map((entry, idx) => (
-            <TableRow key={idx}>
-              <TableCell>{entry.bold ? <strong>{entry.label}</strong> : entry.label}</TableCell>
-              <TableCell>{entry.temperatureC}</TableCell>
-              <TableCell>{entry.condition}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
-    {summary && (
-      <Box sx={{ mt: 1, ml: 1 }}>
-        <Typography variant="body2">🌡 Макс: {summary.maxTempC}°C | Мин: {summary.minTempC}°C</Typography>
-        <Typography variant="body2">💧 Влажность: {summary.humidity}% | 💨 Ветер: {summary.windKph} км/ч</Typography>
-      </Box>
-    )}
-  </Box>
-);
-
-
-
+          </TableHead>
+          <TableBody>
+            {data.map((entry, idx) => (
+              <TableRow key={idx}>
+                <TableCell>{entry.bold ? <strong>{entry.label}</strong> : entry.label}</TableCell>
+                <TableCell>{entry.temperatureC}</TableCell>
+                <TableCell>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    {entry.iconUrl && (
+                      <img
+                        src={entry.iconUrl.startsWith('//') ? 'https:' + entry.iconUrl : entry.iconUrl}
+                        alt={entry.condition}
+                        width={32}
+                        height={32}
+                      />
+                    )}
+                    <span>{entry.condition}</span>
+                  </Box>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      {summary && (
+        <Paper variant="outlined" sx={{ mt: 0.5, p: 1.5, backgroundColor: '#f5f5f5' }}>
+          <Typography variant="body2" gutterBottom>
+            <strong>🌡 Температура:</strong> макс {summary.maxTempC}°C, мин {summary.minTempC}°C
+          </Typography>
+          <Typography variant="body2" gutterBottom>
+            <strong>💧 Влажность:</strong> {summary.humidity}% &nbsp;&nbsp;
+            <strong>💨 Ветер:</strong> {summary.windKph} км/ч
+          </Typography>
+        </Paper>
+      )}
+    </Box>
+  );
+  
   return (
     <Box sx={{ padding: 2, maxWidth: 800, mx: 'auto' }}>
       <Typography variant="h5" align="center">Погода в городе "{city}"</Typography>
@@ -162,6 +177,7 @@ const renderTable = (
         <TextField
           label="Введите город"
           variant="outlined"
+          autoFocus
           value={customCity}
           onChange={(e) => setCustomCity(e.target.value)}
           onKeyDown={handleKeyDown}
@@ -177,7 +193,7 @@ const renderTable = (
         </Box>
       ) : (
         <>
-          {todayData.length > 0 && renderTable(`Сегодня (${todayDate})`, todayData, todaySummary!)}
+          {todayData.length > 0 && renderTable(`Сегодня (${todayDate})`, todayData, todaySummary ?? undefined)}
           {tomorrowData.length > 0 && renderTable(`Завтра (${tomorrowDate})`, tomorrowData, tomorrowSummary!)}
           {afterTomorrowData.length > 0 && renderTable(`Послезавтра (${afterTomorrowDate})`, afterTomorrowData, afterTomorrowSummary!)}
         </>

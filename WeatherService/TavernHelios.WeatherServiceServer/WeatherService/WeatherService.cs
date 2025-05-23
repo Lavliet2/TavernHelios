@@ -4,6 +4,8 @@ using GrpcContract.WeatherService;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
+using TavernHelios.WeatherService.APICore.DTOValues;
+using TavernHelios.WeatherService.APICore.Extensions;
 
 namespace TavernHelios.WeatherServiceServer.WeatherService;
 
@@ -25,13 +27,28 @@ public class WeatherService : GrpcContract.WeatherService.WeatherService.Weather
     public override async Task<WeatherReply> GetWeatherForecast(WeatherRequest request, ServerCallContext context)
     {
         var city = request.City.Trim().ToLowerInvariant();
-        var cacheKey = $"weather:{city}";
-        string? cached = await _cache.GetStringAsync(cacheKey);
+        var currentKey = $"weather:current:{city}";
+        var forecastKey = $"weather:forecast:{city}";
 
-        if (!string.IsNullOrWhiteSpace(cached))
+        // Пытаемся собрать оба куска из кэша
+        var currentJson = await _cache.GetStringAsync(currentKey);
+        var forecastJson = await _cache.GetStringAsync(forecastKey);
+
+        if (!string.IsNullOrWhiteSpace(currentJson) && !string.IsNullOrWhiteSpace(forecastJson))
         {
             _logger.LogInformation("Serving cached weather for {City}", city);
-            return JsonSerializer.Deserialize<WeatherReply>(cached)!;
+
+            var current = JsonSerializer.Deserialize<WeatherReplyDto>(currentJson)!;
+            var forecast = JsonSerializer.Deserialize<WeatherReplyDto>(forecastJson)!;
+
+            // Объединяем current + forecast в один ответ
+            var reply = forecast.ToGrpc();
+            if (current.Today.Any())
+            {
+                reply.Today.Insert(0, current.Today.First());
+            }
+
+            return reply;
         }
 
         try
@@ -51,12 +68,36 @@ public class WeatherService : GrpcContract.WeatherService.WeatherService.Weather
             var json = await response.Content.ReadAsStringAsync();
             var weather = ParseWeather(json);
 
-            // Кэшируем на 10 минут
-            var options = new DistributedCacheEntryOptions
+            var now = DateTimeOffset.Now;
+            var midnight = now.Date.AddDays(1);
+
+            // Текущая погода — 30 мин
+            var currentDto = new WeatherReplyDto
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10)
+                Today = new List<WeatherEntry> { weather.Today[0] }, // только "Сейчас"
+                State = ReplyState.Ok
             };
-            await _cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(weather), options);
+
+            await _cache.SetStringAsync(
+                currentKey,
+                JsonSerializer.Serialize(currentDto),
+                new DistributedCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30)
+                });
+
+            // Прогноз (без current) — до конца суток
+            var forecastOnly = weather.ToDto();
+            forecastOnly.Today = forecastOnly.Today.Skip(1).ToList(); // убираем "Сейчас"
+
+            await _cache.SetStringAsync(
+                forecastKey,
+                JsonSerializer.Serialize(forecastOnly),
+                new DistributedCacheEntryOptions
+                {
+                    AbsoluteExpiration = midnight
+                });
+
 
             return weather;
         }
@@ -91,7 +132,8 @@ public class WeatherService : GrpcContract.WeatherService.WeatherService.Weather
             {
                 Label = hourLabel,
                 TemperatureC = hour.GetProperty("temp_c").GetDouble(),
-                Condition = GetCondition(hour)
+                Condition = GetCondition(hour),
+                IconUrl = hour.GetProperty("condition").GetProperty("icon").GetString() ?? ""
             };
         }
 
@@ -110,6 +152,7 @@ public class WeatherService : GrpcContract.WeatherService.WeatherService.Weather
                     Label = "Сейчас",
                     TemperatureC = root.GetProperty("current").GetProperty("temp_c").GetDouble(),
                     Condition = GetCondition(root.GetProperty("current")),
+                    IconUrl = root.GetProperty("current").GetProperty("condition").GetProperty("icon").GetString() ?? "",
                     Bold = true
                 },
                 FindHour(today, "Сегодня в 12:00", "12:00"),
@@ -122,7 +165,8 @@ public class WeatherService : GrpcContract.WeatherService.WeatherService.Weather
                 MinTempC = today.GetProperty("day").GetProperty("mintemp_c").GetDouble(),
                 Humidity = today.GetProperty("day").GetProperty("avghumidity").GetDouble(),
                 WindKph = today.GetProperty("day").GetProperty("maxwind_kph").GetDouble(),
-                Condition = GetCondition(today.GetProperty("day"))
+                Condition = GetCondition(today.GetProperty("day")),
+                IconUrl = today.GetProperty("day").GetProperty("condition").GetProperty("icon").GetString() ?? ""
             },
             Tomorrow = {
                 FindHour(tomorrow, "Завтра в 12:00", "12:00"),
@@ -135,7 +179,8 @@ public class WeatherService : GrpcContract.WeatherService.WeatherService.Weather
                 MinTempC = tomorrow.GetProperty("day").GetProperty("mintemp_c").GetDouble(),
                 Humidity = tomorrow.GetProperty("day").GetProperty("avghumidity").GetDouble(),
                 WindKph = tomorrow.GetProperty("day").GetProperty("maxwind_kph").GetDouble(),
-                Condition = GetCondition(tomorrow.GetProperty("day"))
+                Condition = GetCondition(tomorrow.GetProperty("day")),
+                IconUrl = today.GetProperty("day").GetProperty("condition").GetProperty("icon").GetString() ?? ""
             },
             AfterTomorrow = {
                 FindHour(afterTomorrow, "Послезавтра в 12:00", "12:00"),
@@ -148,7 +193,8 @@ public class WeatherService : GrpcContract.WeatherService.WeatherService.Weather
                 MinTempC = afterTomorrow.GetProperty("day").GetProperty("mintemp_c").GetDouble(),
                 Humidity = afterTomorrow.GetProperty("day").GetProperty("avghumidity").GetDouble(),
                 WindKph = afterTomorrow.GetProperty("day").GetProperty("maxwind_kph").GetDouble(),
-                Condition = GetCondition(afterTomorrow.GetProperty("day"))
+                Condition = GetCondition(afterTomorrow.GetProperty("day")),
+                IconUrl = today.GetProperty("day").GetProperty("condition").GetProperty("icon").GetString() ?? ""
             },
             State = ReplyState.Ok
         };

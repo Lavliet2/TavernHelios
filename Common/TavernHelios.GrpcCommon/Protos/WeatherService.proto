@@ -20,6 +20,7 @@ message WeatherEntry {
   double TemperatureC = 2;
   string Condition = 3;
   bool Bold = 4;
+  string iconUrl = 5;
 }
 
 message WeatherSummary {
@@ -29,6 +30,7 @@ message WeatherSummary {
   double minTempC = 4;
   double humidity = 5;
   double windKph = 6;
+  string iconUrl = 7;
 }
 
 message WeatherReply {
