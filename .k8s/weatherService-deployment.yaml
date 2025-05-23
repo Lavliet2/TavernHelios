@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: weatherservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: weatherservice
+  template:
+    metadata:
+      labels:
+        app: weatherservice
+    spec:
+      containers:
+        - name: weatherservice
+          image: ghcr.io/lavliet2/weatherservice:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5069
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Development"
+            - name: ASPNETCORE_URLS
+              value: "http://+:5069"
+            - name: WeatherApi__Key
+              valueFrom:
+                secretKeyRef:
+                  name: weatherapi-secret
+                  key: WEATHER_API_KEY
+      imagePullSecrets:
+        - name: ghcr-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: weatherservice
+spec:
+  type: NodePort
+  selector:
+    app: weatherservice
+  ports:
+    - protocol: TCP
+      port: 5069
+      targetPort: 5069
+      nodePort: 32059

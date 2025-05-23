@@ -153,6 +153,18 @@ jobs:
             ghcr.io/lavliet2/adminservice:${{ env.BRANCH }}-${{ github.ref_name }}
             ghcr.io/lavliet2/adminservice:latest
 
+      # **Сборка и публикация контейнера с WeatherService**
+      - name: Build and push WeatherService image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./WeatherService/TavernHelios.WeatherServiceServer/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/lavliet2/weatherservice:${{ env.BRANCH }}-${{ github.ref_name }}
+            ghcr.io/lavliet2/weatherservice:latest            
+
+            
       - name: Add SSH key
         uses: webfactory/ssh-agent@v0.5.3
         with:

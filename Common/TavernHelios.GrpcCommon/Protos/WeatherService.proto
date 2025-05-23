@@ -1,0 +1,52 @@
+syntax = "proto3";
+package TavernHelios.GrpcContract;
+
+option csharp_namespace = "GrpcContract.WeatherService";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+import "CommonMessages.proto";
+
+service WeatherService {
+  rpc GetWeatherForecast (WeatherRequest) returns (WeatherReply);
+}
+
+message WeatherRequest {
+  string City = 1;
+}
+
+message WeatherEntry {
+  string Label = 1;
+  double TemperatureC = 2;
+  string Condition = 3;
+  bool Bold = 4;
+  string iconUrl = 5;
+}
+
+message WeatherSummary {
+  double avgTempC = 1;
+  string condition = 2;
+  double maxTempC = 3;
+  double minTempC = 4;
+  double humidity = 5;
+  double windKph = 6;
+  string iconUrl = 7;
+}
+
+message WeatherReply {
+  string City = 1;
+  string TodayDate = 2;
+  string TomorrowDate = 3;
+  string AfterTomorrowDate = 4;
+
+  repeated WeatherEntry Today = 5;
+  repeated WeatherEntry Tomorrow = 6;
+  WeatherSummary TomorrowSummary = 7;
+
+  repeated WeatherEntry AfterTomorrow = 8;
+  WeatherSummary AfterTomorrowSummary = 9;
+
+  WeatherSummary TodaySummary = 10;
+  ReplyState State = 11;
+  repeated string Messages = 12;
+}

@@ -61,6 +61,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReservationService.Tests", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ControllersTests", "Tests\ControllersTests\ControllersTests.csproj", "{4D3ECDFA-310B-4C8A-BAB0-EF1EBFE07612}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WeatherService", "WeatherService", "{36D591C7-65C7-A0D1-1CBC-10CDE441BDC8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TavernHelios.WeatherService.APICore", "WeatherService\TavernHelios.WeatherService.APICore\TavernHelios.WeatherService.APICore.csproj", "{AE31557F-2C67-4C0A-97E0-94671DE81303}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TavernHelios.WeatherServiceServer", "WeatherService\TavernHelios.WeatherServiceServer\TavernHelios.WeatherServiceServer.csproj", "{279F64DF-F8A8-A939-97D1-3D963DC2B47D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -161,6 +167,14 @@ Global
 		{4D3ECDFA-310B-4C8A-BAB0-EF1EBFE07612}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D3ECDFA-310B-4C8A-BAB0-EF1EBFE07612}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4D3ECDFA-310B-4C8A-BAB0-EF1EBFE07612}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE31557F-2C67-4C0A-97E0-94671DE81303}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE31557F-2C67-4C0A-97E0-94671DE81303}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE31557F-2C67-4C0A-97E0-94671DE81303}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE31557F-2C67-4C0A-97E0-94671DE81303}.Release|Any CPU.Build.0 = Release|Any CPU
+		{279F64DF-F8A8-A939-97D1-3D963DC2B47D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{279F64DF-F8A8-A939-97D1-3D963DC2B47D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{279F64DF-F8A8-A939-97D1-3D963DC2B47D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{279F64DF-F8A8-A939-97D1-3D963DC2B47D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -186,6 +200,8 @@ Global
 		{53A7C2A8-FFC9-423F-AF19-A9293F940EAA} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{6CDBCE3B-EDE6-456F-8148-B46EDC671AE3} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{4D3ECDFA-310B-4C8A-BAB0-EF1EBFE07612} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{AE31557F-2C67-4C0A-97E0-94671DE81303} = {36D591C7-65C7-A0D1-1CBC-10CDE441BDC8}
+		{279F64DF-F8A8-A939-97D1-3D963DC2B47D} = {36D591C7-65C7-A0D1-1CBC-10CDE441BDC8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DD293E23-CA84-4A1A-853B-B29BC3B68822}

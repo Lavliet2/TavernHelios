@@ -53,7 +53,15 @@ spec:
           service:
             name: adminservice
             port:
-              number: 5263
+              number: 5068
+
+      - path: /weatherservice
+        pathType: Prefix
+        backend:
+          service:
+            name: weatherservice
+            port:
+              number: 5069              
 
       - path: /
         pathType: Prefix
