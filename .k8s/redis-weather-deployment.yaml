@@ -30,7 +30,7 @@ kind: Service
 metadata:
   name: redis-weather
 spec:
-  type: ClusterIP
+  type: NodePort
   selector:
     app: redis-weather
   ports:
