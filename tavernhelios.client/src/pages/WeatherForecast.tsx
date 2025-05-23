@@ -187,7 +187,6 @@ function WeatherForecast() {
         <TextField
           label="Введите город"
           variant="outlined"
-          autoFocus
           value={customCity}
           onChange={(e) => setCustomCity(e.target.value)}
           onKeyDown={handleKeyDown}
