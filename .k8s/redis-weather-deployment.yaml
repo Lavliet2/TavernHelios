@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-weather
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis-weather
+  template:
+    metadata:
+      labels:
+        app: redis-weather
+    spec:
+      containers:
+        - name: redis
+          image: redis:7.2
+          ports:
+            - containerPort: 6379
+          volumeMounts:
+            - mountPath: /data
+              name: redis-weather-data
+      volumes:
+        - name: redis-weather-data
+          persistentVolumeClaim:
+            claimName: redis-weather-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-weather
+spec:
+  type: ClusterIP
+  selector:
+    app: redis-weather
+  ports:
+    - protocol: TCP
+      port: 6379
+      targetPort: 6379
+      nodePort: 32058
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: redis-weather-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
