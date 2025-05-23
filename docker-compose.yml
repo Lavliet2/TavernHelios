@@ -1,4 +1,15 @@
 services:
+  redis:
+    image: redis:7.2
+    container_name: redis-weather
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_weather_data:/data
+    networks:
+      - app_network
+
   clickhouse-monitoring:
     image: clickhouse/clickhouse-server:23.8.4.69-alpine
     container_name: clickhouse-monitoring
@@ -237,6 +248,23 @@ services:
 
     networks:
       - app_network
+
+  weatherService:
+    container_name: weatherService
+    image: tavernhelios/weatherservice
+    build:
+      context: .
+      dockerfile: ./WeatherService/TavernHelios.WeatherServiceServer/Dockerfile
+    ports:
+      - "5069:5069"
+    depends_on:
+      - redis
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_URLS: "http://+:5069"
+    networks:
+      - app_network
+
   server:
     container_name: TavernHelios.Server
     image: tavernhelios/server
@@ -308,6 +336,7 @@ volumes:
   rabbitmq_monitoring_data:
   rabbitmq_monitoring_plugins:
   grafana_monitoring_storage:
+  redis_weather_data:
 
 # configs:
 #   rabbitmqplugins:

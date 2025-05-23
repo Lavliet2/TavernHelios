@@ -7,6 +7,7 @@ using TavernHelios.Server.Services.ReservedLayoutService;
 using static GrpcContract.LayoutService.LayoutService;
 using static GrpcContract.MenuService.MenuService;
 using static GrpcContract.ReservationService.ReservationService;
+using static GrpcContract.WeatherService.WeatherService;
 
 namespace MenuServiceServer.Extensions
 {
@@ -32,6 +33,7 @@ namespace MenuServiceServer.Extensions
             services.AddGrpcClient<MenuServiceClient, GrpcMenuServiceSettings>(configuration);
             services.AddGrpcClient<ReservationServiceClient, GrpcReservationServiceSettings>(configuration);
             services.AddGrpcClient<LayoutServiceClient, GrpcLayoutServiceSettings>(configuration);
+            services.AddGrpcClient<WeatherServiceClient, GrpcWeatherServiceSettings>(configuration);
         }
 
         private static void AddGrpcClient<TService, TSettings>(this IServiceCollection services, IConfiguration configuration)
