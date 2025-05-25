@@ -1,5 +1,4 @@
 import React from "react";
-import { useTranslation } from 'react-i18next';
 import { Modal, Box, Typography, TextField, Button } from "@mui/material";
 
 interface MenuCreateModalProps {
@@ -9,13 +8,12 @@ interface MenuCreateModalProps {
 }
 
 const MenuCreateModal: React.FC<MenuCreateModalProps> = ({ open, onClose, onCreate }) => {
-  const { t } = useTranslation();
   const [menuName, setMenuName] = React.useState<string>("");
 
   const handleCreate = () => {
     if (!menuName.trim()) return;
     onCreate(menuName);
-    setMenuName(""); // Очистка поля после создания
+    setMenuName("");
   };
 
   return (
