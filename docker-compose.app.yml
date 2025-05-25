@@ -1,0 +1,163 @@
+services:
+  menuService:
+    container_name: menuService
+    image: tavernhelios/menuservice
+    build:
+      context: .
+      dockerfile: ./MenuService/MenuServiceServer/Dockerfile
+    ports:
+      - "5064:5064"
+    depends_on:
+      - mongoMenu
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_URLS: "http://+:5064"
+    command: ["dotnet", "MenuServiceServer.dll"]
+    networks:
+      - app_network
+
+  layoutService:
+    container_name: layoutService
+    image: tavernhelios/layoutservice
+    build:
+      context: .
+      dockerfile: ./LayoutService/TavernHelios.LayoutService.LayoutServiceServer/Dockerfile
+    ports:
+      - "5066:5066"
+    depends_on:
+      - mongoLayout
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_URLS: "http://+:5066"
+    command: ["dotnet", "LayoutServiceServer.dll"]
+    networks:
+      - app_network
+
+  ReservationService:
+    container_name: ReservationService
+    image: tavernhelios/reservationservice
+    build:
+      context: .
+      dockerfile: ./ReservationService/TavernHelios.ReservationServiceServer/Dockerfile
+    ports:
+      - "5065:5065"
+    depends_on:
+      - postgresReservation
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_URLS: "http://+:5065"
+    command: ["dotnet", "TavernHelios.ReservationServiceServer.dll"]
+    networks:
+      - app_network
+
+  AuthService:
+    container_name: AuthService
+    image: tavernhelios/authservice 
+    build:
+      context: .
+      dockerfile: ./TavernHelios.Auth/Dockerfile
+    ports:
+      - '5067:5067'
+    depends_on:
+      - postgresAuth
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_URLS: "http://+:5067"  
+    command: ["dotnet", "TavernHelios.Auth.dll"]
+    networks:
+      - app_network   
+
+  adminService:
+    image: tavernhelios/adminservice
+    container_name: adminService
+    build:
+      context: .
+      dockerfile: ./AdministrationService/TavernHelios.AdministrationService.AdministrationServiceServer/Dockerfile
+    ports:
+      - 5068:5068
+    depends_on:
+      - clickhouse-monitoring
+      - rabbitmq-monitoring
+      - prometheus-monitoring
+      - grafana-monitoring
+      - server
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_URLS: "http://+:5068"
+      ClickHouse:Host: "clickhouse-monitoring"
+      ClickHouse:Port: 8123
+      ClickHouse:Database: "default"
+      ClickHouse:User: "default"
+      ClickHouse:Password: ""
+      RabbitMQ:Host: "rabbitmq-monitoring"
+      RabbitMQ:Port: 5672
+      RabbitMQ:User: "admin"
+      RabbitMQ:Password: "admin"
+    networks:
+      - app_network
+
+  weatherService:
+    container_name: weatherService
+    image: tavernhelios/weatherservice
+    build:
+      context: .
+      dockerfile: ./WeatherService/TavernHelios.WeatherServiceServer/Dockerfile
+    ports:
+      - "5069:5069"
+    depends_on:
+      - redis
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_URLS: "http://+:5069"
+    networks:
+      - app_network
+
+  server:
+    container_name: TavernHelios.Server
+    image: tavernhelios/server
+    build:
+      context: .
+      dockerfile: ./TavernHelios.Server/Dockerfile
+    ports:
+      - "5555:5555"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_URLS: "https://+:5555"
+      ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/aspnetapp.pfx"
+      ASPNETCORE_Kestrel__Certificates__Default__Password: "helios"
+      RABBITMQ_HOST: "rabbitmq-monitoring"
+      RABBITMQ_USER: "admin"
+      RABBITMQ_PASSWORD: "admin"
+      RABBITMQ_PORT: 5672
+    volumes:
+      - ${USERPROFILE}/.aspnet/https:/https:ro
+    command: ["dotnet", "TavernHelios.Server.dll"]
+    networks:
+      - app_network
+
+  client:
+    container_name: tavernhelios.client
+    image: tavernhelios/client
+    build:
+      context: .
+      dockerfile: ./tavernhelios.client/Dockerfile
+      args:
+        NODE_ENV: "development"
+        VITE_API_URL: "https://localhost:5555"
+        VITE_APP_VERSION: "develop"
+    environment:
+      NODE_ENV: "development"
+      VITE_API_URL: "https://localhost:5555"
+    ports:
+      - "8888:443"
+    depends_on:
+      - server
+    networks:
+      - app_network
+    volumes:
+      - ./nginx/nginx.conf.dev:/etc/nginx/nginx.conf
+      - ./nginx/ssl:/etc/nginx/ssl
+
+networks:
+  app_network:
+    external: true

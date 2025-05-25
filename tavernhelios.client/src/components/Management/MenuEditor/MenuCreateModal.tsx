@@ -34,7 +34,7 @@ const MenuCreateModal: React.FC<MenuCreateModalProps> = ({ open, onClose, onCrea
       >
         <Typography variant="h6" sx={{ mb: 2 }}>Создать новое меню</Typography>
         <TextField
-          label={ t("editMenu.name" + " " + t("common.menu")) }
+          label={ "Введите название меню" }
           fullWidth
           variant="outlined"
           value={menuName}

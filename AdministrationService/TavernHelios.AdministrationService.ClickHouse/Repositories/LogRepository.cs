@@ -1,16 +1,48 @@
 ﻿using ClickHouse.Client.ADO;
 using Dapper;
 using Microsoft.Extensions.Options;
+using System.Net.Sockets;
 using TavernHelios.AdministrationService.ClickHouse.Entities;
 using TavernHelios.AdministrationService.ClickHouse.Interfaces;
 using TavernHelios.ClickHouse.Helpers;
 using TavernHelios.ClickHouse.Settings;
+using Polly;
+using System.Net.Http;
+using Polly.Retry;
 
 namespace TavernHelios.AdministrationService.ClickHouse
 {
     public class LogRepository : IRepository<LogEntity>
     {
         private readonly string _connectionString;
+
+        private static readonly ResiliencePipeline retryPipeline = new ResiliencePipelineBuilder()
+            .AddRetry(new RetryStrategyOptions
+            {
+                MaxRetryAttempts = 10,
+                Delay = TimeSpan.FromSeconds(3),
+                ShouldHandle = new PredicateBuilder().Handle<SocketException>().Handle<HttpRequestException>(),
+                OnRetry = args =>
+                {
+                    Console.WriteLine($"[ClickHouse] Не удалось подключиться (попытка {args.AttemptNumber}): {args.Outcome.Exception?.Message}");
+                    return default;
+                }
+            })
+            .Build();
+
+        private static readonly ResiliencePipeline asyncRetryPipeline = new ResiliencePipelineBuilder()
+            .AddRetry(new RetryStrategyOptions
+            {
+                MaxRetryAttempts = 10,
+                Delay = TimeSpan.FromSeconds(3),
+                ShouldHandle = new PredicateBuilder().Handle<SocketException>().Handle<HttpRequestException>(),
+                OnRetry = args =>
+                {
+                    Console.WriteLine($"[ClickHouse] Не удалось подключиться (попытка {args.AttemptNumber}): {args.Outcome.Exception?.Message}");
+                    return default;
+                }
+            })
+            .Build();
 
         public LogRepository(IOptions<ClickHouseSettings> options)
         {
@@ -21,7 +53,10 @@ namespace TavernHelios.AdministrationService.ClickHouse
         private void InitializeDatabase()
         {
             using var connection = new ClickHouseConnection(_connectionString);
-            connection.Open();
+            retryPipeline.Execute(() =>
+            {
+                connection.Open();
+            });
 
             var createTableQuery = $@"
             CREATE TABLE IF NOT EXISTS logs (
@@ -51,13 +86,14 @@ namespace TavernHelios.AdministrationService.ClickHouse
         {
             try
             {
-                if (log == null)
-                {
-                    return null;
-                }
+                if (log == null) return null;
 
                 using var connection = new ClickHouseConnection(_connectionString);
-                await connection.OpenAsync();
+
+                await asyncRetryPipeline.ExecuteAsync(async cancellationToken =>
+                {
+                    await connection.OpenAsync(cancellationToken);
+                }, CancellationToken.None);
 
                 // Генерируем уникальный RequestId, если он не задан
                 if (string.IsNullOrEmpty(log.RequestId))
@@ -118,7 +154,10 @@ namespace TavernHelios.AdministrationService.ClickHouse
             string? exception = null)
         {
             using var connection = new ClickHouseConnection(_connectionString);
-            await connection.OpenAsync();
+            await asyncRetryPipeline.ExecuteAsync(async cancellationToken =>
+            {
+                await connection.OpenAsync(cancellationToken);
+            }, CancellationToken.None);
 
             // Базовый запрос
             var query = $"SELECT * FROM logs WHERE 1=1";
