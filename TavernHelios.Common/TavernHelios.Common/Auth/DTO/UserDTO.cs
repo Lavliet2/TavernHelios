@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace TavernHelios.Common.Auth.DTO
 {
@@ -9,7 +9,6 @@ namespace TavernHelios.Common.Auth.DTO
         public string Login { get; set; }
         public List<UserRoleDTO> UserRoles { get; set; }
         public List<int> Roles { get; set; }
-
         public bool IsAdmin { get; set; }
     }
 
@@ -26,7 +25,6 @@ namespace TavernHelios.Common.Auth.DTO
         public string Login { get; set; }
         public string Password { get; set; }
         public List<int> RoleIds { get; set; }
-
     }
 
     public class UserUpdateDTO

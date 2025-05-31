@@ -125,7 +125,25 @@ i18n.use(initReactI18next).init({
           Menu: "Menu",
           menu: "menu",
 
-        }
+        },
+
+        admin: {
+          users: {
+            title: "User Management",
+            addUser: "Add user",
+            editUser: "Edit User",
+            login: "Login",
+            fullName: "Fullname",
+            password: "Password",
+            roles: "Roles",
+            roleAdmin: "Admin",
+            roleManager: "Менеджер",
+            actions: "Actions",
+            edit: "Edit",
+            delete: "Delete",
+            confirmDelete: "You sure in deleting?",
+          },
+        },
       }
     },
     ru: {
@@ -241,7 +259,25 @@ i18n.use(initReactI18next).init({
           addDish: "Добавить блюдо",
           Menu: "Меню",
           menu: "меню",  
-        }
+        },
+
+        admin: {
+          users: {
+            title: "Управление пользователями",
+            addUser: "Добавить пользователя",
+            editUser: "Редактировать пользователя",
+            login: "Логин",
+            fullName: "Полное имя",
+            password: "Пароль",
+            roles: "Роли",
+            roleAdmin: "Администратор",
+            roleManager: "Менеджер",
+            actions: "Действия",
+            edit: "Редактировать",
+            delete: "Удалить",
+            confirmDelete: "Вы уверены, что хотите удалить этого пользователя?",
+          },
+        },
       }    
     }          
   },

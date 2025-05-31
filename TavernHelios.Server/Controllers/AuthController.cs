@@ -61,16 +61,25 @@ namespace TavernHelios.Server.Controllers
         [HttpGet("userInfo")]
         public async Task<IActionResult> GetUserInfo()
         {
-            var fullName = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.GivenName).Value;
-            var login = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name).Value;
-            var isAdmin = User.Claims.Any(x => x.Type == ClaimTypes.Role && x.Value == "Admin");
+            var fullName = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.GivenName)?.Value;
+            var login = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value;
+            var roleClaims = User.Claims.Where(x => x.Type == ClaimTypes.Role).ToList();
+            
+            var roles = roleClaims.Select(claim => claim.Value switch
+            {
+                "Admin" => 1,
+                "Manager" => 2,
+                "User" => 3,
+                _ => 0
+            }).ToList();
+
             return Ok(new UserDTO
             {
                 FullName = fullName,
                 Login = login,
-                IsAdmin = isAdmin
+                Roles = roles,
+                IsAdmin = roleClaims.Any(x => x.Value == "Admin")
             });
         }
-
     }
 }
