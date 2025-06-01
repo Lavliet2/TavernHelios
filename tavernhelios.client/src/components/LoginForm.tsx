@@ -11,7 +11,7 @@ import { useUser } from "../contexts/UserContext";
 
 const LoginForm: React.FC = () => {
   const { t } = useTranslation();
-  const [username, setUsername] = useState("");
+  const [username, setUsername] = useState(""); 
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();

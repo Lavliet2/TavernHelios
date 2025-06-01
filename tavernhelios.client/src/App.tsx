@@ -13,6 +13,9 @@ import EditSchedule from "./pages/Management/EditSchedule";
 import Reservations from "./pages/Management/Reservations";
 import RegisterForm from "./components/RegisterForm";
 import Layout from "./pages/Management/Layout/EditLayout";
+import UserManagement from "./pages/Admin/UserManagement";
+import { RoleProtectedRoute } from "./hoc/withRole";
+import { USER_ROLES } from "./config";
 
 import { SnackbarProvider } from "./hooks/useSnackbar";
 import { DndProvider } from "react-dnd";
@@ -26,9 +29,9 @@ function App() {
   const userContext = useUser();
 
   useEffect(() => {
-      axios.get(`${API_BASE_URL}/api/auth/userInfo`)
-          .then(response => userContext?.login(response.data));
-  }, []) 
+    axios.get(`${API_BASE_URL}/api/auth/userInfo`)
+      .then(response => userContext?.login(response.data));
+  }, [])
 
   return (
     <DndProvider backend={HTML5Backend}>
@@ -42,14 +45,23 @@ function App() {
               <Route path="/register" element={<RegisterForm />} />
               <Route path="/about" element={<About />} />
               <Route path="/forecast" element={<WeatherForecast />} />
-
               <Route path="/menu" element={<Menu />} />
-              <Route path="/management" element={<Management />} />
-              <Route path="/management/dishes" element={<EditDishes />} />
-              <Route path="/management/menu" element={<EditMenu />} />
-              <Route path="/management/schedule" element={<EditSchedule />} />
-              <Route path="/management/reservations" element={<Reservations />} />
-              <Route path="/management/layout" element={<Layout />} />
+
+              {/* Защищенные маршруты */}
+              <Route element={<RoleProtectedRoute requiredRoles={[USER_ROLES.Admin]} />}>
+                <Route path="/admin/users" element={<UserManagement />} />
+              </Route>
+
+              <Route element={<RoleProtectedRoute requiredRoles={[USER_ROLES.Admin, USER_ROLES.Manager]} />}>
+                <Route path="/management" element={<Management />} />
+                <Route path="/management/dishes" element={<EditDishes />} />
+                <Route path="/management/menu" element={<EditMenu />} />
+                <Route path="/management/schedule" element={<EditSchedule />} />
+                <Route path="/management/reservations" element={<Reservations />} />
+                <Route path="/management/layout" element={<Layout />} />
+              </Route>
+
+
 
               {/* 404 Страница */}
               <Route path="*" element={<NotFound />} />

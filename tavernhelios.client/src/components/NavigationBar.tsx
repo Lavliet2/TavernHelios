@@ -11,7 +11,7 @@ import { LanguageContext } from '../contexts/LanguageContext';
 import ruFlag from "@/assets/flags/ru.svg";
 import usFlag from "@/assets/flags/us.svg";
 import axios from 'axios';
-import { API_BASE_URL } from '../config';
+import { API_BASE_URL, USER_ROLES } from '../config';
 import { useUser } from '../contexts/UserContext';
 
 
@@ -23,7 +23,7 @@ const NavigationBar: React.FC = () => {
   const navigate = useNavigate();
   const appVersion = import.meta.env.VITE_APP_VERSION || 'Unknown Version';
   const userContext = useUser();
-  console.log("App Version:", appVersion, );
+  console.log("App Version:", appVersion,);
   const flags = {
     ru: ruFlag,
     us: usFlag,
@@ -74,10 +74,16 @@ const NavigationBar: React.FC = () => {
             <Button color="inherit" component={Link} to="/">{t('home')}</Button>
             <Button color="inherit" component={Link} to="/menu">{t('menu')}</Button>
             <Button color="inherit" component={Link} to="/forecast">{t('forecast')}</Button>
-            {userContext?.user?.isAdmin &&
+            {(userContext?.hasRole(USER_ROLES.Admin) || userContext?.hasRole(USER_ROLES.Manager)) && (
               <Button color="inherit" component={Link} to="/management">{t('managementMenu')}</Button>
-            }
-            <Button color="inherit" component={Link} to="/about">{t('about')}</Button>
+
+            )}
+            {userContext?.hasRole(USER_ROLES.Admin) && (
+              <>
+                <Button color="inherit" component={Link} to="/admin/users">{t('admin.users.title')}</Button>
+              </>
+            )}
+            < Button color="inherit" component={Link} to="/about">{t('about')}</Button>
           </Box>
           <Typography variant="body2" color="inherit" sx={{ marginRight: '10px' }}>
             Version: {appVersion}
@@ -151,7 +157,7 @@ const NavigationBar: React.FC = () => {
           {/* <h1>Application Version: {appVersion}</h1> */}
         </Toolbar>
       </AppBar>
-    </ThemeProvider>
+    </ThemeProvider >
   );
 };
 
