@@ -143,7 +143,7 @@ export const useMenuDisplay = () => {
   const handleReservation = useCallback(async () => {
     if (isBooking) return;
     const currentUsername = userContext?.user?.fullName;
-    if (!currentUsername.trim()) {
+    if (!currentUsername?.trim()) {
       showSnackbar("Введите имя перед бронированием!");
       return;
     }
