@@ -73,21 +73,9 @@ namespace TavernHelios.Server
             app.UseDefaultFiles();
             app.UseStaticFiles();
 
-            //if (app.Environment.IsDevelopment())
-            //{
-            //    //app.UseSwagger();
-            //    //app.UseSwaggerUI();
-
-            //    app.UseDeveloperExceptionPage();
-            //}
-            //else
-            //{
-            //    app.UseExceptionHandler("/Home/Error");
-            //    app.UseHsts();
-            //}
             app.UseHsts();
-                app.UseSwagger();
-                app.UseSwaggerUI();
+            app.UseSwagger();
+            app.UseSwaggerUI();
 
             app.UseMiddleware<LoggingMiddleware>();
 
