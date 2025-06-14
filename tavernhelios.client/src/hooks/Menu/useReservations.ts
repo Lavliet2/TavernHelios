@@ -1,15 +1,20 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef  } from "react";
+import * as signalR from "@microsoft/signalr";
 import { fetchReservations, exportReservationsFile } from "../../services/reservationService"; 
 import { fetchDish } from "../../services/dishService"; 
 import { Reservation } from "../../types/Reservation";
 import { Dish } from "../../types/Management";
+import { useSnackbar } from "../useSnackbar";
+import { API_BASE_URL } from "../../config";
 
 export const useReservations = (date: string) => {
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [dishes, setDishes] = useState<Dish[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const connectionRef = useRef<signalR.HubConnection | null>(null);
 
+  const { showSnackbar } = useSnackbar();
   
   const loadReservations = useCallback(async () => {
     if (!date) return;
@@ -36,6 +41,34 @@ export const useReservations = (date: string) => {
     }
   }, []);
 
+    useEffect(() => {
+    if (connectionRef.current) return;
+
+    const connection = new signalR.HubConnectionBuilder()
+      .withUrl(`${API_BASE_URL}/hubs/reservations`)
+      .withAutomaticReconnect()
+      .build();
+
+    connection.start()
+      .then(() => {
+        console.log("SignalR connected");
+
+        connection.on("ReservationCreated", (reservation: Reservation) => {
+          console.log("📩 ReservationCreated received", reservation);
+          showSnackbar(`🔔 ${reservation.personId} сделал(а) бронирование`, "info");
+          loadReservations(); // обновляем список
+        });
+      })
+      .catch((err) => console.error("SignalR connection error:", err));
+
+    connectionRef.current = connection;
+
+    return () => {
+      connection.stop();
+      connectionRef.current = null;
+    };
+  }, [loadReservations, showSnackbar]);
+
   useEffect(() => {
     loadReservations();
   }, [loadReservations]);
@@ -46,6 +79,7 @@ export const useReservations = (date: string) => {
 
   const reservations12 = reservations.filter((res) => {
     const resDate = new Date(res.date);
+    console.log("Проверка времени бронирования:", resDate);
     return resDate.getUTCHours() === 12;
   });
   

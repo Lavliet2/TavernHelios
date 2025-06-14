@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using TavernHelios.Server.Exceptions;
 using TavernHelios.Server.Services;
 using QuestPDF.Infrastructure;
+using TavernHelios.Server.Hubs;
 
 namespace TavernHelios.Server
 {
@@ -37,6 +38,7 @@ namespace TavernHelios.Server
             builder.Services.AddSwaggerGen();
 
             builder.Services.ConfigureServices(builder.Configuration);
+            builder.Services.AddSignalR();
             builder.Services.AddScoped<ReservationExportService>();
             builder.Services.AddHttpClient<IAuthAPIService, AuthAPIService>(client =>
             {
@@ -78,7 +80,7 @@ namespace TavernHelios.Server
             app.UseSwaggerUI();
 
             app.UseMiddleware<LoggingMiddleware>();
-
+            app.MapHub<ReservationHub>("/hubs/reservations");
             app.UseHttpsRedirection();
             app.UseCors("AllowFrontend");
             app.UseExceptionHandler(options =>
