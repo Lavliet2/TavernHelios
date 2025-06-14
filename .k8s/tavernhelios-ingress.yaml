@@ -6,12 +6,23 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    nginx.ingress.kubernetes.io/enable-websocket: "true"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"    
 spec:
   ingressClassName: nginx
   rules:
   - host: tavernhelios.duckdns.org
     http:
       paths:
+      - path: /hubs/reservations
+        pathType: Prefix
+        backend:
+          service:
+            name: tavernhelios-server-service
+            port:
+              number: 5555
       - path: /api
         pathType: Prefix
         backend:
