@@ -56,7 +56,7 @@ export const useReservations = (date: string) => {
         connection.on("ReservationCreated", (reservation: Reservation) => {
           console.log("📩 ReservationCreated received", reservation);
           showSnackbar(`🔔 ${reservation.personId} сделал(а) бронирование`, "info");
-          loadReservations(); // обновляем список
+          loadReservations();
         });
       })
       .catch((err) => console.error("SignalR connection error:", err));
@@ -79,7 +79,6 @@ export const useReservations = (date: string) => {
 
   const reservations12 = reservations.filter((res) => {
     const resDate = new Date(res.date);
-    console.log("Проверка времени бронирования:", resDate);
     return resDate.getUTCHours() === 12;
   });
   
