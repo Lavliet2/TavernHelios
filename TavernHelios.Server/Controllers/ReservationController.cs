@@ -1,8 +1,10 @@
 using GrpcContract.ReservationService;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Swashbuckle.AspNetCore.Annotations;
 using TavernHelios.ReservationService.ApiCore.Extensions;
 using TavernHelios.ReservationService.APICore.DTOValues;
+using TavernHelios.Server.Hubs;
 using TavernHelios.Server.Services;
 using static GrpcContract.ReservationService.ReservationService;
 
@@ -15,16 +17,19 @@ namespace TavernHelios.Server.Controllers
         private readonly ILogger<ReservationController> _logger;
         ReservationServiceClient _grpcClient;
         private readonly ReservationExportService _reservationExportService;
+        private readonly IHubContext<ReservationHub> _hubContext;
 
         public ReservationController(
             ILogger<ReservationController> logger,
             ReservationServiceClient grpcClient, // TODO прокинуть сюда не GRPC клиент, а объект бизнес-логики, который будет общаться с этим клиентом
-            ReservationExportService reservationExportService
+            ReservationExportService reservationExportService,
+            IHubContext<ReservationHub> hubContext
             )
         {
             _logger = logger;
             _grpcClient = grpcClient;
             _reservationExportService = reservationExportService;
+            _hubContext = hubContext;
         }
 
         /// <summary>
@@ -61,6 +66,8 @@ namespace TavernHelios.Server.Controllers
                 return BadRequest(ReservationResult.Messages);
 
             var ReservationModel = Reservation.ToDto();
+
+            await _hubContext.Clients.All.SendAsync("ReservationCreated", ReservationModel);
 
             return Created("api/v1/Reservations", ReservationModel);
         }
