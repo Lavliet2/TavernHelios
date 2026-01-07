@@ -1,0 +1,28 @@
+<Project Sdk="Aspire.AppHost.Sdk/13.0.0">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UserSecretsId>69bb2741-d195-43b3-afff-d36ca118a6c1</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MenuService\MenuServiceServer\TavernHelios.MenuService.MenuServiceServer.csproj" />
+    <ProjectReference Include="..\LayoutService\TavernHelios.LayoutService.LayoutServiceServer\TavernHelios.LayoutService.LayoutServiceServer.csproj" />
+    <ProjectReference Include="..\ReservationService\TavernHelios.ReservationServiceServer\TavernHelios.ReservationServiceServer.csproj" />
+    <ProjectReference Include="..\TavernHelios.Auth\TavernHelios.Auth.csproj" />
+    <ProjectReference Include="..\WeatherService\TavernHelios.WeatherServiceServer\TavernHelios.WeatherServiceServer.csproj" />
+    <ProjectReference Include="..\TavernHelios.Server\TavernHelios.Server.csproj" />
+    <ProjectReference Include="..\AdministrationService\TavernHelios.AdministrationService.AdministrationServiceServer\TavernHelios.AdministrationService.AdministrationServiceServer.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.MongoDB" Version="13.1.0" />
+    <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="13.1.0" />
+    <PackageReference Include="Aspire.Hosting.RabbitMQ" Version="13.1.0" />
+    <PackageReference Include="Aspire.Hosting.Redis" Version="13.1.0" />
+  </ItemGroup>
+
+</Project>

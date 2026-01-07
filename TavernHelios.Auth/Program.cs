@@ -12,7 +12,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-var connection = builder.Configuration.GetConnectionString("Default");
+// Используем ConnectionStrings__authdb из Aspire, если доступно
+// Aspire автоматически создает эту переменную при использовании .WithReference() с .AddDatabase()
+var connection = builder.Configuration.GetConnectionString("authdb") 
+    ?? builder.Configuration.GetConnectionString("postgresAuth")
+    ?? builder.Configuration.GetConnectionString("Default");
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddDbContext<EfDbContext>(options => options.UseNpgsql(connection));
 

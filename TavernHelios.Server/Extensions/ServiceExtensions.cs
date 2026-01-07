@@ -2,7 +2,6 @@
 using Microsoft.OpenApi;
 using TavernHelios.GrpcCommon.Settings;
 using TavernHelios.RabbitMq.Settings;
-using TavernHelios.Server;
 using TavernHelios.Server.Services.ReservedLayoutService;
 using static GrpcContract.LayoutService.LayoutService;
 using static GrpcContract.MenuService.MenuService;

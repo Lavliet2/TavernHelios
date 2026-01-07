@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using TavernHelios.ReservationService.ApiCore.Settings;
 using TavernHelios.ReservationService.APICore.Entities;
@@ -16,10 +17,17 @@ namespace TavernHelios.ReservationService.PostgreRepository
         private string _connectionString;
         public DatabaseContext(
             DbContextOptions<DatabaseContext> options,
-            IOptions<ReservationPostgreConnectionSettings> settings
+            IOptions<ReservationPostgreConnectionSettings> settings,
+            IConfiguration configuration
             ) : base(options)
         {
-            _connectionString = settings.Value.ConnectionString;
+            // Используем ConnectionStrings__reservationdb из Aspire, если доступно
+            // Aspire автоматически создает эту переменную при использовании .WithReference() с .AddDatabase()
+            var aspireConnectionString = configuration.GetConnectionString("reservationdb") 
+                ?? configuration.GetConnectionString("postgresReservation");
+            _connectionString = !string.IsNullOrEmpty(aspireConnectionString) 
+                ? aspireConnectionString 
+                : settings.Value.ConnectionString;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

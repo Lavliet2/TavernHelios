@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.IdGenerators;
@@ -26,7 +27,8 @@ namespace TavernHelios.MenuService.MongoRepositories
         //TODO: обработка ошибок. Пока что просто отдаем пустое значение, если ничего не нашли в БД по id
 
         public BaseMongoRepository(
-            IOptions<MenuMongoConnectionSettings> mongoSettings
+            IOptions<MenuMongoConnectionSettings> mongoSettings,
+            IConfiguration configuration
             )
         {
             //Обозначаем Id в качестве идентифицирующей проперти в БД
@@ -41,7 +43,13 @@ namespace TavernHelios.MenuService.MongoRepositories
                 );
             });
 
-            var connectionString = mongoSettings.Value.GetConnectionString();
+            // Используем ConnectionStrings__mongoMenu из Aspire, если доступно
+            // Aspire автоматически создает эту переменную при использовании .WithReference()
+            var aspireConnectionString = configuration.GetConnectionString("mongoMenu");
+            var connectionString = !string.IsNullOrEmpty(aspireConnectionString)
+                ? aspireConnectionString
+                : mongoSettings.Value.GetConnectionString();
+            
             _client = new MongoClient( connectionString );
             _dbName = mongoSettings.Value.DbName;
             _dbCollectionName = typeof(T).Name;

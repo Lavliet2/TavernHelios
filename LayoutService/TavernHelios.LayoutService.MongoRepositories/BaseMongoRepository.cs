@@ -4,6 +4,7 @@ using System.Reflection.Metadata.Ecma335;
 using TavernHelios.LayoutService.Common.Entities;
 using TavernHelios.LayoutService.Common.Interfaces;
 using TavernHelios.LayoutService.Common.Settings;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
@@ -29,7 +30,8 @@ namespace TavernHelios.LayoutService.MongoRepositories
         //TODO: обработка ошибок. Пока что просто отдаем пустое значение, если ничего не нашли в БД по id
 
         public BaseMongoRepository(
-            IOptions<LayoutMongoConnectionSettings> mongoSettings
+            IOptions<LayoutMongoConnectionSettings> mongoSettings,
+            IConfiguration configuration
             )
         {
             //Обозначаем Id в качестве идентифицирующей проперти в БД
@@ -44,7 +46,13 @@ namespace TavernHelios.LayoutService.MongoRepositories
                 );
             });
 
-            var connectionString = mongoSettings.Value.GetConnectionString();
+            // Используем ConnectionStrings__mongoLayout из Aspire, если доступно
+            // Aspire автоматически создает эту переменную при использовании .WithReference()
+            var aspireConnectionString = configuration.GetConnectionString("mongoLayout");
+            var connectionString = !string.IsNullOrEmpty(aspireConnectionString)
+                ? aspireConnectionString
+                : mongoSettings.Value.GetConnectionString();
+            
             _client = new MongoClient( connectionString );
             _dbName = mongoSettings.Value.DbName;
             _dbCollectionName = typeof(T).Name;
