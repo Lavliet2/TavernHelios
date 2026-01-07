@@ -19,7 +19,21 @@
 // export const API_BASE_URL = getApiBaseUrl();
 
 
-export const API_BASE_URL = import.meta.env.VITE_API_URL || "https://tavernhelios.duckdns.org";
+// В Docker используем пустую строку для относительных путей (nginx проксирует /api/)
+// Для локальной разработки можно использовать "https://localhost:5555"
+// Для продакшена - "https://tavernhelios.duckdns.org"
+const getApiBaseUrl = () => {
+  const envUrl = import.meta.env.VITE_API_URL;
+  
+  // Если пустая строка или не задано - используем относительные пути (для Docker)
+  if (!envUrl || envUrl === "") {
+    return "";
+  }
+  
+  return envUrl;
+};
+
+export const API_BASE_URL = getApiBaseUrl();
 export const USER_ROLES = {
     Admin: 1,
     Manager: 2

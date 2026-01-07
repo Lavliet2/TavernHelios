@@ -143,11 +143,11 @@ services:
       dockerfile: ./tavernhelios.client/Dockerfile
       args:
         NODE_ENV: "development"
-        VITE_API_URL: "https://localhost:5555"
+        VITE_API_URL: ""
         VITE_APP_VERSION: "develop"
     environment:
       NODE_ENV: "development"
-      VITE_API_URL: "https://localhost:5555"
+      VITE_API_URL: ""
     ports:
       - "8888:443"
     depends_on:
