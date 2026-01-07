@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ClosedXML" Version="0.104.2" />
-    <PackageReference Include="QuestPDF" Version="2025.4.3" />
+    <PackageReference Include="ClosedXML" Version="0.105.0" />
+    <PackageReference Include="QuestPDF" Version="2025.12.1" />
 	<None Include="Reports/fonts/arial.ttf">
 		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	</None>

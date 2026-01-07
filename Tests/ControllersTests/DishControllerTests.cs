@@ -50,10 +50,10 @@ namespace DishServiceServer.Tests.Controllers
 
             var result = await _controller.GetByConditionAsync(queryRequest);
 
-            Assert.IsInstanceOf<OkObjectResult>(result);
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
             var okResult = result as OkObjectResult;
             var returnedDishes = okResult.Value as IEnumerable<DishValue>;
-            Assert.AreEqual(grpcDishes.Count, returnedDishes.Count());
+            Assert.That(returnedDishes.Count(), Is.EqualTo(grpcDishes.Count));
         }
 
         [Test]
@@ -75,9 +75,9 @@ namespace DishServiceServer.Tests.Controllers
 
             var result = await _controller.GetDishByIdAsync(dishId);
 
-            Assert.IsInstanceOf<OkObjectResult>(result);
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
             var okResult = result as OkObjectResult;
-            Assert.IsNotNull(okResult.Value as DishValue);
+            Assert.That(okResult.Value as DishValue, Is.Not.Null);
         }
 
         [Test]
@@ -98,7 +98,7 @@ namespace DishServiceServer.Tests.Controllers
 
             var result = await _controller.GetDishByIdAsync(dishId);
 
-            Assert.IsInstanceOf<NotFoundObjectResult>(result);
+            Assert.That(result, Is.InstanceOf<NotFoundObjectResult>());
         }
 
         [Test]
@@ -120,7 +120,7 @@ namespace DishServiceServer.Tests.Controllers
 
             var result = await _controller.CreateDishAsync(dishValue);
 
-            Assert.IsInstanceOf<CreatedResult>(result);
+            Assert.That(result, Is.InstanceOf<CreatedResult>());
         }
 
         [Test]
@@ -141,7 +141,7 @@ namespace DishServiceServer.Tests.Controllers
 
             var result = await _controller.CreateDishAsync(dishValue);
 
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+            Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
         }
 
         [Test]
@@ -163,7 +163,7 @@ namespace DishServiceServer.Tests.Controllers
 
             var result = await _controller.UpdateDishAsync(dishValue);
 
-            Assert.IsInstanceOf<OkObjectResult>(result);
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
         }
 
         [Test]
@@ -184,7 +184,7 @@ namespace DishServiceServer.Tests.Controllers
 
             var result = await _controller.UpdateDishAsync(dishValue);
 
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+            Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
         }
 
         [Test]
@@ -204,7 +204,7 @@ namespace DishServiceServer.Tests.Controllers
 
             var result = await _controller.DeleteDishAsync(dishId);
 
-            Assert.IsInstanceOf<NoContentResult>(result);
+            Assert.That(result, Is.InstanceOf<NoContentResult>());
         }
 
         [Test]
@@ -225,7 +225,7 @@ namespace DishServiceServer.Tests.Controllers
 
             var result = await _controller.DeleteDishAsync(dishId);
 
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+            Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
         }
     }
 }

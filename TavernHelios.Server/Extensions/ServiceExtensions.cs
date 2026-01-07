@@ -1,5 +1,5 @@
 ﻿using Grpc.Core;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using TavernHelios.GrpcCommon.Settings;
 using TavernHelios.RabbitMq.Settings;
 using TavernHelios.Server;
